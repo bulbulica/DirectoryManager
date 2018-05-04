@@ -27,17 +27,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BusinessLogic", "BusinessLo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistence", "Persistence", "{9D65BB13-3AA5-4CD8-B2BD-7FFBEF64E01B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudentsManagement.Authentication", "src\IdentityServer.Authentication\StudentsManagement.Authentication.csproj", "{0393DE26-CD76-47BE-9C28-A9322A999B5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.Authentication", "src\IdentityServer.Authentication\IdentityServer.Authentication.csproj", "{0393DE26-CD76-47BE-9C28-A9322A999B5D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.Abstractions", "src\Abstractions\Shared.Abstractions.csproj", "{E91165CC-D0A1-4676-9C53-955713E3CE84}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudentsManagement.Core", "src\IdentityServer.Core\StudentsManagement.Core.csproj", "{759F7427-8D16-4FFA-8589-C82911B57D07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.Core", "src\IdentityServer.Core\IdentityServer.Core.csproj", "{759F7427-8D16-4FFA-8589-C82911B57D07}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudentsManagement.Core.Shared", "src\IdentityServer.Core.Shared\StudentsManagement.Core.Shared.csproj", "{9F41633E-C780-4A1D-B434-FDB6E0986967}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.Core.Shared", "src\IdentityServer.Core.Shared\IdentityServer.Core.Shared.csproj", "{9F41633E-C780-4A1D-B434-FDB6E0986967}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudentsManagement.Persistence", "src\StudentsManagement.Persistance\StudentsManagement.Persistence.csproj", "{259E2185-AD68-4F42-AAF9-86B5EA67783B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.Persistence", "src\StudentsManagement.Persistance\IdentityServer.Persistence.csproj", "{259E2185-AD68-4F42-AAF9-86B5EA67783B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudentsManagement.Persistence.EF", "src\StudentsManagement.Persistence.EF\StudentsManagement.Persistence.EF.csproj", "{4B1169F4-C473-4D44-8F5D-3D2530B4F60E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.Persistence.EF", "src\StudentsManagement.Persistence.EF\IdentityServer.Persistence.EF.csproj", "{4B1169F4-C473-4D44-8F5D-3D2530B4F60E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

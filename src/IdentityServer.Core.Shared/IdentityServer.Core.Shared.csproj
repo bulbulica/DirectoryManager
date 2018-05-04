@@ -12,7 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Abstractions\Shared.Abstractions.csproj" />
     <ProjectReference Include="..\StudentsManagement.Domain\StudentsManagement.Domain.csproj" />
-    <ProjectReference Include="..\StudentsManagement.Persistance\StudentsManagement.Persistence.csproj" />
+    <ProjectReference Include="..\StudentsManagement.Persistance\IdentityServer.Persistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>

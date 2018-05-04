@@ -20,7 +20,16 @@ namespace IdentityServer4.Quickstart.UI
 
         public IActionResult Index()
         {
-            return View();
+            IActionResult retView = null;
+            if (1 == 2) // _auth.IsUserSignedIn(User)
+            {
+                retView = View("Index");
+            }
+            else
+            {
+                retView = RedirectToAction("Login", "Account");
+            }
+            return retView;
         }
 
         /// <summary>

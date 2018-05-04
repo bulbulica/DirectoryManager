@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-using StudentsManagement.Domain;
+//using IdentityServer.Domain;
 using StudentsManagement.Shared.Abstractions;
 using System.Collections.Generic;
-//using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Threading.Tasks;
 

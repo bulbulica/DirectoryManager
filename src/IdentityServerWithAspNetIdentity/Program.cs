@@ -20,7 +20,7 @@ namespace IdentityServerWithAspNetIdentity
             Console.Title = "IdentityServerWithAspNetIdentity";
 
             var seed = args.Any(x => x == "/seed");
-            seed = true;
+            //seed = true;
             if (seed) args = args.Except(new[] { "/seed" }).ToArray();
 
             var host = BuildWebHost(args);
