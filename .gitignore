@@ -3,16 +3,10 @@
 ################################################################################
 
 /.vs
-.cache
-.props
-.targets
+*.cache
+*.props
+*.targets
 /obj
 /Debug
-
-
-
-/src/Api/obj
-/src/Client/obj
-/src/IdentityServerWithAspNetIdentity/obj
-/src/MvcClient/obj
-/src/ResourceOwnerClient/obj
+*.AssemblyInfo.cs
+project.assets.json
