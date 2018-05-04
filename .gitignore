@@ -10,3 +10,8 @@
 /Debug
 *.AssemblyInfo.cs
 project.assets.json
+*.Authentication.*.json
+*.deps.json
+*.xml
+*.CopyComplete
+*.txt
