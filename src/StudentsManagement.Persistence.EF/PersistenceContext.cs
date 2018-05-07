@@ -22,7 +22,7 @@ namespace IdentityServer.Persistence.EF
             {
                 _context = provider.GetRequiredService<DbContext>();
             }
-            UserRepository = new UserRepository(_context);
+            //UserRepository = new UserRepository(_context);
         }
 
         public PersistenceContext() { }

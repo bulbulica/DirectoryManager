@@ -3,9 +3,9 @@
 
 namespace IdentityServer.Persistence
 {
-    public interface IUserRepository : IRepository<UserEntity>
+    public interface IUserRepository : IRepository<Employee>
     {
-        UserEntity GetTeacherByName(string name);
+        Employee GetTeacherByName(string name);
 
     }
 }

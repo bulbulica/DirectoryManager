@@ -10,31 +10,55 @@ using System.Threading.Tasks;
 namespace IdentityServer
 {
     [SecurityHeaders]
-    public class Home : Controller
+    public class EmployeesController : Controller
     {
         private readonly IIdentityServerInteractionService _interaction;
         //private readonly IAuthentication _auth;
 
-        public Home(IIdentityServerInteractionService interaction)
+        public EmployeesController(IIdentityServerInteractionService interaction)
             //,IAuthentication auth)
         {
             _interaction = interaction;
             //_auth = auth;
         }
 
-        public IActionResult Index()
+        public IActionResult ManageEmployees()
         {
             IActionResult retView = null;
             //if (_auth.IsUserSignedIn(User))
             if (1==1)
             {
-                retView = View("Index");
+                retView = View("ManageEmployees");
             }
             else
             {
-                retView = RedirectToAction("Login", "Account");
+                retView = NotFound();
             }
             return retView;
+        }
+
+        // GET: Employees/Employee/{id}
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> Employee(int? id)
+        {
+            IActionResult retView = null;
+            //if (_auth.IsUserSignedIn(User))
+            if (1 == 1)
+            {
+                int idEmployee = id ?? default(int);
+
+                var model = new 
+                {
+
+                };
+
+                return View("SingleEmployee", model);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         /// <summary>
