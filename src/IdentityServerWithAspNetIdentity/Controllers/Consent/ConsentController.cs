@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IdentityServer4.Quickstart.UI
+namespace IdentityServer
 {
     /// <summary>
     /// This controller processes the consent UI

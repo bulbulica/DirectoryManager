@@ -6,6 +6,6 @@ namespace IdentityServer.Persistence
     {
         int Complete();
         void Dispose();
-        IUserRepository TeachersRepository { get; set; }
+        IUserRepository UserRepository { get; set; }
     }
 }

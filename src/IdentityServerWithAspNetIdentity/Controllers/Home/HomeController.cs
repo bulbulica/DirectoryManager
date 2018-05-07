@@ -2,26 +2,30 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using IdentityServer.Core.Shared;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace IdentityServer4.Quickstart.UI
+namespace IdentityServer
 {
     [SecurityHeaders]
     public class HomeController : Controller
     {
         private readonly IIdentityServerInteractionService _interaction;
+        private readonly IAuthentication _auth;
 
-        public HomeController(IIdentityServerInteractionService interaction)
+        public HomeController(IIdentityServerInteractionService interaction,
+            IAuthentication auth)
         {
             _interaction = interaction;
+            _auth = auth;
         }
 
         public IActionResult Index()
         {
             IActionResult retView = null;
-            if (1 == 2) // _auth.IsUserSignedIn(User)
+            if (_auth.IsUserSignedIn(User))
             {
                 retView = View("Index");
             }

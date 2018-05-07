@@ -17,7 +17,7 @@ namespace IdentityServerWithAspNetIdentity
     {
         public static void Main(string[] args)
         {
-            Console.Title = "IdentityServerWithAspNetIdentity";
+            Console.Title = "Identity Server";
 
             var seed = args.Any(x => x == "/seed");
             //seed = true;

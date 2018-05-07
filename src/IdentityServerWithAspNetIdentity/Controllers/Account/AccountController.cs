@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using IdentityServer.Core.Shared;
 using IdentityServer.Domain;
 
-namespace IdentityServer4.Quickstart.UI
+namespace IdentityServer
 {
     [SecurityHeaders]
     public class AccountController : Controller
@@ -30,7 +30,6 @@ namespace IdentityServer4.Quickstart.UI
         private readonly IAuthentication _auth;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clientStore;
-        private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IEventService _events;
 
         public AccountController(
@@ -263,7 +262,6 @@ namespace IdentityServer4.Quickstart.UI
                 };
             }
 
-            var schemes = await _schemeProvider.GetAllSchemesAsync();
 
             var allowLocal = true;
             if (context?.ClientId != null)
@@ -401,6 +399,8 @@ namespace IdentityServer4.Quickstart.UI
             }
         }
 
+        
+
         //private async Task<(ApplicationUser user, string provider, string providerUserId, IEnumerable<Claim> claims)> 
         //    FindUserFromExternalProviderAsync(AuthenticateResult result)
         //{
@@ -426,64 +426,67 @@ namespace IdentityServer4.Quickstart.UI
         //    return (user, provider, providerUserId, claims);
         //}
 
-        private ApplicationUser AutoProvisionUser(string provider, string providerUserId, IEnumerable<Claim> claims)
-        {
-            // create a list of claims that we want to transfer into our store
-            var filtered = new List<Claim>();
 
-            // user's display name
-            var name = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Name)?.Value ??
-                claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
-            if (name != null)
-            {
-                filtered.Add(new Claim(JwtClaimTypes.Name, name));
-            }
-            else
-            {
-                var first = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.GivenName)?.Value ??
-                    claims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName)?.Value;
-                var last = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.FamilyName)?.Value ??
-                    claims.FirstOrDefault(x => x.Type == ClaimTypes.Surname)?.Value;
-                if (first != null && last != null)
-                {
-                    filtered.Add(new Claim(JwtClaimTypes.Name, first + " " + last));
-                }
-                else if (first != null)
-                {
-                    filtered.Add(new Claim(JwtClaimTypes.Name, first));
-                }
-                else if (last != null)
-                {
-                    filtered.Add(new Claim(JwtClaimTypes.Name, last));
-                }
-            }
+            //TODO Nu cred ca avem nevoie de metoda asta, cel putin clar nu aici
 
-            // email
-            var email = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Email)?.Value ??
-               claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-            if (email != null)
-            {
-                filtered.Add(new Claim(JwtClaimTypes.Email, email));
-            }
+        //private ApplicationUser AutoProvisionUser(string provider, string providerUserId, IEnumerable<Claim> claims)
+        //{
+        //    create a list of claims that we want to transfer into our store
+        //   var filtered = new List<Claim>();
 
-            var user = new ApplicationUser
-            {
-                UserName = Guid.NewGuid().ToString(),
-            };
-            //var identityResult = await _auth.Cre(user);
-            //if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+        //    user's display name
+        //    var name = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Name)?.Value ??
+        //        claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
+        //    if (name != null)
+        //    {
+        //        filtered.Add(new Claim(JwtClaimTypes.Name, name));
+        //    }
+        //    else
+        //    {
+        //        var first = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.GivenName)?.Value ??
+        //            claims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName)?.Value;
+        //        var last = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.FamilyName)?.Value ??
+        //            claims.FirstOrDefault(x => x.Type == ClaimTypes.Surname)?.Value;
+        //        if (first != null && last != null)
+        //        {
+        //            filtered.Add(new Claim(JwtClaimTypes.Name, first + " " + last));
+        //        }
+        //        else if (first != null)
+        //        {
+        //            filtered.Add(new Claim(JwtClaimTypes.Name, first));
+        //        }
+        //        else if (last != null)
+        //        {
+        //            filtered.Add(new Claim(JwtClaimTypes.Name, last));
+        //        }
+        //    }
 
-            //if (filtered.Any())
-            //{
-            //    identityResult = await _userManager.AddClaimsAsync(user, filtered);
-            //    if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
-            //}
+        //    email
+        //   var email = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Email)?.Value ??
+        //      claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+        //    if (email != null)
+        //    {
+        //        filtered.Add(new Claim(JwtClaimTypes.Email, email));
+        //    }
 
-            //identityResult = await _userManager.AddLoginAsync(user, new UserLoginInfo(provider, providerUserId, provider));
-            //if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+        //    var user = new ApplicationUser
+        //    {
+        //        UserName = Guid.NewGuid().ToString(),
+        //    };
+        //    var identityResult = await _auth.Cre(user);
+        //    if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
 
-            return user;
-        }
+        //    if (filtered.Any())
+        //    {
+        //        identityResult = await _userManager.AddClaimsAsync(user, filtered);
+        //        if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+        //    }
+
+        //    identityResult = await _userManager.AddLoginAsync(user, new UserLoginInfo(provider, providerUserId, provider));
+        //    if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+
+        //    return user;
+        //}
 
         private void ProcessLoginCallbackForOidc(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)
         {

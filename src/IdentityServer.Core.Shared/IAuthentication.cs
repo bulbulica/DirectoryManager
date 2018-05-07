@@ -1,4 +1,5 @@
 ﻿using IdentityServer.Shared.Abstractions;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace IdentityServer.Core.Shared
@@ -9,7 +10,7 @@ namespace IdentityServer.Core.Shared
         Task<bool> LoginProcess(string email, string password, bool remember);
         //Task<bool> RegisterProcess(ApplicationUser user, string password);
         //Task<ApplicationUser> Index(ClaimsPrincipal user);
-        //bool IsUserSignedIn(ClaimsPrincipal User);
+        bool IsUserSignedIn(ClaimsPrincipal User);
         //Task<string> GetUserNameAsync(ClaimsPrincipal User);
         //Task<string> GetUserIdAsync(ClaimsPrincipal User);
     }

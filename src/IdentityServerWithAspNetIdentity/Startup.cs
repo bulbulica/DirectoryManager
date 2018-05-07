@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using IdentityServerWithAspNetIdentity.Data;
-using IdentityServerWithAspNetIdentity.Models;
+using IdentityServer.Domain;
 
 namespace IdentityServerWithAspNetIdentity
 {
