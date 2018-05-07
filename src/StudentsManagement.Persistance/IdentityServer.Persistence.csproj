@@ -5,14 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ClassLibrary1\IdentityServer.Domain.csproj" />
     <ProjectReference Include="..\Abstractions\Shared.Abstractions.csproj" />
-    <ProjectReference Include="..\StudentsManagement.Domain\StudentsManagement.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Microsoft.AspNetCore.Hosting">
-      <HintPath>..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.aspnetcore.hosting\2.0.0\lib\netstandard2.0\Microsoft.AspNetCore.Hosting.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

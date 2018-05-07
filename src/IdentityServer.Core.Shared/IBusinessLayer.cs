@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace StudentsManagement.Core.Shared
+namespace IdentityServer.Core.Shared
 {
     public interface IBusinessLayer 
     {
        
-        IStudentServices GetStudentOperationService();
-        ITeacherServices GetTeacherOperationService();
+        IEmployeeService GetEmployeeService();
 
 
     }

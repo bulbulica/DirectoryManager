@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
-namespace StudentsManagement.Persistence.EF
+namespace IdentityServer.Persistence.EF
 {
     public class Repository<T> : IRepository<T> where T : class
     {

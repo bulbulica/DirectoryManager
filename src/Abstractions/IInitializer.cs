@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace StudentsManagement.Shared.Abstractions
+namespace IdentityServer.Shared.Abstractions
 {
     public interface IInitializer
     {

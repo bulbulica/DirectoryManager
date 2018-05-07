@@ -11,15 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StudentsManagement.Core.Shared\StudentsManagement.Core.Shared.csproj" />
-    <ProjectReference Include="..\StudentsManagement.Domain\StudentsManagement.Domain.csproj" />
+    <ProjectReference Include="..\..\ClassLibrary1\IdentityServer.Domain.csproj" />
+    <ProjectReference Include="..\IdentityServer.Core.Shared\IdentityServer.Core.Shared.csproj" />
     <ProjectReference Include="..\StudentsManagement.Persistence.EF\IdentityServer.Persistence.EF.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Microsoft.AspNetCore.Mvc.Abstractions">
-      <HintPath>..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.aspnetcore.mvc.abstractions\2.0.0\lib\netstandard2.0\Microsoft.AspNetCore.Mvc.Abstractions.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

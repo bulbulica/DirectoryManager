@@ -39,6 +39,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.Persistence"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.Persistence.EF", "src\StudentsManagement.Persistence.EF\IdentityServer.Persistence.EF.csproj", "{4B1169F4-C473-4D44-8F5D-3D2530B4F60E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{07A481B2-04AF-43E2-AD9F-0E0878B97187}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer.Domain", "ClassLibrary1\IdentityServer.Domain.csproj", "{F79EA94B-1628-4E64-80D2-3C908486140B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,6 +93,10 @@ Global
 		{4B1169F4-C473-4D44-8F5D-3D2530B4F60E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B1169F4-C473-4D44-8F5D-3D2530B4F60E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B1169F4-C473-4D44-8F5D-3D2530B4F60E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F79EA94B-1628-4E64-80D2-3C908486140B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F79EA94B-1628-4E64-80D2-3C908486140B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F79EA94B-1628-4E64-80D2-3C908486140B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F79EA94B-1628-4E64-80D2-3C908486140B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -110,6 +118,8 @@ Global
 		{9F41633E-C780-4A1D-B434-FDB6E0986967} = {C98ED0AC-BB1F-4522-AA01-083F460CD960}
 		{259E2185-AD68-4F42-AAF9-86B5EA67783B} = {9D65BB13-3AA5-4CD8-B2BD-7FFBEF64E01B}
 		{4B1169F4-C473-4D44-8F5D-3D2530B4F60E} = {9D65BB13-3AA5-4CD8-B2BD-7FFBEF64E01B}
+		{07A481B2-04AF-43E2-AD9F-0E0878B97187} = {2408EC7B-2E06-46A5-B6AC-D4E985E30CBB}
+		{F79EA94B-1628-4E64-80D2-3C908486140B} = {07A481B2-04AF-43E2-AD9F-0E0878B97187}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7376814F-2867-44AC-BAF9-BD19B502EDBC}

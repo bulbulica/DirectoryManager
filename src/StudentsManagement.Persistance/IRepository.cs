@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace StudentsManagement.Persistence
+namespace IdentityServer.Persistence
 {
     public interface IRepository<TEntity> where TEntity : class
     {
