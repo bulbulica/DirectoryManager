@@ -12,7 +12,6 @@ namespace IdentityServer.Domain
         public string Picture { get; set; }
         public bool Active { get; set; }
 
-        public virtual AssignedTeam AssignedTeam { get; set; }
         public virtual Team Team { get; set; }
         public virtual Department  Department { get; set; }
     }

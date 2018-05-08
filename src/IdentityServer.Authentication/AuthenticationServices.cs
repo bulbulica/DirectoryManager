@@ -7,6 +7,12 @@ using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
 using IdentityServer.Domain;
 using IdentityServer.Core.Shared;
+using IdentityServer4.Services;
+using IdentityServer4.Stores;
+using IdentityServer4.Models;
+using IdentityServer4.Events;
+using IdentityServer4.Extensions;
+using IdentityServer.Core.Shared.Models;
 
 namespace IdentityServer.Authentication
 {
@@ -14,6 +20,9 @@ namespace IdentityServer.Authentication
     {
         private UserManager<ApplicationUser> _userManager = null;
         private SignInManager<ApplicationUser> _signInManager = null;
+        private IIdentityServerInteractionService _interaction = null;
+        private IClientStore _clientStore = null;
+        private IEventService _eventService = null;
 
         private void InitializeManagers(IServiceProvider serviceProvider)
         {
@@ -25,10 +34,16 @@ namespace IdentityServer.Authentication
 
         }        
 
-        public AuthenticationServices(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AuthenticationServices(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
+            IIdentityServerInteractionService interaction,
+            IClientStore clientStore,
+            IEventService events)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _interaction = interaction;
+            _clientStore = clientStore;
+            _eventService = events;
         }
 
         public void Configure(IApplicationBuilder builder)
@@ -62,13 +77,16 @@ namespace IdentityServer.Authentication
 
             var result = await _signInManager.PasswordSignInAsync(email, password, remember, lockoutOnFailure: false);
 
+            if(!result.Succeeded)
+                await _eventService.RaiseAsync(new UserLoginFailureEvent(email, "invalid credentials"));
+
             return result.Succeeded;
         }
 
-        public async Task<bool> LogoutProcess()
+        public async Task LogoutProcess(ClaimsPrincipal User)
         {
             await _signInManager.SignOutAsync();
-            return true;
+            await _eventService.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
         }
 
         //public async Task<bool> RegisterProcess(ApplicationUser user, string password)
@@ -225,6 +243,91 @@ namespace IdentityServer.Authentication
         {
             throw new NotImplementedException();
         }
+
+        public async Task<bool> CancelButtonProcessAsync(string returnUrl)
+        {
+            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+            if (context != null)
+            {
+                // if the user cancels, send a result back into IdentityServer as if they 
+                // denied the consent (even if this client does not require consent).
+                // this will send back an access denied OIDC error response to the client.
+                await _interaction.GrantConsentAsync(context, ConsentResponse.Denied);
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<string> GetAuthorizationContextAsync(string returnUrl)
+        {
+            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+            if (context != null)
+                return context?.LoginHint;
+            return null;
+            
+        }
+
+        public async Task<LogoutContext> GetLogoutContextShowSignoutPromptAsync(string logoutId)
+        {
+            var context = await _interaction.GetLogoutContextAsync(logoutId);
+
+            if (context != null)
+            {
+                var logoutContext = new LogoutContext
+                {
+                    ClientName = context.ClientName,
+                    ClientId = context.ClientId,
+                    PostLogoutRedirectUri = context.PostLogoutRedirectUri,
+                    SignOutIFrameUrl = context.SignOutIFrameUrl
+                };
+                return logoutContext;
+            }
+            return null;
+            
+        }
+
+        public async Task<bool> GetAllowLocalAsync(string returnUrl)
+        {
+            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+            if (context != null)
+            {
+                var allowLocal = true;
+                if (context?.ClientId != null)
+                {
+                    var client = await _clientStore.FindEnabledClientByIdAsync(context.ClientId);
+                    if (client != null)
+                    {
+                        allowLocal = client.EnableLocalLogin;
+                    }
+                }
+                return allowLocal;
+            }
+            return false;
+        }
+
+        Task<bool> IAuthentication.GetLogoutContextShowSignoutPromptAsync(string logoutId)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool IAuthentication.GetAllowLocalAsync(string returnUrl)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<LogoutContext> GetLogoutContext(string returnUrl)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<string> CreateLogoutContextAsync()
+        {
+            string retVal = null;
+            retVal =  await _interaction.CreateLogoutContextAsync();
+            return retVal;
+
+        }
+
 
         //public async Task<string> GetUserNameAsync(ClaimsPrincipal User)
         //{
