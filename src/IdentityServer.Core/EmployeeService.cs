@@ -52,7 +52,7 @@ namespace IdentityServer.Core
                     Username = user.Email
                 };
 
-                PersistenceContext.Employee;
+                PersistenceContext.EmployeeRepository.Add(employee);
                 PersistenceContext.Complete();
             }
         }
