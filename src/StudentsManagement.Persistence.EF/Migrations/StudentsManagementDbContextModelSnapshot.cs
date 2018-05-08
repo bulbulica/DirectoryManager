@@ -9,7 +9,7 @@ using StudentsManagement.Persistence.EF;
 
 namespace StudentsManagement.Persistence.EF.Migrations
 {
-    [DbContext(typeof(StudentsManagementDbContext))]
+    [DbContext(typeof(EmployeeDbContext))]
     partial class StudentsManagementDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

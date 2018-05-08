@@ -7,9 +7,9 @@ namespace IdentityServer.Persistence.EF
 {
     class UserRepository : Repository<Employee>, IEmployeeRepository
     {
-        //public UserRepository(DbContext context) : base(context)
-        //{
-        //}
+        public UserRepository(DbContext context) : base(context)
+        {
+        }
 
         //public void Add(Employee entity)
         //{
@@ -64,7 +64,19 @@ namespace IdentityServer.Persistence.EF
         public Employee GetEmployeeByName(string name)
         {
             Employee retval = null;
-            if()
+            if (EmployeeDbContext != null)
+            {
+                retval = EmployeeDbContext.Employees.SingleOrDefault(testc => testc.Name.Equals(name));
+            }
+            return retval;
+        }
+
+        public EmployeeDbContext EmployeeDbContext
+        {
+            get
+            {
+                return Context as EmployeeDbContext;
+            }
         }
     }
 }

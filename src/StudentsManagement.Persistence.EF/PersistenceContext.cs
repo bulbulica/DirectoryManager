@@ -13,7 +13,7 @@ namespace IdentityServer.Persistence.EF
         private DbContext _context;
 
 
-        public IEmployeRepository EmployeeRepository { get; set; }
+        public IEmployeeRepository EmployeeRepository { get; set; }
 
         private void InitializeDbContext(IServiceProvider provider)
         {

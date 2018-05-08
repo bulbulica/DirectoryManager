@@ -9,7 +9,7 @@ using StudentsManagement.Persistence.EF;
 
 namespace StudentsManagement.Persistence.EF.Migrations
 {
-    [DbContext(typeof(StudentsManagementDbContext))]
+    [DbContext(typeof(EmployeeDbContext))]
     [Migration("20180427091307_Initial")]
     partial class Initial
     {
