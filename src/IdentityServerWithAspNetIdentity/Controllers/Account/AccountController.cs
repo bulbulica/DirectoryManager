@@ -10,16 +10,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using IdentityServer4.Events;
 using IdentityServer4.Models;
-using Microsoft.AspNetCore.Identity;
 using IdentityServer4.Extensions;
 using System.Security.Principal;
 using System.Security.Claims;
 using IdentityModel;
 using System.Linq;
-using System;
 using System.Collections.Generic;
 using IdentityServer.Core.Shared;
-using IdentityServer.Domain;
 
 namespace IdentityServer
 {
@@ -28,22 +25,13 @@ namespace IdentityServer
     {
         private readonly IBusinessLayer _businessLogic;
         private readonly IAuthentication _auth;
-        private readonly IIdentityServerInteractionService _interaction;
-        private readonly IClientStore _clientStore;
-        private readonly IEventService _events;
 
         public AccountController(
             IBusinessLayer businessLogic,
-            IAuthentication auth,
-            IIdentityServerInteractionService interaction,
-            IClientStore clientStore,
-            IEventService events)
+            IAuthentication auth)
         {
             _businessLogic = businessLogic;
             _auth = auth;
-            _interaction = interaction;
-            _clientStore = clientStore;
-            _events = events;
         }
 
         /// <summary>
@@ -65,44 +53,27 @@ namespace IdentityServer
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginInputModel model, string button)
         {
-            if (button != "login")
-            {
-                // the user clicked the "cancel" button
-                var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
-                if (context != null)
+                if (button != "login")
                 {
-                    // if the user cancels, send a result back into IdentityServer as if they 
-                    // denied the consent (even if this client does not require consent).
-                    // this will send back an access denied OIDC error response to the client.
-                    await _interaction.GrantConsentAsync(context, ConsentResponse.Denied);
-                    
-                    // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+                    // the user clicked the "cancel" button
+
+                    if (await _auth.CancelButtonProcessAsync(model.ReturnUrl))
                     return Redirect(model.ReturnUrl);
-                }
+                
                 else
                 {
-                    // since we don't have a valid context, then we just go back to the home page
-                    return Redirect("~/");
+                        // since we don't have a valid context, then we just go back to the home page
+                        return Redirect("~/");
+                    }
                 }
-            }
 
             if (ModelState.IsValid)
             {
               var result = await _auth.LoginProcess(model.Username, model.Password, model.RememberLogin);
                 if (result)
                 {
-                    // make sure the returnUrl is still valid, and if so redirect back to authorize endpoint or a local page
-                    // the IsLocalUrl check is only necessary if you want to support additional local pages, otherwise IsValidReturnUrl is more strict
-                    if (_interaction.IsValidReturnUrl(model.ReturnUrl) || Url.IsLocalUrl(model.ReturnUrl))
-                    {
                         return Redirect(model.ReturnUrl);
-                    }
-
-                    return Redirect("~/");
                 }
-
-                await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials"));
-
                 ModelState.AddModelError("", AccountOptions.InvalidCredentialsErrorMessage);
             }
 
@@ -224,10 +195,7 @@ namespace IdentityServer
             if (User?.Identity.IsAuthenticated == true)
             {
                 // delete local authentication cookie
-                await _auth.LogoutProcess();
-
-                // raise the logout event
-                await _events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
+                await _auth.LogoutProcess(User);
             }
 
             // check if we need to trigger sign-out at an upstream identity provider
@@ -250,35 +218,26 @@ namespace IdentityServer
         /*****************************************/
         private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
         {
-            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-            if (context?.IdP != null)
+            var context = await _auth.GetAuthorizationContextAsync(returnUrl);
+            if (context!=null)
             {
                 // this is meant to short circuit the UI and only trigger the one external IdP
                 return new LoginViewModel
                 {
                     EnableLocalLogin = false,
                     ReturnUrl = returnUrl,
-                    Username = context?.LoginHint
+                    Username = context
                 };
             }
 
-
-            var allowLocal = true;
-            if (context?.ClientId != null)
-            {
-                var client = await _clientStore.FindEnabledClientByIdAsync(context.ClientId);
-                if (client != null)
-                {
-                    allowLocal = client.EnableLocalLogin;
-                }
-            }
+            var allowLocal = _auth.GetAllowLocalAsync(returnUrl);
 
             return new LoginViewModel
             {
                 AllowRememberLogin = AccountOptions.AllowRememberLogin,
                 EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
                 ReturnUrl = returnUrl,
-                Username = context?.LoginHint
+                Username = context
             };
         }
 
@@ -301,8 +260,8 @@ namespace IdentityServer
                 return vm;
             }
 
-            var context = await _interaction.GetLogoutContextAsync(logoutId);
-            if (context?.ShowSignoutPrompt == false)
+            var context = await _auth.GetLogoutContextShowSignoutPromptAsync(logoutId);
+            if (context == false)
             {
                 // it's safe to automatically sign-out
                 vm.ShowLogoutPrompt = false;
@@ -317,7 +276,7 @@ namespace IdentityServer
         private async Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(string logoutId)
         {
             // get context information (client name, post logout redirect URI and iframe for federated signout)
-            var logout = await _interaction.GetLogoutContextAsync(logoutId);
+            var logout = await _auth.GetLogoutContext(logoutId);
 
             var vm = new LoggedOutViewModel
             {
@@ -341,7 +300,7 @@ namespace IdentityServer
                             // if there's no current logout context, we need to create one
                             // this captures necessary info from the current logged in user
                             // before we signout and redirect away to the external IdP for signout
-                            vm.LogoutId = await _interaction.CreateLogoutContextAsync();
+                            vm.LogoutId = await _auth.CreateLogoutContextAsync();
                         }
 
                         vm.ExternalAuthenticationScheme = idp;

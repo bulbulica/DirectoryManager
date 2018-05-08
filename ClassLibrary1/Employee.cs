@@ -13,7 +13,6 @@ namespace IdentityServer.Domain
         public string CV { get; set; }
         public bool Active { get; set; }
 
-        public virtual AssignedTeam AssignedTeam { get; set; }
         public virtual Team Team { get; set; }
         public virtual Department  Department { get; set; }
     }
