@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using IdentityServer.Domain;
+using IdentityServer.Core.Shared;
 
 namespace IdentityServerWithAspNetIdentity.Data
 {

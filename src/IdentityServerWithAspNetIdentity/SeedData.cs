@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using IdentityModel;
+using IdentityServer.Core.Shared;
 using IdentityServer.Domain;
 using IdentityServerWithAspNetIdentity.Data;
 using Microsoft.AspNetCore.Identity;

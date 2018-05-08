@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using IdentityServerWithAspNetIdentity.Data;
 using IdentityServer.Domain;
+using IdentityServer.Core.Shared;
 
 namespace IdentityServerWithAspNetIdentity
 {
