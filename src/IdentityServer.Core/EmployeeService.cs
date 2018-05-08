@@ -42,20 +42,20 @@ namespace IdentityServer.Core
 
         //}
 
-        //public void AddTeacher(ApplicationUser user)
-        //{
-        //    if (user!=null)
-        //    {
-        //        var teacher = new Teacher
-        //        {
-        //            Name = user.Email,
-        //            Username = user.Email
-        //        };
+        public void AddEmployee(ApplicationUser user)
+        {
+            if (user != null)
+            {
+                var employee = new Employee
+                {
+                    Name = user.Email,
+                    Username = user.Email
+                };
 
-        //        PersistenceContext.TeachersRepository.Add(teacher);
-        //        PersistenceContext.Complete();
-        //    }
-        //}
+                PersistenceContext.Employee;
+                PersistenceContext.Complete();
+            }
+        }
 
         //public Activity GetActivity(int idActivity)
         //{
@@ -113,7 +113,7 @@ namespace IdentityServer.Core
         //        toBeUpdatedRecord.Attendance = newActivityDate.Attendance;
         //        PersistenceContext.Complete();
         //    }
-            
+
         //}
     }
 }

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace IdentityServer.Persistence.EF
 {
-    class UserRepository //: Repository<UserEntity>, IUserRepository
+    class UserRepository : Repository<Employee>, IEmployeeRepository
     {
         //public UserRepository(DbContext context) : base(context)
         //{
@@ -61,5 +61,10 @@ namespace IdentityServer.Persistence.EF
 
         //    return retVal;
         //}
+        public Employee GetEmployeeByName(string name)
+        {
+            Employee retval = null;
+            if()
+        }
     }
 }

@@ -13,8 +13,7 @@ namespace IdentityServer.Persistence.EF
         private DbContext _context;
 
 
-        public IUserRepository UserRepository { get; set; }
-        public IUserRepository TeachersRepository { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public IEmployeRepository EmployeeRepository { get; set; }
 
         private void InitializeDbContext(IServiceProvider provider)
         {

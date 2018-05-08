@@ -12,6 +12,8 @@
 project.assets.json
 *.Authentication.*.json
 *.deps.json
+*.dll
+*.pdb
 *.xml
 *.CopyComplete
 *.txt
