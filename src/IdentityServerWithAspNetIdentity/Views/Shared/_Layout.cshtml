@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>IdentityServer4</title>
     <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
-    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="~/database.ico" />
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -30,12 +30,16 @@
                 </button>
                 <a href="~/">
                     <span class="navbar-brand">
-                        <img src="~/icon.png" class="icon-banner">
-                        Login Server
+                        <img src="~/database.png" class="icon-banner">
+                        Identity Server
                     </span>
                 </a>
             </div>
-
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a asp-area="" asp-controller="Employees" asp-action="ManageEmployees">Manage Employees</a></li>
+                </ul>
+            </div>
             @if (!string.IsNullOrWhiteSpace(name))
             {
                 <ul class="nav navbar-nav">
