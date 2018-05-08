@@ -3,8 +3,10 @@
 
 
 using IdentityServer.Core.Shared;
+using IdentityServer.Domain;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace IdentityServer
@@ -22,35 +24,107 @@ namespace IdentityServer
             //_auth = auth;
         }
 
-        public IActionResult ManageEmployees()
+        // GET: Employees/ManageEmployees
+        [HttpGet]
+        public async Task<IActionResult> ManageEmployees()
         {
-            IActionResult retView = null;
             //if (_auth.IsUserSignedIn(User))
-            if (1==1)
+            if (true)
             {
-                retView = View("ManageEmployees");
+                var model = new AllEmployees
+                {
+                    Employees = new List<Employee>
+                    {
+                        new Employee
+                        {
+                            Id = 1,
+                            Name = "Ionescu Andrei",
+                            Active = true,
+                            Department = new Department
+                            {
+                                Name = "Putere"
+                            },
+                            Team = new Team
+                            {
+                                Name = "Fantasticii"
+                            }
+                        },
+                        new Employee
+                        {
+                            Id = 2,
+                            Name = "Marinescu Ionut",
+                            Active = false,
+                            Department = new Department
+                            {
+                                Name = "None"
+                            },
+                            Team = new Team
+                            {
+                                Name = "None"
+                            }
+                        },
+                        new Employee
+                        {
+                            Id = 3,
+                            Name = "Popescu Florin",
+                            Active = true,
+                            Department = new Department
+                            {
+                                Name = "Putere"
+                            },
+                            Team = new Team
+                            {
+                                Name = "Spuma Marii"
+                            }
+                        },
+                        new Employee
+                        {
+                            Id = 4,
+                            Name = "Calinescu Robert",
+                            Active = true,
+                            Department = new Department
+                            {
+                                Name = "Rupere"
+                            },
+                            Team = new Team
+                            {
+                                Name = "Sapa de Lemn"
+                            }
+                        }
+                    }
+                };
+                return View("ManageEmployees", model);
             }
             else
             {
-                retView = NotFound();
+                return NotFound();
             }
-            return retView;
         }
 
-        // GET: Employees/Employee/{id}
+        // GET: Employees/EmployeeInfo/{id}
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> Employee(int? id)
+        public async Task<IActionResult> EmployeeInfo(int? id)
         {
-            IActionResult retView = null;
             //if (_auth.IsUserSignedIn(User))
-            if (1 == 1)
+            if (true)
             {
                 int idEmployee = id ?? default(int);
 
-                var model = new 
+                var model = new SingleEmployee
                 {
-
+                    Name = "Ionescu Andrei",
+                    Active = true,
+                    Picture = "8f30cacc4a846a39abc755cb03d748d7_400x400.jpeg",
+                    Department = new Department
+                    {
+                        Name = "Putere"
+                    },
+                    Team = new Team
+                    {
+                        Name = "Fantasticii"
+                    },
+                    Role = "Dev"
                 };
 
                 return View("SingleEmployee", model);
