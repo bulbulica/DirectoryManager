@@ -10,6 +10,7 @@ namespace IdentityServer.Domain
         public string Name { get; set; }
         public string Username { get; set; }
         public string Picture { get; set; }
+        public string CV { get; set; }
         public bool Active { get; set; }
 
         public virtual AssignedTeam AssignedTeam { get; set; }

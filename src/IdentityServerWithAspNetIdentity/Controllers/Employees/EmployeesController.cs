@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace IdentityServer
 {
+    [Route("[controller]/[action]")]
     [SecurityHeaders]
     public class EmployeesController : Controller
     {
@@ -113,6 +114,7 @@ namespace IdentityServer
 
                 var model = new SingleEmployee
                 {
+                    Id = 1,
                     Name = "Ionescu Andrei",
                     Active = true,
                     Picture = "8f30cacc4a846a39abc755cb03d748d7_400x400.jpeg",
