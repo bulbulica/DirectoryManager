@@ -4,9 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using System;
 using System.Security.Claims;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using StudentsManagement.Persistence.EF;
 using IdentityServer.Domain;
 using IdentityServer.Core.Shared;
 
