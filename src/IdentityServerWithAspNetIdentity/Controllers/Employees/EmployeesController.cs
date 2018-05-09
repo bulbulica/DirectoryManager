@@ -16,118 +16,66 @@ namespace IdentityServer
     public class EmployeesController : Controller
     {
         private readonly IIdentityServerInteractionService _interaction;
-        //private readonly IAuthentication _auth;
+        private readonly IAuthentication _auth;
+        private readonly IBusinessLayer _businessLogic;
+        private readonly IEmployeeService _employeeService;
 
-        public EmployeesController(IIdentityServerInteractionService interaction)
-            //,IAuthentication auth)
+        public EmployeesController(IIdentityServerInteractionService interaction
+            ,IAuthentication auth,
+            IBusinessLayer businessLayer)
         {
             _interaction = interaction;
-            //_auth = auth;
+            _auth = auth;
+            _businessLogic = businessLayer;
+            _employeeService = _businessLogic.GetEmployeeService();
         }
 
         // GET: Employees/ManageEmployees
         [HttpGet]
-        public async Task<IActionResult> ManageEmployees()
+        public IActionResult ManageEmployees()
         {
             //if (_auth.IsUserSignedIn(User))
-            if (true)
-            {
+            //{
+                List<Employee> employees = _employeeService.GetAllEmployees();
+
                 var model = new AllEmployees
                 {
-                    Employees = new List<Employee>
-                    {
-                        new Employee
-                        {
-                            Id = 1,
-                            Name = "Ionescu Andrei",
-                            Active = true,
-                            Department = new Department
-                            {
-                                Name = "Putere"
-                            },
-                            Team = new Team
-                            {
-                                Name = "Fantasticii"
-                            }
-                        },
-                        new Employee
-                        {
-                            Id = 2,
-                            Name = "Marinescu Ionut",
-                            Active = false,
-                            Department = new Department
-                            {
-                                Name = "None"
-                            },
-                            Team = new Team
-                            {
-                                Name = "None"
-                            }
-                        },
-                        new Employee
-                        {
-                            Id = 3,
-                            Name = "Popescu Florin",
-                            Active = true,
-                            Department = new Department
-                            {
-                                Name = "Putere"
-                            },
-                            Team = new Team
-                            {
-                                Name = "Spuma Marii"
-                            }
-                        },
-                        new Employee
-                        {
-                            Id = 4,
-                            Name = "Calinescu Robert",
-                            Active = true,
-                            Department = new Department
-                            {
-                                Name = "Rupere"
-                            },
-                            Team = new Team
-                            {
-                                Name = "Sapa de Lemn"
-                            }
-                        }
-                    }
+                    Employees = employees
                 };
                 return View("ManageEmployees", model);
-            }
-            else
-            {
-                return NotFound();
-            }
+
+            //}
+            //else
+            //{
+            //    return NotFound();
+            //}
         }
 
         // GET: Employees/EmployeeInfo/{id}
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> EmployeeInfo(int? id)
+        public IActionResult EmployeeInfo(int? id)
         {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
+            if (_auth.IsUserSignedIn(User))
             {
                 int idEmployee = id ?? default(int);
 
+                var employee = _employeeService.GetEmployee(idEmployee);
+
+                var employeeRole = "";
+                if (employee.Position != null)
+                    employeeRole = employee.Position.RoleName;
+
+
                 var model = new SingleEmployee
                 {
-                    Id = 1,
-                    Name = "Ionescu Andrei",
-                    Active = true,
-                    Picture = "8f30cacc4a846a39abc755cb03d748d7_400x400.jpeg",
-                    Department = new Department
-                    {
-                        Name = "Putere"
-                    },
-                    Team = new Team
-                    {
-                        Name = "Fantasticii"
-                    },
-                    Role = "Dev",
-                    CV = "europass.pdf"
+                    Id = employee.Id,
+                    Name = employee.Name,
+                    Active = employee.Active,
+                    Picture = employee.Picture,
+                    Department = employee.Department,
+                    Team = employee.Team,
+                    Role = employeeRole
                 };
 
                 return View("SingleEmployee", model);

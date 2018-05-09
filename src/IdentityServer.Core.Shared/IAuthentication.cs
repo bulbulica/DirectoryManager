@@ -1,5 +1,6 @@
 ﻿using IdentityServer.Core.Shared.Models;
 using IdentityServer.Shared.Abstractions;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -18,6 +19,8 @@ namespace IdentityServer.Core.Shared
         bool GetAllowLocalAsync(string returnUrl);
         Task<LogoutContext> GetLogoutContext(string returnUrl);
         Task<string> CreateLogoutContextAsync();
+        Task<string> GetUserRoleByUsernameAsync(string email);
+
         //Task<string> GetUserNameAsync(ClaimsPrincipal User);
         //Task<string> GetUserIdAsync(ClaimsPrincipal User);
     }

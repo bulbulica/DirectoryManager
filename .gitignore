@@ -19,3 +19,17 @@ project.assets.json
 *.CopyComplete
 *.txt
 *.user
+*.ttf
+*.svg
+*.woff2
+*.woff
+*.eot
+*.css
+*.map
+*.less
+*.csslintrc
+*.ps1
+*.nuspec
+/src/IdentityServerWithAspNetIdentity/bower_components/bootstrap/js
+/src/IdentityServerWithAspNetIdentity/bower_components/bootstrap/grunt
+/src/IdentityServerWithAspNetIdentity/bower_components

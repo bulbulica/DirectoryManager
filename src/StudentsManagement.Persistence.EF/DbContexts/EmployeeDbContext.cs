@@ -20,12 +20,9 @@ namespace IdentityServer.Persistence.EF
 
 
         public virtual DbSet<Employee> Employees { get; set; }
-        //public virtual DbSet<Student> Students { get; set; }
-        //public virtual DbSet<Activity> Activities { get; set; }
-        //public virtual DbSet<ActivityDate> ActivityDates { get; set; }
-        //public virtual DbSet<ActivityType> ActivityTypes { get; set; }
-        //public virtual DbSet<StudentActivityDetails> StudentActivityDetails { get; set; }
-
+        public virtual DbSet<Team> Teams { get; set; }
+        public virtual DbSet<Department> Departments { get; set; }
+        public virtual DbSet<Position> Positions { get; set; }
 
     }
 }

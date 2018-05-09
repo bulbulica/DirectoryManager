@@ -71,6 +71,35 @@ namespace IdentityServer.Persistence.EF
             return retval;
         }
 
+        public IEnumerable<Employee> GetAllEmployees()
+        {
+            return EmployeeDbContext.Employees;
+        }
+
+        public Employee GetEmployeeById(int idEmployee)
+        {
+            return EmployeeDbContext.Employees.Find(idEmployee);
+        }
+
+        //E posibil sa nu le folosim
+
+        //public Team GetTeam(int idEmployee)
+        //{
+        //    return EmployeeDbContext.Employees.Find(idEmployee).Team;
+        //}
+
+        //public Department GetDepartment(int idEmployee)
+        //{
+        //    return EmployeeDbContext.Employees.Find(idEmployee).Department;
+        //}
+
+        //public Position GetPosition (int idEmployee)
+        //{
+        //    return EmployeeDbContext.Employees.Find(idEmployee).Position;
+        //}
+
+
+
         public EmployeeDbContext EmployeeDbContext
         {
             get

@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using IdentityServerWithAspNetIdentity.Data;
-using IdentityServer.Domain;
 using IdentityServer.Core.Shared;
+using IdentityServer.Persistence;
+using IdentityServer.Core;
+using IdentityServer.Persistence.EF;
+using IdentityServer.Authentication;
 
 namespace IdentityServerWithAspNetIdentity
 {
@@ -27,12 +25,19 @@ namespace IdentityServerWithAspNetIdentity
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            var authService = new AuthenticationServices(null, null, null, null, null);
+            authService.InitializeContext(services, Configuration);
+            services.AddScoped<IAuthentication, AuthenticationServices>();
+
+
+            //Add persistence service
+            services.AddScoped<IPersistenceContext, PersistenceContext>();
+            var dataService = services.BuildServiceProvider().GetService<IPersistenceContext>();
+            dataService.InitializeContext(services, Configuration);
+
+            //Add Business Layer 
+            services.AddScoped<IBusinessLayer, BusinessLogic>(s => new BusinessLogic(dataService));
 
             services.AddMvc();
 

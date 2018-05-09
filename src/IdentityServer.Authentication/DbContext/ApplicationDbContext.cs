@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using IdentityServer.Core.Shared;
-using IdentityServer.Domain;
+﻿using IdentityServer.Core.Shared;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace StudentsManagement.Persistence.EF
+namespace IdentityServer.Authentication
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

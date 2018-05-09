@@ -50,8 +50,8 @@ namespace IdentityServer.Persistence.EF
         {
             services.AddDbContext<DbContext>(options =>
             options.UseLazyLoadingProxies()
-            .UseSqlServer(Configuration.GetConnectionString("StudentsManagementConnection"),
-                b => b.MigrationsAssembly("StudentsManagement.Persistence.EF")));
+            .UseSqlServer(Configuration.GetConnectionString("DirectoryEmployeesDb"),
+                b => b.MigrationsAssembly("Identity.Persistence.EF")));
 
             InitializeDbContext(services.BuildServiceProvider());
         }
@@ -63,6 +63,8 @@ namespace IdentityServer.Persistence.EF
 
         public void InitializeData(IServiceProvider serviceProvider)
         {
+
+
         }
     }
 }

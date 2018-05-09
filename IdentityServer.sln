@@ -43,9 +43,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.Persistence.EF", "src\StudentsManagement.Persistence.EF\IdentityServer.Persistence.EF.csproj", "{4B1169F4-C473-4D44-8F5D-3D2530B4F60E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{07A481B2-04AF-43E2-AD9F-0E0878B97187}"
-	ProjectSection(SolutionItems) = preProject
-		src\IdentityServer.Core.Shared\ApplicationUser.cs = src\IdentityServer.Core.Shared\ApplicationUser.cs
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.Domain", "ClassLibrary1\IdentityServer.Domain.csproj", "{F79EA94B-1628-4E64-80D2-3C908486140B}"
 EndProject

@@ -3,6 +3,7 @@ using IdentityServer.Domain;
 using IdentityServer.Persistence;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace IdentityServer.Core
 {
@@ -55,6 +56,22 @@ namespace IdentityServer.Core
                 PersistenceContext.EmployeeRepository.Add(employee);
                 PersistenceContext.Complete();
             }
+        }
+
+        public List<Employee> GetAllEmployees()
+        {
+            return PersistenceContext.EmployeeRepository.ListAll().ToList();
+        }
+
+        public Employee GetEmployee(int idEmployee)
+        {
+            return PersistenceContext.EmployeeRepository.GetEmployeeById(idEmployee);
+        }
+
+
+        public string GetEmployeeRoleToString(int idEmployee)
+        {
+            return PersistenceContext.EmployeeRepository.GetEmployeeById(idEmployee).Position.RoleName;
         }
 
         //public Activity GetActivity(int idActivity)

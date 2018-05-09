@@ -13,6 +13,9 @@ using IdentityServer4.Models;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
 using IdentityServer.Core.Shared.Models;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace IdentityServer.Authentication
 {
@@ -26,10 +29,13 @@ namespace IdentityServer.Authentication
 
         private void InitializeManagers(IServiceProvider serviceProvider)
         {
-            if (_userManager == null || _signInManager == null)
+            if (_userManager == null || _signInManager == null ||_interaction == null || _clientStore == null || _eventService == null)
             {                 
                 _userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
                 _signInManager = serviceProvider.GetService<SignInManager<ApplicationUser>>();
+                _interaction = serviceProvider.GetService<IIdentityServerInteractionService>();
+                _clientStore = serviceProvider.GetService<IClientStore>();
+                _eventService = serviceProvider.GetService<IEventService>();
             }
 
         }        
@@ -239,9 +245,17 @@ namespace IdentityServer.Authentication
            
         }
 
-        public void InitializeContext(IServiceCollection collection, IConfiguration configuration)
+        public void InitializeContext(IServiceCollection services, IConfiguration Configuration)
         {
-            throw new NotImplementedException();
+            //Add auth service
+            services.AddDbContext<ApplicationDbContext>(options =>
+                 options.UseSqlServer(Configuration.GetConnectionString("IdentityManagerDb"), b => b.MigrationsAssembly("WebStudentsManagement")));
+            // Add application services.
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+           .AddEntityFrameworkStores<ApplicationDbContext>()
+           .AddDefaultTokenProviders();
+
+            InitializeManagers(services.BuildServiceProvider());
         }
 
         public async Task<bool> CancelButtonProcessAsync(string returnUrl)
@@ -326,6 +340,13 @@ namespace IdentityServer.Authentication
             retVal =  await _interaction.CreateLogoutContextAsync();
             return retVal;
 
+        }
+
+        public async Task<string> GetUserRoleByUsernameAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            var roles = await _userManager.GetRolesAsync(user);
+            return roles.SingleOrDefault();
         }
 
 

@@ -10,18 +10,18 @@ namespace IdentityServer.Core
 {
     public class BusinessLogic : IBusinessLayer
     {
-        //List<IInitializer> initList;
+        IEmployeeService employeeService;
         
 
 
         public BusinessLogic(IPersistenceContext persistenceContext)
-        {            
-
+        {
+            employeeService = new EmployeeService(persistenceContext);
         }
 
         public IEmployeeService GetEmployeeService()
         {
-            throw new NotImplementedException();
+            return employeeService;
         }
     }
 }
