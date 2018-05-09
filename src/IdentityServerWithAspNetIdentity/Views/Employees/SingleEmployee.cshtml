@@ -17,6 +17,7 @@
             @if (Model.CV != null)
             {
                 <a href="../../docs/@Model.CV">View CV</a> 
+                <a asp-action="EmployeeAddCV" asp-route-id="@Model.Id"><h5>Upload new CV</h5></a>
             }
             else
             {
@@ -24,7 +25,6 @@
             }
             <br />
             <a asp-action="EmployeeEdit" asp-route-id="@Model.Id"><h3>Edit his data</h3></a>
-            <br />
             <a asp-action="ManageEmployees">Back too all Employees</a>
         </div>
     </div>

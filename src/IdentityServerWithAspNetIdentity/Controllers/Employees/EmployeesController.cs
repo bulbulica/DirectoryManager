@@ -126,7 +126,8 @@ namespace IdentityServer
                     {
                         Name = "Fantasticii"
                     },
-                    Role = "Dev"
+                    Role = "Dev",
+                    CV = "europass.pdf"
                 };
 
                 return View("SingleEmployee", model);

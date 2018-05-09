@@ -11,6 +11,9 @@ namespace IdentityServer.Domain
         public IEnumerable Teams { get; set; }
         public virtual Team Team { get; set; }
 
+        public IEnumerable Employees { get; set; }
+        public virtual Employee Employee { get; set; }
+
         public int IdDepartmentManager { get; set; }
         public virtual Employee DepartmentManager { get; set; }
     }
