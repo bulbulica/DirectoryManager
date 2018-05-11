@@ -5,9 +5,9 @@ using System.Linq;
 
 namespace IdentityServer.Persistence.EF
 {
-    class UserRepository : Repository<Employee>, IEmployeeRepository
+    class EmployeeRepository : Repository<Employee>, IEmployeeRepository
     {
-        public UserRepository(DbContext context) : base(context)
+        public EmployeeRepository(DbContext context) : base(context)
         {
         }
 
@@ -81,6 +81,27 @@ namespace IdentityServer.Persistence.EF
             return EmployeeDbContext.Employees.Find(idEmployee);
         }
 
+        public IEnumerable<Team> GetAllTeams()
+        {
+            return EmployeeDbContext.Teams.ToList();
+        }
+
+        public void AddPositions(List<Position> list)
+        {
+            foreach (var position in list)
+                EmployeeDbContext.Positions.Add(position);
+        }
+
+        public void AddTeam(Team team2)
+        {
+            EmployeeDbContext.Teams.Add(team2);
+        }
+
+        public void AddDepartment(Department dep)
+        {
+            EmployeeDbContext.Departments.Add(dep);
+        }
+
         //E posibil sa nu le folosim
 
         //public Team GetTeam(int idEmployee)
@@ -107,5 +128,7 @@ namespace IdentityServer.Persistence.EF
                 return Context as EmployeeDbContext;
             }
         }
+
+        public int GetAllPositions => throw new System.NotImplementedException();
     }
 }

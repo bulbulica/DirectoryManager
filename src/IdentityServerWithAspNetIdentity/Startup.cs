@@ -9,6 +9,7 @@ using IdentityServer.Persistence;
 using IdentityServer.Core;
 using IdentityServer.Persistence.EF;
 using IdentityServer.Authentication;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServerWithAspNetIdentity
 {
@@ -41,39 +42,11 @@ namespace IdentityServerWithAspNetIdentity
 
             services.AddMvc();
 
-            services.Configure<IISOptions>(iis =>
-            {
-                iis.AuthenticationDisplayName = "Windows";
-                iis.AutomaticAuthentication = false;
-            });
-
-            var builder = services.AddIdentityServer(options =>
-                {
-                    options.Events.RaiseErrorEvents = true;
-                    options.Events.RaiseInformationEvents = true;
-                    options.Events.RaiseFailureEvents = true;
-                    options.Events.RaiseSuccessEvents = true;
-                })
-                .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                .AddInMemoryApiResources(Config.GetApiResources())
-                .AddInMemoryClients(Config.GetClients())
-                .AddAspNetIdentity<ApplicationUser>();
-
-            if (Environment.IsDevelopment())
-            {
-                builder.AddDeveloperSigningCredential();
-            }
-            else
-            {
-                throw new Exception("need to configure key material");
-            }
-
-            services.AddAuthentication()
-              .AddGoogle(options =>
-              {
-                  options.ClientId = "708996912208-9m4dkjb5hscn7cjrn5u0r4tbgkbj1fko.apps.googleusercontent.com";
-                  options.ClientSecret = "wdfPY6t8H8cecgjlxud__4Gh";
-              });
+            //services.Configure<IISOptions>(iis =>
+            //{
+            //    iis.AuthenticationDisplayName = "Windows";
+            //    iis.AutomaticAuthentication = false;
+            //});
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -89,6 +62,9 @@ namespace IdentityServerWithAspNetIdentity
             }
 
             app.UseStaticFiles();
+
+            app.UseAuthentication();
+
             app.UseIdentityServer();
             app.UseMvcWithDefaultRoute();
         }

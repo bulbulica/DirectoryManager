@@ -249,11 +249,29 @@ namespace IdentityServer.Authentication
         {
             //Add auth service
             services.AddDbContext<ApplicationDbContext>(options =>
-                 options.UseSqlServer(Configuration.GetConnectionString("IdentityManagerDb"), b => b.MigrationsAssembly("WebStudentsManagement")));
+                 options.UseSqlServer(Configuration.GetConnectionString("IdentityManagerDb"), b => b.MigrationsAssembly("IdentityServer")));
             // Add application services.
             services.AddIdentity<ApplicationUser, IdentityRole>()
            .AddEntityFrameworkStores<ApplicationDbContext>()
            .AddDefaultTokenProviders();
+
+            services.AddIdentityServer()
+                 .AddConfigurationStore(options =>
+                 {
+                     options.ConfigureDbContext = builder =>
+                         builder.UseSqlServer(Configuration.GetConnectionString("IdentityManagerDb"),
+                             sql => sql.MigrationsAssembly("IdentityServer"));
+                 })
+             .AddOperationalStore(options =>
+             {
+                 options.ConfigureDbContext = builder =>
+                     builder.UseSqlServer(Configuration.GetConnectionString("IdentityManagerDb"),
+                         sql => sql.MigrationsAssembly("IdentityServer"));
+
+                 // this enables automatic token cleanup. this is optional.
+                 options.EnableTokenCleanup = true;
+                 options.TokenCleanupInterval = 30; // interval in seconds
+             });
 
             InitializeManagers(services.BuildServiceProvider());
         }

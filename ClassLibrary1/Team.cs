@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace IdentityServer.Domain
 {
@@ -7,11 +8,9 @@ namespace IdentityServer.Domain
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        
-        public IEnumerable Employees { get; set; }
-        public virtual Employee Employee { get; set; }
+        public virtual ICollection<Employee> Employees { get; set; } 
 
-        public int IdTeamLeader { get; set; }
+        public int TeamLeaderId { get; set; }
         public virtual Employee TeamLeader { get; set; }
     }
 }

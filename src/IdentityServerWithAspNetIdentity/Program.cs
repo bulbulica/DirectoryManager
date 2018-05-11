@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer.Core.Shared;
+using IdentityServer.Persistence;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
@@ -19,17 +22,32 @@ namespace IdentityServerWithAspNetIdentity
         {
             Console.Title = "Identity Server";
 
-            var seed = args.Any(x => x == "/seed");
-            //seed = true;
-            if (seed) args = args.Except(new[] { "/seed" }).ToArray();
+            //var seed = args.Any(x => x == "/seed");
+            ////seed = true;
+            //if (seed) args = args.Except(new[] { "/seed" }).ToArray();
 
             var host = BuildWebHost(args);
 
-            if (seed)
+            using (var scope = host.Services.CreateScope())
             {
-                SeedData.EnsureSeedData(host.Services);
-                return;
+                var dataService = scope.ServiceProvider.GetService<IPersistenceContext>();
+                if (dataService != null)
+                {
+                 dataService.InitializeData(scope.ServiceProvider);
+                }
+
+                var authService = scope.ServiceProvider.GetService<IAuthentication>();
+                if (authService != null)
+                {
+                    authService.InitializeData(scope.ServiceProvider);
+                }
             }
+
+            //if (seed)
+            //{
+            //    SeedData.EnsureSeedData(host.Services);
+            //    return;
+            //}
 
             host.Run();
         }
