@@ -1,0 +1,76 @@
+﻿@model EditEmployee
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Edit Employee";
+}
+<h1>@ViewData["Title"] @Model.Name</h1>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditEmployee" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" value="@Model.Id" class="form-control" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Username" class="control-label"></label>
+                <input asp-for="Username" class="form-control" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="Active" value="true" class="form-control" />
+            <div class="form-group">
+                <label asp-for="Role" class="control-label"></label>
+                <br />
+                <select asp-for="Role" class="selectpicker">
+                @{
+                    if (Model.AllRoles != new List<string>())
+                    {
+                        var rolesList = Model.AllRoles.ToList();
+                        if (rolesList.Count != 0)
+                        {
+                            foreach (var role in rolesList)
+                            {
+                        <option>@role</option>
+                            }
+                        }
+                    }
+                 }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Department.Name" class="control-label"></label>
+                <input asp-for="Department.Name" class="form-control" />
+                <span asp-validation-for="Department.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Team.Name" class="control-label"></label>
+                <input asp-for="Team.Name" class="form-control" />
+                <span asp-validation-for="Team.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Picture" class="control-label"></label>
+                <input type='file' asp-for="Picture" />
+            </div>
+            <div class="form-group">
+                <label asp-for="CV" class="control-label"></label>
+                <input type='file' asp-for="CV" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Add new Employee" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+    <div class="col-md-3">
+        @if (Model.Picture != null)
+        {
+        <img src="../../img/@Model.Picture" class="rounded float-left" alt="@Model.Name" height="300" width="300">
+        }
+        @if (Model.CV != null)
+        {
+        <br /><br />
+        <a href="../../docs/@Model.CV">View CV</a>
+        }
+    </div>
+</div>

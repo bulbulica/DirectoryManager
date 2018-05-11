@@ -1,0 +1,63 @@
+﻿@model AddEmployee
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Add new Employee";
+}
+<h1>@ViewData["Title"]</h1>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EmployeeAdd" method="post">
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Username" class="control-label"></label>
+                <input asp-for="Username" class="form-control" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfirmPassword" class="control-label"></label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="Active" value="true" class="form-control" />
+            <div class="form-group">
+                <label asp-for="Role" class="control-label"></label>
+                <br />
+                <select asp-for="Role" class="selectpicker">
+                @{
+                    if (Model.AllRoles != null)
+                    {
+                        var rolesList = Model.AllRoles.ToList();
+                        if (rolesList.Count != 0)
+                        {
+                            foreach (var role in rolesList)
+                            {
+                            <option>@role</option>
+                            }
+                        }
+                    }
+                }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Picture" class="control-label"></label>
+                <input type='file' asp-for="Picture"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="CV" class="control-label"></label>
+                <input type='file' asp-for="CV" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Add new Employee" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
