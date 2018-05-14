@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using IdentityServer.Domain;
 using IdentityServer.Core.Shared;
 using IdentityServer4.Services;
+using IdentityServer4.EntityFramework;
 using IdentityServer4.Stores;
 using IdentityServer4.Models;
 using IdentityServer4.Events;
@@ -249,29 +250,32 @@ namespace IdentityServer.Authentication
         {
             //Add auth service
             services.AddDbContext<ApplicationDbContext>(options =>
-                 options.UseSqlServer(Configuration.GetConnectionString("IdentityManagerDb"), b => b.MigrationsAssembly("IdentityServer")));
+                 options.UseSqlServer(Configuration.GetConnectionString("IdentityManagerDb"),
+                 b => b.MigrationsAssembly("IdentityServer.Authentication")));
+
             // Add application services.
             services.AddIdentity<ApplicationUser, IdentityRole>()
-           .AddEntityFrameworkStores<ApplicationDbContext>()
-           .AddDefaultTokenProviders();
+                    .AddEntityFrameworkStores<ApplicationDbContext>()
+                    .AddDefaultTokenProviders();
 
             services.AddIdentityServer()
                  .AddConfigurationStore(options =>
                  {
                      options.ConfigureDbContext = builder =>
                          builder.UseSqlServer(Configuration.GetConnectionString("IdentityManagerDb"),
-                             sql => sql.MigrationsAssembly("IdentityServer"));
+                             sql => sql.MigrationsAssembly("IdentityServer.Authentication"));
                  })
-             .AddOperationalStore(options =>
-             {
-                 options.ConfigureDbContext = builder =>
-                     builder.UseSqlServer(Configuration.GetConnectionString("IdentityManagerDb"),
-                         sql => sql.MigrationsAssembly("IdentityServer"));
+                 .AddOperationalStore(options =>
+                 {
+                     options.ConfigureDbContext = builder =>
+                         builder.UseSqlServer(Configuration.GetConnectionString("IdentityManagerDb"),
+                             sql => sql.MigrationsAssembly("IdentityServer.Authentication"));
 
-                 // this enables automatic token cleanup. this is optional.
-                 options.EnableTokenCleanup = true;
-                 options.TokenCleanupInterval = 30; // interval in seconds
-             });
+                     // this enables automatic token cleanup. this is optional.
+                     options.EnableTokenCleanup = true;
+                     options.TokenCleanupInterval = 30; // interval in seconds
+                 })
+                 .AddAspNetIdentity<ApplicationUser>();
 
             InitializeManagers(services.BuildServiceProvider());
         }

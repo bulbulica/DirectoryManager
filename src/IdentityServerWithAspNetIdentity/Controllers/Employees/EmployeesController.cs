@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace IdentityServer
 {
     [Route("[controller]/[action]")]
-    [SecurityHeaders]
+    //[SecurityHeaders]
     public class EmployeesController : Controller
     {
         private readonly IAuthentication _auth;
