@@ -3,9 +3,8 @@
     Layout = "/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Manage Departments";
 }
-<h2>All Departments</h2>
 <div>
-    <h4>Manage all the employees</h4>
+    <h3>Manage all the departments</h3>
     <hr />
     <div class="row">
         <div class="col-md-6">
@@ -48,9 +47,9 @@
                                             <p>Do you really want to delete these records? This process cannot be undone.</p>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger" onclick="location.href='@Url.Action("List", "Search")'">Delete</button>
+                                            <button type="button" class="btn btn-danger" onclick="location.href='@Url.Action("List", "Search")'"><span class="glyphicon glyphicon-ok"></span> Delete</button>
                                             <!--<a asp-action="DepartmentDelete" asp-route-id="@department.Id" class="delete">Delete</a>-->
-                                            <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                                            <button type="button" class="btn btn-info" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
                                         </div>
                                     </div>
                                 </div>
