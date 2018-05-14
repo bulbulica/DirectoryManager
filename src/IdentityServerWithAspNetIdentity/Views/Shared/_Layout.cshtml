@@ -12,7 +12,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>IdentityServer4</title>
+    <title>Identification Server</title>
     <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
     <link rel="shortcut icon" type="image/x-icon" href="~/database.ico" />
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
@@ -23,22 +23,18 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
                 <a href="~/">
                     <span class="navbar-brand">
                         <img src="~/database.png" class="icon-banner">
-                        Identity Server
+                        Identification Server
                     </span>
                 </a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Employees" asp-action="ManageEmployees">Manage Employees</a></li>
+                    <li><a asp-area="" asp-controller="Employees" asp-action="ManageDepartments">Manage Departments</a></li>
+                    <li><a asp-area="" asp-controller="Employees" asp-action="ManageTeams">Manage Teams</a></li>
                 </ul>
             </div>
             @if (!string.IsNullOrWhiteSpace(name))
@@ -51,7 +47,7 @@
                         </ul>
                     </li>
                 </ul>
-            }
+             }
         </div>
     </div>
 

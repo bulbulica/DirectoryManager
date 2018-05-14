@@ -49,17 +49,13 @@
                                         <div id="myModal" class="modal fade">
                                             <div class="modal-dialog modal-confirm">
                                                 <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h4 class="modal-title">Are you sure?</h4>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                    </div>
                                                     <div class="modal-body">
-                                                        <p>Do you really want to delete these records? This process cannot be undone.</p>
+                                                        <h4>Do you really want to delete this record? It cannot be undone.</h4>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-danger" onclick="location.href='@Url.Action("List", "Search")'">Delete</button>
+                                                        <button type="button" class="btn btn-danger" onclick="location.href='@Url.Action("List", "Search")'"><span class="glyphicon glyphicon-ok"></span> Delete</button>
                                                         <!--<a asp-action="EmployeeDelete" asp-route-id="@employee.Id" class="delete">Delete</a>-->
-                                                        <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                                                        <button type="button" class="btn btn-info" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
                                                     </div>
                                                 </div>
                                             </div>

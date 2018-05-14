@@ -233,21 +233,21 @@ namespace IdentityServer
             return ManageEmployees();
         }
 
-            /// <summary>
-            /// Shows the error page
-            /// </summary>
-            public async Task<IActionResult> Error(string errorId)
+        /// <summary>
+        /// Shows the error page
+        /// </summary>
+        public async Task<IActionResult> Error(string errorId)
+        {
+            var vm = new ErrorViewModel();
+
+            // retrieve error details from identityserver
+            var message = await _interaction.GetErrorContextAsync(errorId);
+            if (message != null)
             {
-                var vm = new ErrorViewModel();
-
-                // retrieve error details from identityserver
-                var message = await _interaction.GetErrorContextAsync(errorId);
-                if (message != null)
-                {
-                    vm.Error = message;
-                }
-
-                return View("Error", vm);
+                vm.Error = message;
             }
+
+            return View("Error", vm);
         }
     }
+}
