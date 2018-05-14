@@ -33,8 +33,8 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Employees" asp-action="ManageEmployees">Manage Employees</a></li>
-                    <li><a asp-area="" asp-controller="Employees" asp-action="ManageDepartments">Manage Departments</a></li>
-                    <li><a asp-area="" asp-controller="Employees" asp-action="ManageTeams">Manage Teams</a></li>
+                    <li><a asp-area="" asp-controller="Departments" asp-action="ManageDepartments">Manage Departments</a></li>
+                    <li><a asp-area="" asp-controller="Teams" asp-action="ManageTeams">Manage Teams</a></li>
                 </ul>
             </div>
             @if (!string.IsNullOrWhiteSpace(name))

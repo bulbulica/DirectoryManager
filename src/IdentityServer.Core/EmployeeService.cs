@@ -107,6 +107,13 @@ namespace IdentityServer.Core
             return new List<Department>();
         }
 
+        public IEnumerable<Team> GetAllTeams()
+        {
+            if (PersistenceContext.EmployeeRepository.GetAllTeams().Count() != 0)
+                return PersistenceContext.EmployeeRepository.GetAllTeams().ToList();
+            return new List<Team>();
+        }
+
         public void UpdateEmployee(Employee employee)
         {
             var newEmployee = PersistenceContext.EmployeeRepository.GetEmployeeById(employee.Id);

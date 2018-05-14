@@ -33,3 +33,5 @@ project.assets.json
 /src/IdentityServerWithAspNetIdentity/bower_components/bootstrap/js
 /src/IdentityServerWithAspNetIdentity/bower_components/bootstrap/grunt
 /src/IdentityServerWithAspNetIdentity/bower_components
+/src/StudentsManagement.Persistence.EF/Migrations/20180514092353_newMigration.cs
+/src/StudentsManagement.Persistence.EF/Migrations/20180514092353_newMigration.Designer.cs

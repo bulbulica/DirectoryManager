@@ -1,0 +1,68 @@
+﻿@model AllDepartments
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Manage Departments";
+}
+<h2>All Departments</h2>
+<div>
+    <h4>Manage all the employees</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var departmentsList = Model.Departments.ToList();
+                        if (departmentsList.Count() != 0)
+                        {
+                            foreach (var department in departmentsList)
+                            {
+                    <tr>
+                        <td scope="row">
+                            <a asp-action="DepartmentInfo" asp-route-id="@department.Id">@department.Name</a>
+                        </td>
+
+                        <td scope="row">
+                            @department.Description
+                            </td>
+
+                        <td>
+                            <a asp-action="DepartmentEdit" asp-route-id="@department.Id">Edit</a> |
+                            <a href="#myModal" id="#myModal" class="trigger-btn" data-toggle="modal">Delete</a>
+                            <!-- Modal HTML -->
+                            <div id="myModal" class="modal fade">
+                                <div class="modal-dialog modal-confirm">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Are you sure?</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Do you really want to delete these records? This process cannot be undone.</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" onclick="location.href='@Url.Action("List", "Search")'">Delete</button>
+                                            <!--<a asp-action="DepartmentDelete" asp-route-id="@department.Id" class="delete">Delete</a>-->
+                                            <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+            <a asp-action="DepartmentAdd">Add new Department</a>
+        </div>
+    </div>
+</div>

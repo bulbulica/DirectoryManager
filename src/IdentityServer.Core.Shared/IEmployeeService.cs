@@ -16,5 +16,6 @@ namespace IdentityServer.Core.Shared
         Department GetDepartmentByName(string department);
         IEnumerable<Department> GetAllDepartments();
         void UpdateEmployee(Employee employee);
+        IEnumerable<Team> GetAllTeams();
     }
 }

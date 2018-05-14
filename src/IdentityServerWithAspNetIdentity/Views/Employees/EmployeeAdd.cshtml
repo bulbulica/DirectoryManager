@@ -31,7 +31,7 @@
             <div class="form-group">
                 <label asp-for="Position" class="control-label"></label>
                 <br />
-                <select asp-for="Position" class="selectpicker" form="addForm">
+                <select asp-for="Position" form="addForm">
                     @{
                         if (Model.AllPositions.Count() != 0)
                         {
@@ -49,7 +49,7 @@
             <div class="form-group">
                 <label asp-for="Department" class="control-label"></label>
                 <br />
-                <select asp-for="Department" class="selectpicker">
+                <select asp-for="Department" id="mainselection">
                     @{
                         if (Model.AllDepartments.Count() != 0)
                         {

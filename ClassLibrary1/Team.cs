@@ -12,5 +12,7 @@ namespace IdentityServer.Domain
 
         public int TeamLeaderId { get; set; }
         public virtual Employee TeamLeader { get; set; }
+
+        public virtual Department Department { get; set; }
     }
 }

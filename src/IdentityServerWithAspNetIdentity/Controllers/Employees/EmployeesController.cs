@@ -15,16 +15,13 @@ namespace IdentityServer
     [SecurityHeaders]
     public class EmployeesController : Controller
     {
-        private readonly IIdentityServerInteractionService _interaction;
         private readonly IAuthentication _auth;
         private readonly IBusinessLayer _businessLogic;
         private readonly IEmployeeService _employeeService;
 
-        public EmployeesController(IIdentityServerInteractionService interaction
-            ,IAuthentication auth,
+        public EmployeesController(IAuthentication auth,
             IBusinessLayer businessLayer)
         {
-            _interaction = interaction;
             _auth = auth;
             _businessLogic = businessLayer;
             _employeeService = _businessLogic.GetEmployeeService();
@@ -112,10 +109,17 @@ namespace IdentityServer
             if(model.Picture == null)
                 model.Picture = "";
             
+
+
             if (ModelState.IsValid)
             {
                 var position = _employeeService.GetPositionByName(model.Position);
                 var department = _employeeService.GetDepartmentByName(model.Department);
+
+
+                //TODO check if position is departmentmanager and if that department already has a manager.
+                //if so update
+
 
                 if (position != null && department !=null)
                 {
@@ -236,18 +240,12 @@ namespace IdentityServer
         /// <summary>
         /// Shows the error page
         /// </summary>
-        public async Task<IActionResult> Error(string errorId)
+        public IActionResult Error(string errorId)
         {
             var vm = new ErrorViewModel();
 
-            // retrieve error details from identityserver
-            var message = await _interaction.GetErrorContextAsync(errorId);
-            if (message != null)
-            {
-                vm.Error = message;
-            }
 
             return View("Error", vm);
         }
     }
-}
+    }

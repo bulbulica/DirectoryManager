@@ -153,7 +153,7 @@ namespace IdentityServer.Persistence.EF.Migrations
 
             modelBuilder.Entity("IdentityServer.Domain.Team", b =>
                 {
-                    b.HasOne("IdentityServer.Domain.Department")
+                    b.HasOne("IdentityServer.Domain.Department", "Department")
                         .WithMany("Teams")
                         .HasForeignKey("DepartmentId");
 
