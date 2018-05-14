@@ -5,8 +5,7 @@ namespace IdentityServer.Persistence
 {
     public interface IEmployeeRepository : IRepository<Employee>
     {
-        int GetAllPositions { get; }
-
+       
         Employee GetEmployeeByName(string nameEmployee);
         IEnumerable<Employee> GetAllEmployees();
         Employee GetEmployeeById(int idEmployee);
@@ -14,5 +13,9 @@ namespace IdentityServer.Persistence
         void AddPositions(List<Position> list);
         void AddTeam(Team team2);
         void AddDepartment(Department dep);
+        IEnumerable<Position> GetAllPositions();
+        Position GetPositionByName(string name);
+        Department GetDepartmentByName(string department);
+        IEnumerable<Department> GetAllDepartments();
     }
 }

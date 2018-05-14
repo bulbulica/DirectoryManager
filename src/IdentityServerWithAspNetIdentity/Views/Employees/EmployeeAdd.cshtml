@@ -6,7 +6,7 @@
 <h1>@ViewData["Title"]</h1>
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="EmployeeAdd" method="post">
+        <form asp-action="EmployeeAdd" method="post" id="addForm">
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -29,34 +29,50 @@
             </div>
             <input type="hidden" asp-for="Active" value="true" class="form-control" />
             <div class="form-group">
-                <label asp-for="Role" class="control-label"></label>
+                <label asp-for="Position" class="control-label"></label>
                 <br />
-                <select asp-for="Role" class="selectpicker">
-                @{
-                    if (Model.AllRoles != null)
-                    {
-                        var rolesList = Model.AllRoles.ToList();
-                        if (rolesList.Count != 0)
+                <select asp-for="Position" class="selectpicker" form="addForm">
+                    @{
+                        if (Model.AllPositions.Count() != 0)
                         {
-                            foreach (var role in rolesList)
+                            var positionList = Model.AllPositions.ToList();
+                            foreach (var position in positionList)
                             {
-                            <option>@role</option>
+                                <option>@position.RoleName</option>
                             }
                         }
                     }
-                }
+
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Department" class="control-label"></label>
+                <br />
+                <select asp-for="Department" class="selectpicker">
+                    @{
+                        if (Model.AllDepartments.Count() != 0)
+                        {
+                            var departmentList = Model.AllDepartments.ToList();
+                            foreach (var department in departmentList)
+                            {
+                                <option>@department.Name</option>
+                            }
+                        }
+                    }
+
                 </select>
             </div>
             <div class="form-group">
                 <label asp-for="Picture" class="control-label"></label>
-                <input type='file' asp-for="Picture"/>
+                <input type='file' asp-for="Picture" />
             </div>
             <div class="form-group">
                 <label asp-for="CV" class="control-label"></label>
                 <input type='file' asp-for="CV" />
             </div>
             <div class="form-group">
-                <input type="submit" value="Add new Employee" class="btn btn-primary" />
+                <input type="submit" value="Add" class="btn btn-primary" />
             </div>
         </form>
     </div>

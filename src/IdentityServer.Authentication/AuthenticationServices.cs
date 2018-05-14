@@ -95,12 +95,12 @@ namespace IdentityServer.Authentication
             await _eventService.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
         }
 
-        //public async Task<bool> RegisterProcess(ApplicationUser user, string password)
-        //{
-        //    var result = await _userManager.CreateAsync(user, password);
+        public async Task<bool> RegisterProcess(ApplicationUser user, string password)
+        {
+            var result = await _userManager.CreateAsync(user, password);
 
-        //    return result.Succeeded;
-        //}
+            return result.Succeeded;
+        }
 
         //public async Task<ApplicationUser> Index(ClaimsPrincipal claimsPrincipalUser)
         //{
@@ -207,7 +207,7 @@ namespace IdentityServer.Authentication
         //            return true;
         //    }
         //    return false;
-            
+
         //}
 
         //public async Task<bool> IsUserValid(ClaimsPrincipal User)
@@ -217,7 +217,7 @@ namespace IdentityServer.Authentication
         //        return false;
         //    else
         //        return true;
-            
+
         //}
 
         public bool IsUserSignedIn(ClaimsPrincipal User)

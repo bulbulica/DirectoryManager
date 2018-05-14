@@ -1,31 +1,44 @@
 ﻿@model SingleEmployee
 @{
     Layout = "/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = Model.Name;
+    ViewData["Title"] = Model.Employee.Name;
 }
-<h1>@ViewData["Title"] - @Model.Role</h1>
+@if (Model.Employee.Position != null)
+{
+<h1>@ViewData["Title"] - @Model.Employee.Position.RoleName</h1>
+}
 <div>
     <hr />
     <div class="row">
         <div class="col-md-4">
-            <img src="../../img/@Model.Picture" class="rounded float-left" alt="@Model.Name"  height="300" width="300">
-        </div>
-        <div class="col-md-6">
-            <h2>Department - @Model.Department.Name</h2>
-            <h3>Team - @Model.Team.Name</h3>
-            <h4>Active - @Model.Active</h4>
-            @if (Model.CV != null)
+            @if (Model.Employee.Picture != null)
             {
-                <a href="../../docs/@Model.CV">View CV</a> 
-                <a asp-action="EmployeeAddCV" asp-route-id="@Model.Id"><h5>Upload new CV</h5></a>
+                <img src="../../img/@Model.Employee.Picture" class="rounded float-left" alt="@Model.Employee.Name" height="300" width="300">
             }
             else
             {
-                <a asp-action="EmployeeAddCV" asp-route-id="@Model.Id"><h4>Upload his CV</h4></a>
+                <img src="../../img/avatarNotFound.png" class="rounded float-left" alt="@Model.Employee.Name" height="300" width="300">
+            }
+        </div>
+        <div class="col-md-6">
+            <h2>Department - @Model.Employee.Department.Name</h2>
+            @if (Model.Employee.Team != null)
+            {
+                <h3>Team - @Model.Employee.Team.Name</h3>
+            }
+            <h4>Active - @Model.Employee.Active</h4>
+            @if (Model.Employee.CV != null)
+            {
+                <a href="../../docs/@Model.Employee.CV">View CV</a>
+                <a asp-action="EmployeeAddCV" asp-route-id="@Model.Employee.Id"><h5>Upload new CV</h5></a>
+            }
+            else
+            {
+                <a asp-action="EmployeeAddCV" asp-route-id="@Model.Employee.Id"><h4>Upload his CV</h4></a>
             }
             <br />
-            <a asp-action="EmployeeEdit" asp-route-id="@Model.Id"><h3>Edit his data</h3></a>
-            <a asp-action="ManageEmployees">Back too all Employees</a>
+            <a asp-action="EmployeeEdit" asp-route-id="@Model.Employee.Id"><h3>Edit his data</h3></a>
+            <a asp-action="ManageEmployees">Back to all Employees</a>
         </div>
     </div>
 </div>

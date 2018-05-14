@@ -10,14 +10,6 @@ namespace IdentityServer
 {
     public class SingleEmployee
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Username { get; set; }
-        public string Picture { get; set; }
-        public string CV { get; set; }
-        public bool Active { get; set; }
-        public Team Team { get; set; }
-        public Department Department { get; set; }
-        public string Role { get; set; }
+       public Employee Employee { get; set; }
     }
 }

@@ -10,5 +10,11 @@ namespace IdentityServer.Core.Shared
     {
         List<Employee> GetAllEmployees();
         Employee GetEmployee(int idEmployee);
+        IEnumerable<Position> GetAllPositions();
+        void AddEmployee(Employee employee);
+        Position GetPositionByName(string position);
+        Department GetDepartmentByName(string department);
+        IEnumerable<Department> GetAllDepartments();
+        void UpdateEmployee(Employee employee);
     }
 }

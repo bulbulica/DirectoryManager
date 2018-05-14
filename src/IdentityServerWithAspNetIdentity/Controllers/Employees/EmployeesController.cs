@@ -56,57 +56,37 @@ namespace IdentityServer
         [Route("{id}")]
         public IActionResult EmployeeInfo(int? id)
         {
-            if (_auth.IsUserSignedIn(User))
-            {
+            //if (_auth.IsUserSignedIn(User))
+            //{
                 int idEmployee = id ?? default(int);
 
                 var employee = _employeeService.GetEmployee(idEmployee);
-
-                var employeeRole = "";
-                if (employee.Position != null)
-                    employeeRole = employee.Position.RoleName;
-
                 var model = new SingleEmployee
                 {
-                    Id = employee.Id,
-                    Name = employee.Name,
-                    Active = employee.Active,
-                    Picture = employee.Picture,
-                    Department = employee.Department,
-                    Team = employee.Team,
-                    Role = employeeRole,
-                    CV = employee.CV
+                   Employee = employee
                 };
 
                 return View("EmployeeInfo", model);
             }
-            else
-            {
-                return NotFound();
-            }
-        }
+            //else
+            //{
+            //    return NotFound();
+            //}
+        
 
         // GET: Employees/EmployeeAdd
         [HttpGet]
-        public async Task<IActionResult> EmployeeAdd()
+        public IActionResult EmployeeAdd()
         {
             //if (_auth.IsUserSignedIn(User))
             if (true)
             {
                 var model = new AddEmployee()
                 {
-                    Picture = "abc.jpg",
-                    CV = "",
                     Active = true,
-                    Role = "",
-                    AllRoles = new List<string>
-                    {
-                        "OM",
-                        "GM",
-                        "DM",
-                        "TL",
-                        "QA"
-                    },
+                    AllPositions = _employeeService.GetAllPositions(),
+                    AllDepartments = _employeeService.GetAllDepartments()
+                    
                 };
 
                 return View(model);
@@ -120,92 +100,82 @@ namespace IdentityServer
         // POST: Employees/AddEmployee
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult EmployeeAdd(AddEmployee model)
+        public async Task<IActionResult> EmployeeAdd(AddEmployee model)
         {
             // Add roles required !!! - delete this when you add 
             // the function to populate the model with roles,
             // in case not all inputs are added
-            model.AllRoles = new List<string>
-            {
-                "OM",
-                "GM",
-                "DM",
-                "TL",
-                "QA"
-            };
+            model.AllPositions = _employeeService.GetAllPositions();
+
+            if (model.CV == null)
+                model.CV = "";
+            if(model.Picture == null)
+                model.Picture = "";
+            
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Name, Email = model.Username };
-                //var result = await _auth.RegisterProcess(user, model.Password);
-                //if (result)
-                //{
-                //if (model.Role == "General Manager")
-                //{
-                //    _teacherServices.AddTeacher(user);
-                //    await _auth.SetUserRole(user, "Teacher");
-                //}
-                //else if (...)
-                //{
-                //    _studentServices.AddStudent(user);
-                //    await _auth.SetUserRole(user, "Student");
-                //}
+                var position = _employeeService.GetPositionByName(model.Position);
+                var department = _employeeService.GetDepartmentByName(model.Department);
 
-                //_logger.LogInformation("User created a new account with password.");
-                return RedirectToAction("Index", "Home");
-                //}
-                //else
-                //{
-                string ErrorMessage = $"the password does not meet the password policy requirements.";
-                var policyRequirements = $"* At least an uppercase and a special character";
+                if (position != null && department !=null)
+                {
+                    var user = new ApplicationUser { UserName = model.Name, Email = model.Username };
+                    var result = await _auth.RegisterProcess(user, model.Password);
+                    if (result)
+                    {
+                        var employee = new Employee
+                        {
+                            Name = model.Name,
+                            Username = model.Username,
+                            Active = true,
+                            Position = position,
+                            Department = department,
+                            CV = model.CV
+                        };
+                        _employeeService.AddEmployee(employee);
 
-                ViewBag.Error = ErrorMessage;
-                ViewBag.policyRequirments = policyRequirements;
-                return View();
-                //}
+                    }
+                }
+
+                else
+                {
+                    string ErrorMessage = $"the password does not meet the password policy requirements.";
+                    var policyRequirements = $"* At least an uppercase and a special character";
+
+                    ViewBag.Error = ErrorMessage;
+                    ViewBag.policyRequirments = policyRequirements;
+                    return View();
+                }
             }
 
             // If we got this far, something failed, redisplay form
-            return View(model);
+            return ManageEmployees();
         }
 
         // GET: Employees/EmployeeEdit/{id}
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> EmployeeEdit(int? id)
+        public IActionResult EmployeeEdit(int? id)
         {
             //if (_auth.IsUserSignedIn(User))
             if (true)
             {
                 int idEmployee = id ?? default(int);
 
+                var employee = _employeeService.GetEmployee(idEmployee);
+
                 var model = new EditEmployee
                 {
                     Id = idEmployee,
-                    Name = "Ionescu Andrei",
-                    Username = "abc@yahoo.com",
-                    Active = true,
-                    Picture = "8f30cacc4a846a39abc755cb03d748d7_400x400.jpeg",
-                    Department = new Department
-                    {
-                        Name = "Putere"
-                    },
-                    Team = new Team
-                    {
-                        Name = "Fantasticii"
-                    },
-                    Password = "parola",
-                    ConfirmPassword = "parola",
-                    AllRoles = new List<string>
-                    {
-                        "OM",
-                        "GM",
-                        "DM",
-                        "TL",
-                        "QA",
-                        "Dev"
-                    },
-                    Role = "QA",
-                    CV = "europass.pdf"
+                    Name = employee.Name,
+                    Active = employee.Active,
+                    AllPositions = _employeeService.GetAllPositions(),
+                    Department = employee.Department.Name,
+                    Picture = employee.Picture,
+                    Team = employee.Team,
+                    CV = employee.CV,
+                    Position = employee.Position.RoleName,
+                    AllDepartments = _employeeService.GetAllDepartments()
                 };
 
                 return View(model);
@@ -216,21 +186,68 @@ namespace IdentityServer
             }
         }
 
-        /// <summary>
-        /// Shows the error page
-        /// </summary>
-        public async Task<IActionResult> Error(string errorId)
+
+        [HttpPost]
+        [Route("{id}")]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditEmployee(EditEmployee model, int? id)
         {
-            var vm = new ErrorViewModel();
 
-            // retrieve error details from identityserver
-            var message = await _interaction.GetErrorContextAsync(errorId);
-            if (message != null)
+            if (model.CV == null)
+                model.CV = "";
+            if (model.Picture == null)
+                model.Picture = "";
+            int idEmployee = id ?? default(int);
+
+
+            if (ModelState.IsValid)
             {
-                vm.Error = message;
-            }
+                var position = _employeeService.GetPositionByName(model.Position);
+                var department = _employeeService.GetDepartmentByName(model.Department);
 
-            return View("Error", vm);
+                if (position != null && department != null)
+                {
+                    var employee = new Employee
+                    {
+                        Id = idEmployee,
+                        Name = model.Name,
+                        Active = true,
+                        Position = position,
+                        Department = department,
+                        CV = model.CV
+                        
+                    };
+                    _employeeService.UpdateEmployee(employee);
+                }
+
+                else
+                {
+                    string ErrorMessage = $"the password does not meet the password policy requirements.";
+                    var policyRequirements = $"* At least an uppercase and a special character";
+
+                    ViewBag.Error = ErrorMessage;
+                    ViewBag.policyRequirments = policyRequirements;
+                    return View("EmployeeEdit", model);
+                }
+            }
+            return ManageEmployees();
+        }
+
+            /// <summary>
+            /// Shows the error page
+            /// </summary>
+            public async Task<IActionResult> Error(string errorId)
+            {
+                var vm = new ErrorViewModel();
+
+                // retrieve error details from identityserver
+                var message = await _interaction.GetErrorContextAsync(errorId);
+                if (message != null)
+                {
+                    vm.Error = message;
+                }
+
+                return View("Error", vm);
+            }
         }
     }
-}

@@ -33,9 +33,12 @@ namespace IdentityServer
         public string ConfirmPassword { get; set; }
 
         [Required]
-        [Compare("AllRoles", ErrorMessage = "Role can not be empty.")]
-        public string Role { get; set; }
+        public string Position { get; set; }
 
-        public IEnumerable<string> AllRoles { get; set; }
+        [Required]
+        public string Department { get; set; }
+
+        public IEnumerable<Position> AllPositions { get; set; }
+        public IEnumerable<Department> AllDepartments { get; set; }
     }
 }

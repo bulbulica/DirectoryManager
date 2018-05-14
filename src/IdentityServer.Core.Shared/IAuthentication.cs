@@ -20,6 +20,7 @@ namespace IdentityServer.Core.Shared
         Task<LogoutContext> GetLogoutContext(string returnUrl);
         Task<string> CreateLogoutContextAsync();
         Task<string> GetUserRoleByUsernameAsync(string email);
+        Task<bool> RegisterProcess(ApplicationUser user, string password);
 
         //Task<string> GetUserNameAsync(ClaimsPrincipal User);
         //Task<string> GetUserIdAsync(ClaimsPrincipal User);

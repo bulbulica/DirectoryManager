@@ -63,12 +63,7 @@ namespace IdentityServer.Persistence.EF
         //}
         public Employee GetEmployeeByName(string name)
         {
-            Employee retval = null;
-            if (EmployeeDbContext != null)
-            {
-                retval = EmployeeDbContext.Employees.SingleOrDefault(testc => testc.Name.Equals(name));
-            }
-            return retval;
+                return EmployeeDbContext.Employees.SingleOrDefault(testc => testc.Name.Equals(name));
         }
 
         public IEnumerable<Employee> GetAllEmployees()
@@ -102,6 +97,26 @@ namespace IdentityServer.Persistence.EF
             EmployeeDbContext.Departments.Add(dep);
         }
 
+        public IEnumerable<Position> GetAllPositions()
+        {
+            return EmployeeDbContext.Positions.ToList();
+        }
+
+        public Position GetPositionByName(string name)
+        {
+            return EmployeeDbContext.Positions.SingleOrDefault(testc => testc.RoleName.Equals(name));
+        }
+
+        public Department GetDepartmentByName(string department)
+        {
+            return EmployeeDbContext.Departments.SingleOrDefault(testc => testc.Name.Equals(department));
+        }
+
+        public IEnumerable<Department> GetAllDepartments()
+        {
+            return EmployeeDbContext.Departments.ToList();
+        }
+
         //E posibil sa nu le folosim
 
         //public Team GetTeam(int idEmployee)
@@ -128,7 +143,5 @@ namespace IdentityServer.Persistence.EF
                 return Context as EmployeeDbContext;
             }
         }
-
-        public int GetAllPositions => throw new System.NotImplementedException();
     }
 }

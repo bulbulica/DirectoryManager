@@ -21,7 +21,7 @@ namespace IdentityServerWithAspNetIdentity
             using (var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-                context.Database.Migrate();
+                //context.Database.Migrate();
 
                 var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
                 var alice = userMgr.FindByNameAsync("alice").Result;

@@ -58,9 +58,25 @@ namespace IdentityServer.Core
             }
         }
 
+        public void AddEmployee(Employee employee)
+        {
+            PersistenceContext.EmployeeRepository.Add(employee);
+            PersistenceContext.Complete();
+        }
+
         public List<Employee> GetAllEmployees()
         {
-            return PersistenceContext.EmployeeRepository.ListAll().ToList();
+            if(PersistenceContext.EmployeeRepository.ListAll().Count()!=0)
+                return PersistenceContext.EmployeeRepository.ListAll().ToList();
+            return new List<Employee>();
+        }
+
+        public IEnumerable<Position> GetAllPositions()
+        {
+            if (PersistenceContext.EmployeeRepository.GetAllPositions().Count() != 0)
+                return PersistenceContext.EmployeeRepository.GetAllPositions().ToList();
+            return new List<Position>();
+
         }
 
         public Employee GetEmployee(int idEmployee)
@@ -72,6 +88,37 @@ namespace IdentityServer.Core
         public string GetEmployeeRoleToString(int idEmployee)
         {
             return PersistenceContext.EmployeeRepository.GetEmployeeById(idEmployee).Position.RoleName;
+        }
+
+        public Position GetPositionByName(string position)
+        {
+            return PersistenceContext.EmployeeRepository.GetPositionByName(position);
+        }
+
+        public Department GetDepartmentByName(string department)
+        {
+            return PersistenceContext.EmployeeRepository.GetDepartmentByName(department);
+        }
+
+        public IEnumerable<Department> GetAllDepartments()
+        {
+            if (PersistenceContext.EmployeeRepository.GetAllPositions().Count() != 0)
+                return PersistenceContext.EmployeeRepository.GetAllDepartments().ToList();
+            return new List<Department>();
+        }
+
+        public void UpdateEmployee(Employee employee)
+        {
+            var newEmployee = PersistenceContext.EmployeeRepository.GetEmployeeById(employee.Id);
+
+            newEmployee.Name = employee.Name;
+            newEmployee.Picture = employee.Picture;
+            newEmployee.Position = employee.Position;
+            newEmployee.Team = employee.Team;
+            newEmployee.Department = employee.Department;
+            newEmployee.CV = employee.CV;
+            newEmployee.Active = employee.Active;
+            PersistenceContext.Complete();
         }
 
         //public Activity GetActivity(int idActivity)

@@ -14,36 +14,41 @@
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Username" class="control-label"></label>
-                <input asp-for="Username" class="form-control" />
-                <span asp-validation-for="Username" class="text-danger"></span>
-            </div>
             <input type="hidden" asp-for="Active" value="true" class="form-control" />
             <div class="form-group">
-                <label asp-for="Role" class="control-label"></label>
+                <label asp-for="Position" class="control-label"></label>
                 <br />
-                <select asp-for="Role" class="selectpicker">
-                @{
-                    if (Model.AllRoles != new List<string>())
-                    {
-                        var rolesList = Model.AllRoles.ToList();
-                        if (rolesList.Count != 0)
+                <select asp-for="Position" class="selectpicker">
+                    @{
+                        if (Model.AllPositions.ToList().Count != 0)
                         {
+                            var rolesList = Model.AllPositions.ToList();
                             foreach (var role in rolesList)
                             {
-                        <option>@role</option>
+                                <option>@role.RoleName</option>
                             }
                         }
                     }
-                 }
                 </select>
             </div>
+
             <div class="form-group">
-                <label asp-for="Department.Name" class="control-label"></label>
-                <input asp-for="Department.Name" class="form-control" />
-                <span asp-validation-for="Department.Name" class="text-danger"></span>
+                <label asp-for="Department" class="control-label"></label>
+                <br />
+                <select asp-for="Department" class="selectpicker">
+                    @{
+                        if (Model.AllDepartments.ToList().Count != 0)
+                        {
+                            var departmentsList = Model.AllDepartments.ToList();
+                            foreach (var department in departmentsList)
+                            {
+                                <option>@department.Name</option>
+                            }
+                        }
+                    }
+                </select>
             </div>
+            
             <div class="form-group">
                 <label asp-for="Team.Name" class="control-label"></label>
                 <input asp-for="Team.Name" class="form-control" />
@@ -58,7 +63,7 @@
                 <input type='file' asp-for="CV" />
             </div>
             <div class="form-group">
-                <input type="submit" value="Add new Employee" class="btn btn-primary" />
+                <input type="submit" value="Edit" class="btn btn-primary" />
             </div>
         </form>
     </div>
