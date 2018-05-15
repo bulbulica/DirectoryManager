@@ -3,9 +3,8 @@
     Layout = "/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Manage Departments";
 }
-<h2>All Departments</h2>
 <div>
-    <h4>Manage all the employees</h4>
+    <h3>Manage all the departments</h3>
     <hr />
     <div class="row">
         <div class="col-md-6">
@@ -20,6 +19,7 @@
                 <tbody>
                     @{
                         var departmentsList = Model.Departments.ToList();
+                        int count = 1;
                         if (departmentsList.Count() != 0)
                         {
                             foreach (var department in departmentsList)
@@ -32,12 +32,14 @@
                         <td scope="row">
                             @department.Description
                             </td>
-
                         <td>
+                            @{
+                                var simpleName = "delete" + count++;
+                                var complexName = "#" + simpleName;
+                            }
                             <a asp-action="DepartmentEdit" asp-route-id="@department.Id">Edit</a> |
-                            <a href="#myModal" id="#myModal" class="trigger-btn" data-toggle="modal">Delete</a>
-                            <!-- Modal HTML -->
-                            <div id="myModal" class="modal fade">
+                            <a href="@complexName" id="@complexName" class="trigger-btn" data-toggle="modal">Delete</a>
+                            <div id="@simpleName" class="modal fade">
                                 <div class="modal-dialog modal-confirm">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -48,9 +50,8 @@
                                             <p>Do you really want to delete these records? This process cannot be undone.</p>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger" onclick="location.href='@Url.Action("List", "Search")'">Delete</button>
-                                            <!--<a asp-action="DepartmentDelete" asp-route-id="@department.Id" class="delete">Delete</a>-->
-                                            <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                                            <a asp-action="DepartmentDelete" asp-route-id="@department.Id"><button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-ok"></span> Delete</button></a>
+                                            <button type="button" class="btn btn-info" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
                                         </div>
                                     </div>
                                 </div>
