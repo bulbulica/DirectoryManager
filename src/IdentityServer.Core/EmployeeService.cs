@@ -128,6 +128,15 @@ namespace IdentityServer.Core
             PersistenceContext.Complete();
         }
 
+        public void DeleteEmployee(int idEmployee)
+        {
+            var employee = PersistenceContext.EmployeeRepository.GetEmployeeById(idEmployee);
+            if (employee != null) {
+                PersistenceContext.EmployeeRepository.Delete(employee);
+                }
+            PersistenceContext.Complete();
+        }
+
         //public Activity GetActivity(int idActivity)
         //{
         //    return PersistenceContext.ActivityRepository.GetEntity(idActivity);

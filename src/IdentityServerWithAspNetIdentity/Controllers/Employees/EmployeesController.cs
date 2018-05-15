@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace IdentityServer
 {
     [Route("[controller]/[action]")]
-    //[SecurityHeaders]
+    [SecurityHeaders]
     public class EmployeesController : Controller
     {
         private readonly IAuthentication _auth;
@@ -190,6 +190,15 @@ namespace IdentityServer
             }
         }
 
+        [HttpPost]
+        [Route("{id}")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteEmployee(int? id)
+        {
+            int idEmployee = id ?? default(int);
+            _employeeService.DeleteEmployee(idEmployee);
+            return ManageEmployees();
+        }
 
         [HttpPost]
         [Route("{id}")]

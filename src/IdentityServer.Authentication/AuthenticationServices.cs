@@ -227,18 +227,7 @@ namespace IdentityServer.Authentication
             return result;
         }
 
-        //public void InitializeContext(IServiceCollection services, IConfiguration Configuration)
-        //{
-        //    //Add auth service
-        //    services.AddDbContext<ApplicationDbContext>(options =>
-        //         options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("WebStudentsManagement")));
-        //    // Add application services.
-        //    services.AddIdentity<ApplicationUser, IdentityRole>()
-        //   .AddEntityFrameworkStores<ApplicationDbContext>()
-        //   .AddDefaultTokenProviders();
 
-        //    InitializeManagers(services.BuildServiceProvider());
-        //}
 
 
         public void InitializeData(IServiceProvider serviceProvider)
