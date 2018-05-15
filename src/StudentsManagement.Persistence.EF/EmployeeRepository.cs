@@ -11,56 +11,7 @@ namespace IdentityServer.Persistence.EF
         {
         }
 
-        //public void Add(Employee entity)
-        //{
-        //    throw new System.NotImplementedException();
-        //}
-
-        //public void Delete(Employee entity)
-        //{
-        //    throw new System.NotImplementedException();
-        //}
-
-        //public UserEntity GetTeacherByName(string name)
-        //{
-        //    throw new System.NotImplementedException();
-        //}
-
-        //Employee IRepository<Employee>.GetEntity(int id)
-        //{
-        //    throw new System.NotImplementedException();
-        //}
-
-        //Employee IUserRepository.GetTeacherByName(string name)
-        //{
-        //    throw new System.NotImplementedException();
-        //}
-
-        //IEnumerable<Employee> IRepository<Employee>.ListAll()
-        //{
-        //    throw new System.NotImplementedException();
-        //}
-
-
-        //public StudentsManagementDbContext StudentsManagementDbContext
-        //{
-        //    get
-        //    {
-        //        return Context as StudentsManagementDbContext;
-        //    }
-        //}
-
-        //public Teacher GetTeacherByName(string name)
-        //{
-        //    Teacher retVal = null;
-
-        //    if (StudentsManagementDbContext != null)
-        //    {
-        //        retVal = StudentsManagementDbContext.Teachers.SingleOrDefault(t => t.Name.Equals(name));
-        //    }
-
-        //    return retVal;
-        //}
+ 
         public Employee GetEmployeeByName(string name)
         {
                 return EmployeeDbContext.Employees.SingleOrDefault(testc => testc.Name.Equals(name));
@@ -117,23 +68,39 @@ namespace IdentityServer.Persistence.EF
             return EmployeeDbContext.Departments.ToList();
         }
 
-        //E posibil sa nu le folosim
+        public Department GetDepartmentById(int idDepartment)
+        {
+            return EmployeeDbContext.Departments.Find(idDepartment);
+        }
 
-        //public Team GetTeam(int idEmployee)
-        //{
-        //    return EmployeeDbContext.Employees.Find(idEmployee).Team;
-        //}
+        public Team GetTeamById(int idTeam)
+        {
+            return EmployeeDbContext.Teams.Find(idTeam);
+        }
 
-        //public Department GetDepartment(int idEmployee)
-        //{
-        //    return EmployeeDbContext.Employees.Find(idEmployee).Department;
-        //}
+        public void DeleteDepartment(Department department)
+        {
+            EmployeeDbContext.Departments.Remove(department);
+        }
 
-        //public Position GetPosition (int idEmployee)
-        //{
-        //    return EmployeeDbContext.Employees.Find(idEmployee).Position;
-        //}
+        public void DeleteTeam(Team team)
+        {
+            EmployeeDbContext.Teams.Remove(team);
+        }
 
+        public IEnumerable<Employee> GetAllUnassignedEmployees()
+        {
+            var employees = EmployeeDbContext.Employees.ToList();
+
+            List<Employee> unassignedEmployees = new List<Employee>();
+
+            foreach(var employee in employees)
+            {
+                if (employee.Team == null)
+                    unassignedEmployees.Add(employee);
+            }
+            return unassignedEmployees;
+        }
 
 
         public EmployeeDbContext EmployeeDbContext

@@ -278,11 +278,14 @@ namespace IdentityServer
         // POST: Students/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        [Route("{id}")]
+        public IActionResult EmployeeDelete(int? id)
         {
-            //var student = await _context.Student.SingleOrDefaultAsync(m => m.Id == id);
-            //_context.Student.Remove(student);
-            //await _context.SaveChangesAsync();
+            //TODO 
+            //check accessLevel before 
+
+            int idEmployee = id ?? default(int);
+            _employeeService.DeleteEmployee(idEmployee);
             return RedirectToAction(nameof(ManageEmployees));
         }
 

@@ -19,29 +19,6 @@ namespace IdentityServer.Core
 
         public IPersistenceContext PersistenceContext { get => _persistenceContext; set => _persistenceContext = value; }
 
-        //public void AddActivityDate(ActivityDate newActivityDate)
-        //{
-        //    PersistenceContext.ActivityRepository.AddActivityDate(newActivityDate);
-        //    PersistenceContext.Complete();
-        //}
-
-        //public void AddStudentToActivity(string student, int id)
-        //{
-        //    var studentLoaded = PersistenceContext.StudentsRepository.GetStudentByName(student);
-        //    PersistenceContext.ActivityRepository.AddActivityDetails(studentLoaded, id);
-        //    PersistenceContext.Complete();
-        //}
-
-        //public void AddStudentsToActivity(List <string> students, int id)
-        //{
-        //    foreach (var student in students)
-        //    {
-        //        var studentLoaded = PersistenceContext.StudentsRepository.GetStudentByName(student);
-        //        PersistenceContext.ActivityRepository.AddActivityDetails(studentLoaded, id);
-        //    }
-        //    PersistenceContext.Complete();
-
-        //}
 
         public void AddEmployee(ApplicationUser user)
         {
@@ -133,67 +110,72 @@ namespace IdentityServer.Core
             var employee = PersistenceContext.EmployeeRepository.GetEmployeeById(idEmployee);
             if (employee != null) {
                 PersistenceContext.EmployeeRepository.Delete(employee);
-                }
+                PersistenceContext.Complete();
+            }
+        }
+
+        public Department GetDepartment(int idDepartment)
+        {
+            return PersistenceContext.EmployeeRepository.GetDepartmentById(idDepartment);
+        }
+
+        public Team GetTeam(int idTeam)
+        {
+            return PersistenceContext.EmployeeRepository.GetTeamById(idTeam);
+        }
+
+        public void UpdateDepartment(Department department)
+        {
+            var newDepartment = PersistenceContext.EmployeeRepository.GetDepartmentById(department.Id);
+            newDepartment.Name = department.Name;
+            newDepartment.Description = department.Description;
             PersistenceContext.Complete();
         }
 
-        //public Activity GetActivity(int idActivity)
-        //{
-        //    return PersistenceContext.ActivityRepository.GetEntity(idActivity);
-        //}
+        public void UpdateTeam(Team team)
+        {
+            var newTeam = PersistenceContext.EmployeeRepository.GetTeamById(team.Id);
+            newTeam.Name = team.Name;
+            newTeam.Description = team.Description;
+            PersistenceContext.Complete();
+        }
 
-        //public ActivityDate GetActivityDate(int idActivityDate)
-        //{
-        //    return PersistenceContext.ActivityRepository.GetActivityDate(idActivityDate);
-        //}
+        public void DeleteDepartment(int idDepartment)
+        {
+            var department = PersistenceContext.EmployeeRepository.GetDepartmentById(idDepartment);
+            if (department != null)
+            {
+                PersistenceContext.EmployeeRepository.DeleteDepartment(department);
+                PersistenceContext.Complete();
+            }
+        }
 
-        //public ActivityDate GetActivityDate(int idActivityDate, int idStudent)
-        //{
-        //    return PersistenceContext.ActivityRepository.GetActivityDate(idActivityDate, idStudent);
-        //}
+        public void DeleteTeam(int idTeam)
+        {
+            var team = PersistenceContext.EmployeeRepository.GetTeamById(idTeam);
+            if (team != null)
+            {
+                PersistenceContext.EmployeeRepository.DeleteTeam(team);
+                PersistenceContext.Complete();
+            }
+        }
 
-        //public IEnumerable<ActivityDate> GetActivityDates(int idActivity, int studentId)
-        //{
-        //    return PersistenceContext.ActivityRepository.GetActivityDates(idActivity, studentId).ToList();
-        //}
+        public void AddDepartment(Department department)
+        {
+            PersistenceContext.EmployeeRepository.AddDepartment(department);
+            PersistenceContext.Complete();
+        }
 
-        //public IEnumerable<ActivityDate> GetActivityDates(int idActivity)
-        //{
-        //    return PersistenceContext.ActivityRepository.GetActivityDates(idActivity);
-        //}
+        public void AddTeam(Team team)
+        {
+            PersistenceContext.EmployeeRepository.AddTeam(team);
+            PersistenceContext.Complete();
+        }
 
-        //public IEnumerable<Student> GetActivityStudents(int idActivity)
-        //{
-        //    return PersistenceContext.ActivityRepository.GetStudentsFromActivity(idActivity);
-        //}
+        public IEnumerable<Employee> GetAllUnassignedEmployees()
+        {
+            return PersistenceContext.EmployeeRepository.GetAllUnassignedEmployees();
+        }
 
-        //public IEnumerable<Student> GetAllStudents()
-        //{
-        //    return PersistenceContext.StudentsRepository.ListAll();
-        //}
-
-        //public Student GetStudent(int idStudent)
-        //{
-        //    return PersistenceContext.StudentsRepository.GetEntity(idStudent);
-        //}
-
-        //public IEnumerable<Activity> GetTeacherActivities(string username)
-        //{
-        //    return PersistenceContext.ActivityRepository.GetTeacherActivities(username);
-        //}
-
-        //public void UpdateActivityDate(ActivityDate newActivityDate)
-        //{
-        //    ActivityDate toBeUpdatedRecord = PersistenceContext.ActivityRepository.GetActivityDate(newActivityDate.Id);
-
-        //    if (toBeUpdatedRecord != null)
-        //    {
-        //        toBeUpdatedRecord.Grade = newActivityDate.Grade;
-        //        toBeUpdatedRecord.Date = newActivityDate.Date;
-        //        toBeUpdatedRecord.Attendance = newActivityDate.Attendance;
-        //        PersistenceContext.Complete();
-        //    }
-
-        //}
     }
 }

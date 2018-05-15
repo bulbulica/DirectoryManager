@@ -31,6 +31,117 @@ namespace IdentityServer.Controllers.Departments
             _employeeService = _businessLogic.GetEmployeeService();
         }
 
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult DepartmentEdit(int? id)
+        {
+            //if (_auth.IsUserSignedIn(User))
+            if (true)
+            {
+                int idDepartment = id ?? default(int);
+
+                var department = _employeeService.GetDepartment(idDepartment);
+
+                if (department.Description == null)
+                    department.Description = "";
+
+                var model = new EditDepartment
+                {
+                    Id = department.Id,
+                    Name = department.Name,
+                    Description = department.Description,
+                    
+                };
+
+                return View(model);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DepartmentAdd(AddDepartment model)
+        {
+            //if (_auth.IsUserSignedIn(User))
+            if (true)
+            {
+                // Add roles required !!! - delete this when you add 
+                // the function to populate the model with roles,
+                // in case not all inputs are added
+
+                if (ModelState.IsValid)
+                {
+                    var department = new Department
+                    {
+                        Name = model.Name,
+                        Description = model.Description,
+                        Employees = new List<Employee>()
+                        //DepartmentLeader is required
+
+                    };
+                    _employeeService.AddDepartment(department);
+                }
+
+                else
+                {
+                    return View();
+                }
+            }
+            // If we got this far, something failed, redisplay form
+            return RedirectToAction(nameof(ManageDepartments));
+        }
+
+
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult DepartmentInfo(int? id)
+        {
+            //if (_auth.IsUserSignedIn(User))
+            if (true)
+            {
+                int idDepartment = id ?? default(int);
+
+                var department = _employeeService.GetDepartment(idDepartment);
+                var model = new SingleDepartment
+                {
+                    Department = department
+                };
+
+                return View(model);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost]
+        [Route("{id}")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DepartmentEdit(int? id, [Bind("Id, Name, Description")] EditDepartment newDepartment)
+        {
+
+            //if (_auth.IsUserSignedIn(User))
+            if (true)
+            {
+                if (ModelState.IsValid)
+                {
+                    var department = new Department { Id = newDepartment.Id, Name = newDepartment.Name, Description = newDepartment.Description };
+                    _employeeService.UpdateDepartment(department);
+
+                }
+                else
+                {
+                    return View(newDepartment);
+                }
+                return RedirectToAction(nameof(ManageDepartments));
+            }
+            return NotFound();
+        }
+
         // GET: Departments/ManageDepartments
         [HttpGet]
         public IActionResult ManageDepartments()
@@ -52,29 +163,6 @@ namespace IdentityServer.Controllers.Departments
             //}
         }
 
-        // GET: Departments/DepartmentInfo/{id}
-        [HttpGet]
-        [Route("{id}")]
-        public IActionResult DepartmentInfo(int? id)
-        {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
-            {
-                int idDepartment = id ?? default(int);
-
-                //var department = _employeeService.GetDepartment(idDepartment);
-                var model = new SingleDepartment
-                {
-                    //Department = department
-                };
-
-                return View(model);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
 
         // GET: Departments/DepartmentAdd
         [HttpGet]
@@ -96,14 +184,17 @@ namespace IdentityServer.Controllers.Departments
             }
         }
 
-        // POST: Departments/Delete/5
+        // POST: Students/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        [Route("{id}")]
+        public IActionResult DepartmentDellete(int? id)
         {
-            //var student = await _context.Student.SingleOrDefaultAsync(m => m.Id == id);
-            //_context.Student.Remove(student);
-            //await _context.SaveChangesAsync();
+            //TODO 
+            //check accessLevel before 
+
+            int idDepartment = id ?? default(int);
+            _employeeService.DeleteDepartment(idDepartment);
             return RedirectToAction(nameof(ManageDepartments));
         }
     }

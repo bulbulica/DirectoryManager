@@ -18,5 +18,14 @@ namespace IdentityServer.Core.Shared
         void UpdateEmployee(Employee employee);
         IEnumerable<Team> GetAllTeams();
         void DeleteEmployee(int idEmployee);
+        Department GetDepartment(int idDepartment);
+        Team GetTeam(int idTeam);
+        void UpdateDepartment(Department department);
+        void UpdateTeam(Team team);
+        void DeleteDepartment(int idDepartment);
+        void DeleteTeam(int idTeam);
+        void AddDepartment(Department department);
+        void AddTeam(Team team);
+        IEnumerable<Employee> GetAllUnassignedEmployees();
     }
 }

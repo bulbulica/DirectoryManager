@@ -17,5 +17,10 @@ namespace IdentityServer.Persistence
         Position GetPositionByName(string name);
         Department GetDepartmentByName(string department);
         IEnumerable<Department> GetAllDepartments();
+        Department GetDepartmentById(int idDepartment);
+        Team GetTeamById(int idTeam);
+        void DeleteDepartment(Department department);
+        void DeleteTeam(Team team);
+        IEnumerable<Employee> GetAllUnassignedEmployees();
     }
 }
