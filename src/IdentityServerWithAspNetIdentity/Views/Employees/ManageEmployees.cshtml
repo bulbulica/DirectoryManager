@@ -20,6 +20,7 @@
                 <tbody>
                     @{
                         var employeesList = Model.Employees.ToList();
+                        int count = 1;
                         if (employeesList.Count != 0)
                         {
                             foreach (var employee in employeesList)
@@ -33,7 +34,7 @@
                                         {
                                             @employee.Department.Name
                                         }
-                                        </td>
+                                    </td>
                                     <td scope="row">
                                         @if (employee.Team != null)
                                         {
@@ -42,18 +43,20 @@
                                     </td>
                                     <td scope="row">@employee.Active</td>
                                     <td>
+                                        @{ 
+                                            var simpleName = "delete" + count++;
+                                            var complexName = "#" + simpleName;
+                                        }
                                         <a asp-action="EmployeeEdit" asp-route-id="@employee.Id">Edit</a> |
-                                        <a href="#myModal" id="#myModal" class="trigger-btn" data-toggle="modal">Delete</a>
-                                        <!-- Modal HTML -->
-                                        <div id="myModal" class="modal fade">
+                                        <a href="@complexName" id="@complexName" class="trigger-btn" data-toggle="modal">Delete</a>
+                                        <div id="@simpleName" class="modal fade">
                                             <div class="modal-dialog modal-confirm">
                                                 <div class="modal-content">
                                                     <div class="modal-body">
                                                         <h4>Do you really want to delete this record? It cannot be undone.</h4>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-danger" onclick="location.href='@Url.Action("List", "Search")'"><span class="glyphicon glyphicon-ok"></span> Delete</button>
-                                                        <!--<a asp-action="EmployeeDelete" asp-route-id="@employee.Id" class="delete">Delete</a>-->
+                                                        <a asp-action="EmployeeDelete" asp-route-id="@employee.Id"><button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-ok"></span> Delete</button></a>
                                                         <button type="button" class="btn btn-info" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
                                                     </div>
                                                 </div>

@@ -6,46 +6,74 @@ using IdentityServer.Core.Shared;
 using IdentityServer.Domain;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IdentityServer.Views.Teams
+namespace IdentityServer
 {
-    namespace IdentityServer
+    [Route("[controller]/[action]")]
+    [SecurityHeaders]
+    public class TeamsController : Controller
     {
-        [Route("[controller]/[action]")]
-        [SecurityHeaders]
-        public class TeamsController : Controller
+        private readonly IAuthentication _auth;
+        private readonly IBusinessLayer _businessLogic;
+        private readonly IEmployeeService _employeeService;
+
+        public TeamsController(IAuthentication auth,
+            IBusinessLayer businessLayer)
         {
-            private readonly IAuthentication _auth;
-            private readonly IBusinessLayer _businessLogic;
-            private readonly IEmployeeService _employeeService;
+            _auth = auth;
+            _businessLogic = businessLayer;
+            _employeeService = _businessLogic.GetEmployeeService();
+        }
 
-            public TeamsController(IAuthentication auth,
-                IBusinessLayer businessLayer)
+        // GET: Teams/ManageTeams
+        [HttpGet]
+        public IActionResult ManageTeams()
+        {
+            //if (_auth.IsUserSignedIn(User))
+            if (true)
             {
-                _auth = auth;
-                _businessLogic = businessLayer;
-                _employeeService = _businessLogic.GetEmployeeService();
-            }
-
-            // GET: Teams/ManageTeams
-            [HttpGet]
-            public IActionResult ManageTeams()
-            {
-                //if (_auth.IsUserSignedIn(User))
-                //{
                 List<Team> teams = _employeeService.GetAllTeams().ToList();
 
                 var model = new AllTeams
                 {
                     Teams = teams
                 };
-                return View("ManageTeams", model);
-
-                //}
-                //else
-                //{
-                //    return NotFound();
-                //}
+                return View(model);
             }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        // GET: Teams/TeamAdd
+        [HttpGet]
+        public IActionResult TeamAdd()
+        {
+            //if (_auth.IsUserSignedIn(User))
+            if (true)
+            {
+                var model = new AddTeam()
+                {
+
+                };
+
+                return View(model);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        // POST: Teams/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            //var student = await _context.Student.SingleOrDefaultAsync(m => m.Id == id);
+            //_context.Student.Remove(student);
+            //await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ManageTeams));
         }
     }
 }

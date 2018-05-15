@@ -6,7 +6,7 @@
 <h1>@ViewData["Title"] @Model.Name</h1>
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="EditEmployee" method="post">
+        <form asp-action="EmployeeEdit" method="post">
             <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" asp-for="Id" value="@Model.Id" class="form-control" />
             <div class="form-group">
@@ -68,11 +68,11 @@
         </form>
     </div>
     <div class="col-md-3">
-        @if (Model.Picture != null)
+        @if (Model.Picture != null && Model.Picture.Length > 0)
         {
         <img src="../../img/@Model.Picture" class="rounded float-left" alt="@Model.Name" height="300" width="300">
         }
-        @if (Model.CV != null)
+        @if (Model.CV != null && Model.CV.Length > 0)
         {
         <br /><br />
         <a href="../../docs/@Model.CV">View CV</a>

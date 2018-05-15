@@ -32,7 +32,8 @@ namespace IdentityServer
         public IActionResult ManageEmployees()
         {
             //if (_auth.IsUserSignedIn(User))
-            //{
+            if (true)
+            {
                 List<Employee> employees = _employeeService.GetAllEmployees();
 
                 var model = new AllEmployees
@@ -40,12 +41,11 @@ namespace IdentityServer
                     Employees = employees
                 };
                 return View("ManageEmployees", model);
-
-            //}
-            //else
-            //{
-            //    return NotFound();
-            //}
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         // GET: Employees/EmployeeInfo/{id}
@@ -54,22 +54,48 @@ namespace IdentityServer
         public IActionResult EmployeeInfo(int? id)
         {
             //if (_auth.IsUserSignedIn(User))
-            //{
+            if (true)
+            {
                 int idEmployee = id ?? default(int);
 
                 var employee = _employeeService.GetEmployee(idEmployee);
                 var model = new SingleEmployee
                 {
-                   Employee = employee
+                    Employee = employee
                 };
 
-                return View("EmployeeInfo", model);
+                return View(model);
             }
-            //else
-            //{
-            //    return NotFound();
-            //}
-        
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        // GET: Employees/EmployeeInfo/{id}
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult EmployeeAddCV(int? id)
+        {
+            //if (_auth.IsUserSignedIn(User))
+            if (true)
+            {
+                int idEmployee = id ?? default(int);
+
+                var employee = _employeeService.GetEmployee(idEmployee);
+                var model = new AddCVEmployee
+                {
+                    Id = employee.Id,
+                    Name = employee.Name
+                };
+                
+                return View(model);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
 
         // GET: Employees/EmployeeAdd
         [HttpGet]
@@ -99,61 +125,67 @@ namespace IdentityServer
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EmployeeAdd(AddEmployee model)
         {
-            // Add roles required !!! - delete this when you add 
-            // the function to populate the model with roles,
-            // in case not all inputs are added
-            model.AllPositions = _employeeService.GetAllPositions();
-
-            if (model.CV == null)
-                model.CV = "";
-            if(model.Picture == null)
-                model.Picture = "";
-            
-
-
-            if (ModelState.IsValid)
+            //if (_auth.IsUserSignedIn(User))
+            if (true)
             {
-                var position = _employeeService.GetPositionByName(model.Position);
-                var department = _employeeService.GetDepartmentByName(model.Department);
+                // Add roles required !!! - delete this when you add 
+                // the function to populate the model with roles,
+                // in case not all inputs are added
+                model.AllPositions = _employeeService.GetAllPositions();
 
+                if (model.CV == null)
+                    model.CV = "";
+                if (model.Picture == null)
+                    model.Picture = "";
 
-                //TODO check if position is departmentmanager and if that department already has a manager.
-                //if so update
-
-
-                if (position != null && department !=null)
+                if (ModelState.IsValid)
                 {
-                    var user = new ApplicationUser { UserName = model.Name, Email = model.Username };
-                    var result = await _auth.RegisterProcess(user, model.Password);
-                    if (result)
-                    {
-                        var employee = new Employee
-                        {
-                            Name = model.Name,
-                            Username = model.Username,
-                            Active = true,
-                            Position = position,
-                            Department = department,
-                            CV = model.CV
-                        };
-                        _employeeService.AddEmployee(employee);
+                    var position = _employeeService.GetPositionByName(model.Position);
+                    var department = _employeeService.GetDepartmentByName(model.Department);
 
+
+                    //TODO check if position is departmentmanager and if that department already has a manager.
+                    //if so update
+
+
+                    if (position != null && department != null)
+                    {
+                        var user = new ApplicationUser { UserName = model.Name, Email = model.Username };
+                        var result = await _auth.RegisterProcess(user, model.Password);
+                        if (result)
+                        {
+                            var employee = new Employee
+                            {
+                                Name = model.Name,
+                                Username = model.Username,
+                                Active = true,
+                                Position = position,
+                                Department = department,
+                                CV = model.CV
+                            };
+                            _employeeService.AddEmployee(employee);
+
+                        }
+                    }
+
+                    else
+                    {
+                        string ErrorMessage = $"the password does not meet the password policy requirements.";
+                        var policyRequirements = $"* At least an uppercase and a special character";
+
+                        ViewBag.Error = ErrorMessage;
+                        ViewBag.policyRequirments = policyRequirements;
+                        return View();
                     }
                 }
 
-                else
-                {
-                    string ErrorMessage = $"the password does not meet the password policy requirements.";
-                    var policyRequirements = $"* At least an uppercase and a special character";
-
-                    ViewBag.Error = ErrorMessage;
-                    ViewBag.policyRequirments = policyRequirements;
-                    return View();
-                }
+                // If we got this far, something failed, redisplay form
+                return ManageEmployees();
             }
-
-            // If we got this far, something failed, redisplay form
-            return ManageEmployees();
+            else
+            {
+                return NotFound();
+            }
         }
 
         // GET: Employees/EmployeeEdit/{id}
@@ -190,51 +222,68 @@ namespace IdentityServer
             }
         }
 
-
         [HttpPost]
         [Route("{id}")]
         [ValidateAntiForgeryToken]
-        public IActionResult EditEmployee(EditEmployee model, int? id)
+        public IActionResult EmployeeEdit(EditEmployee model, int? id)
         {
-
-            if (model.CV == null)
-                model.CV = "";
-            if (model.Picture == null)
-                model.Picture = "";
-            int idEmployee = id ?? default(int);
-
-
-            if (ModelState.IsValid)
+            //if (_auth.IsUserSignedIn(User))
+            if (true)
             {
-                var position = _employeeService.GetPositionByName(model.Position);
-                var department = _employeeService.GetDepartmentByName(model.Department);
+                if (model.CV == null)
+                    model.CV = "";
+                if (model.Picture == null)
+                    model.Picture = "";
+                int idEmployee = id ?? default(int);
 
-                if (position != null && department != null)
+
+                if (ModelState.IsValid)
                 {
-                    var employee = new Employee
+                    var position = _employeeService.GetPositionByName(model.Position);
+                    var department = _employeeService.GetDepartmentByName(model.Department);
+
+                    if (position != null && department != null)
                     {
-                        Id = idEmployee,
-                        Name = model.Name,
-                        Active = true,
-                        Position = position,
-                        Department = department,
-                        CV = model.CV
-                        
-                    };
-                    _employeeService.UpdateEmployee(employee);
-                }
+                        var employee = new Employee
+                        {
+                            Id = idEmployee,
+                            Name = model.Name,
+                            Active = true,
+                            Position = position,
+                            Department = department,
+                            CV = model.CV
 
-                else
-                {
-                    string ErrorMessage = $"the password does not meet the password policy requirements.";
-                    var policyRequirements = $"* At least an uppercase and a special character";
+                        };
+                        _employeeService.UpdateEmployee(employee);
+                    }
 
-                    ViewBag.Error = ErrorMessage;
-                    ViewBag.policyRequirments = policyRequirements;
-                    return View("EmployeeEdit", model);
+                    else
+                    {
+                        string ErrorMessage = $"the password does not meet the password policy requirements.";
+                        var policyRequirements = $"* At least an uppercase and a special character";
+
+                        ViewBag.Error = ErrorMessage;
+                        ViewBag.policyRequirments = policyRequirements;
+                        return View("EmployeeEdit", model);
+                    }
                 }
+                return ManageEmployees();
             }
-            return ManageEmployees();
+            else
+            {
+                return Forbid();
+            }
+        }
+
+        // POST: Students/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            //var student = await _context.Student.SingleOrDefaultAsync(m => m.Id == id);
+            //_context.Student.Remove(student);
+            //await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ManageEmployees));
         }
 
         /// <summary>
@@ -244,8 +293,7 @@ namespace IdentityServer
         {
             var vm = new ErrorViewModel();
 
-
             return View("Error", vm);
         }
     }
-    }
+}

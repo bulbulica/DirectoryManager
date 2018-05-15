@@ -22,7 +22,7 @@
         </div>
         <div class="col-md-6">
             <h2>Department - @Model.Employee.Department.Name</h2>
-            @if (Model.Employee.Team != null)
+            @if (Model.Employee.Team != null && Model.Employee.Team.Name.Length > 0)
             {
                 <h3>Team - @Model.Employee.Team.Name</h3>
             }
@@ -31,7 +31,7 @@
                 <h3>Team - Not in a team</h3>
             }
             <h4>Active - @Model.Employee.Active</h4>
-            @if (Model.Employee.CV != null)
+            @if (Model.Employee.CV != null && Model.Employee.CV.Length > 0)
             {
                 <a href="../../docs/@Model.Employee.CV">View CV</a>
                 <a asp-action="EmployeeAddCV" asp-route-id="@Model.Employee.Id"><h5>Upload new CV</h5></a>
@@ -40,7 +40,6 @@
             {
                 <a asp-action="EmployeeAddCV" asp-route-id="@Model.Employee.Id"><h4>Upload his CV</h4></a>
             }
-            <br />
             <a asp-action="EmployeeEdit" asp-route-id="@Model.Employee.Id"><h3>Edit his data</h3></a>
             <a asp-action="ManageEmployees">Back to all Employees</a>
         </div>
