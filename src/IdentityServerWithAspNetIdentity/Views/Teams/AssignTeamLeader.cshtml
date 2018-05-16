@@ -14,8 +14,8 @@
             <input type="hidden" asp-for="Team.Id" value="@Model.Team.Id" class="form-control" />
             <div class="form-group">
                 <label asp-for="IdTeamLeader" class="control-label">Select new Team Leader</label>
-                <br />
-                <select asp-for="IdTeamLeader">
+                <br /><br />
+                <select asp-for="IdTeamLeader" id="mainselection">
                 @{
                     if (Model.Employees.ToList().Count != 0)
                     {
@@ -28,6 +28,7 @@
                 }
                 </select>
             </div>
+            <br />
             <div class="form-group">
                 <input type="submit" value="Submit" class="btn btn-primary" />
             </div>
@@ -36,5 +37,5 @@
 </div>
 <div>
     <br />
-    <a asp-route="ManageTeam">Back to team list</a>
+    <a asp-action="ManageTeams">Back to team list</a>
 </div>
