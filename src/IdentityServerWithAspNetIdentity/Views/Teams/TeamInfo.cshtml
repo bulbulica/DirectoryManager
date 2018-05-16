@@ -6,7 +6,13 @@
 
 <h1>@ViewData["Title"] - @Model.Team.Description</h1>
 <h2>
-    Team Leader : <a asp-action="EmployeeInfo" asp-controller="Employees" asp-route-id="@Model.Team.TeamLeader.Id">@Model.Team.TeamLeader.Name</a>
+    Team Leader :
+    @{ if (Model.TeamLeader != null)
+        {
+       <a asp-action="EmployeeInfo" asp-controller="Employees" asp-route-id="@Model.TeamLeader.Id">@Model.TeamLeader.Name</a>
+            }
+        }
+
 </h2>
 <div>
     <hr />
