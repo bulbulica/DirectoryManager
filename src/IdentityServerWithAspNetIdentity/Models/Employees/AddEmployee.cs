@@ -3,6 +3,7 @@
 
 
 using IdentityServer.Domain;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -17,9 +18,10 @@ namespace IdentityServer
         [EmailAddress]
         [Display(Name = "Email")]
         public string Username { get; set; }
-        public string Picture { get; set; }
-        public string CV { get; set; }
         public bool Active { get; set; }
+
+        public IFormFile Picture { get; set; }
+        public IFormFile CV { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]

@@ -3,6 +3,7 @@
 
 
 using IdentityServer.Domain;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -14,6 +15,6 @@ namespace IdentityServer
 
         public string Name { get; set; }
 
-        public string CV { get; set; }
+        public IFormFile CV { set; get; }
     }
 }

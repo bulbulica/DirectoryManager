@@ -72,7 +72,7 @@ namespace IdentityServer
             }
         }
 
-        // GET: Employees/EmployeeInfo/{id}
+        // GET: Employees/EmployeeAddCV/{id}
         [HttpGet]
         [Route("{id}")]
         public IActionResult EmployeeAddCV(int? id)
@@ -90,6 +90,24 @@ namespace IdentityServer
                 };
                 
                 return View(model);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        // POST: Employees/EmployeeAddCV/{id}
+        [HttpPost]
+        [Route("{id}")]
+        [ValidateAntiForgeryToken]
+        public IActionResult EmployeeAddCV(AddCVEmployee model)
+        {
+            //if (_auth.IsUserSignedIn(User))
+            if (true)
+            { 
+                // AICI TREBUIE ADAUGAT PENTRU CV
+                return ManageEmployees();
             }
             else
             {
@@ -222,6 +240,7 @@ namespace IdentityServer
             }
         }
 
+        // GET: Employees/EmployeeEdit/{id}
         [HttpPost]
         [Route("{id}")]
         [ValidateAntiForgeryToken]
@@ -275,7 +294,7 @@ namespace IdentityServer
             }
         }
 
-        // POST: Employees/EmployeeDelete/5
+        // POST: Employees/EmployeeDelete/{id}
         [HttpGet]
         [Route("{id}")]
         public IActionResult EmployeeDelete(int? id)
