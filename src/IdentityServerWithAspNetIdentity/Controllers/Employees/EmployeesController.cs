@@ -151,11 +151,6 @@ namespace IdentityServer
                 // in case not all inputs are added
                 model.AllPositions = _employeeService.GetAllPositions();
 
-                if (model.CV == null)
-                    model.CV = "";
-                if (model.Picture == null)
-                    model.Picture = "";
-
                 if (ModelState.IsValid)
                 {
                     var position = _employeeService.GetPositionByName(model.Position);
@@ -179,7 +174,7 @@ namespace IdentityServer
                                 Active = true,
                                 Position = position,
                                 Department = department,
-                                CV = model.CV
+                                CV = "" // am modificat si aici !!!
                             };
                             _employeeService.AddEmployee(employee);
 
@@ -197,7 +192,6 @@ namespace IdentityServer
                     }
                 }
 
-                // If we got this far, something failed, redisplay form
                 return ManageEmployees();
             }
             else
@@ -225,9 +219,9 @@ namespace IdentityServer
                     Active = employee.Active,
                     AllPositions = _employeeService.GetAllPositions(),
                     Department = employee.Department.Name,
-                    Picture = employee.Picture,
+                    Picture = "", // am modificat si aici !!!
                     Team = employee.Team,
-                    CV = employee.CV,
+                    CV = "", // am modificat si aici !!!
                     Position = employee.Position.RoleName,
                     AllDepartments = _employeeService.GetAllDepartments()
                 };
@@ -275,7 +269,6 @@ namespace IdentityServer
                         };
                         _employeeService.UpdateEmployee(employee);
                     }
-
                     else
                     {
                         string ErrorMessage = $"the password does not meet the password policy requirements.";
@@ -307,9 +300,6 @@ namespace IdentityServer
             return RedirectToAction(nameof(ManageEmployees));
         }
 
-        /// <summary>
-        /// Shows the error page
-        /// </summary>
         public IActionResult Error(string errorId)
         {
             var vm = new ErrorViewModel();
