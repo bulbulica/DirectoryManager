@@ -275,9 +275,8 @@ namespace IdentityServer
             }
         }
 
-        // POST: Students/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        // POST: Employees/EmployeeDelete/5
+        [HttpGet]
         [Route("{id}")]
         public IActionResult EmployeeDelete(int? id)
         {

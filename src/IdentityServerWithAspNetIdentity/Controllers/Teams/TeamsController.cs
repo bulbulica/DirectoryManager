@@ -88,21 +88,6 @@ namespace IdentityServer
             }
         }
 
-
-        // POST: Teams/TeamDelete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Route("{id}")]
-        public IActionResult TeamDelete(int? id)
-        {
-            //TODO 
-            //check accessLevel before 
-
-            int idTeam = id ?? default(int);
-            _employeeService.DeleteTeam(idTeam);
-            return RedirectToAction(nameof(ManageTeams));
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult TeamAdd(AddTeam model)
@@ -238,5 +223,16 @@ namespace IdentityServer
             return NotFound();
         }
 
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult TeamDelete(int? id)
+        {
+            //TODO 
+            //check accessLevel before 
+
+            int idTeam = id ?? default(int);
+            _employeeService.DeleteTeam(idTeam);
+            return RedirectToAction(nameof(ManageTeams));
+        }
     }
 }

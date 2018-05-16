@@ -184,11 +184,10 @@ namespace IdentityServer.Controllers.Departments
             }
         }
 
-        // POST: Students/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        // GET: Departments/DepartmentDellete/{id}
+        [HttpGet]
         [Route("{id}")]
-        public IActionResult DepartmentDellete(int? id)
+        public IActionResult DepartmentDelete(int? id)
         {
             //TODO 
             //check accessLevel before 
