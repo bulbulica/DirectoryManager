@@ -11,5 +11,6 @@ namespace IdentityServer
     public class SingleTeam
     {
        public Team Team { get; set; }
+       public Employee TeamLeader { get; set; }
     }
 }

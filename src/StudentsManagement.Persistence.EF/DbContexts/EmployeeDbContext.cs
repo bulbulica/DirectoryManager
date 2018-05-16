@@ -16,8 +16,6 @@ namespace IdentityServer.Persistence.EF
             builder.Entity<Department>()
                 .HasMany(d => d.Employees);
 
-            builder.Entity<Department>()
-                .HasOne(d => d.DepartmentManager);
 
             builder.Entity<Employee>()
                 .HasOne(e => e.Team);
@@ -28,8 +26,6 @@ namespace IdentityServer.Persistence.EF
             builder.Entity<Team>()
                .HasMany(d => d.Employees);
 
-            builder.Entity<Team>()
-               .HasOne(d => d.TeamLeader);
             // Customize the ASP.NET
             // Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.

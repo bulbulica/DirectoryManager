@@ -24,5 +24,6 @@ namespace IdentityServer.Persistence
         IEnumerable<Employee> GetAllUnassignedEmployees();
         Position GetDeveloperPosition();
         Position GetTeamLeaderPosition();
+        Position GetDepartmentManagerPosition();
     }
 }

@@ -1,4 +1,5 @@
-﻿using IdentityServer.Shared.Abstractions;
+﻿using IdentityServer.Domain;
+using IdentityServer.Shared.Abstractions;
 
 namespace IdentityServer.Persistence
 {

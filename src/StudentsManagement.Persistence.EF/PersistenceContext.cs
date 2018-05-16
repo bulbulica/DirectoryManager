@@ -167,7 +167,6 @@ namespace IdentityServer.Persistence.EF
                 {
                    Name = "Dusmanii",
                    Description = "Inamicii bugurilor",
-                   TeamLeader = employee2,
                    Employees = new List<Employee>
                    {
                        employee1
@@ -178,7 +177,6 @@ namespace IdentityServer.Persistence.EF
                 {
                     Name = "Mustaciosii",
                     Description = "Mustata = viata",
-                    TeamLeader = employee3,
                     Employees = new List<Employee>
                    {
                        employee0
@@ -197,7 +195,6 @@ namespace IdentityServer.Persistence.EF
                         team1,
                         team2
                     },
-                    DepartmentManager = employee4
                 };
 
                 EmployeeRepository.AddDepartment(dep);
@@ -207,5 +204,6 @@ namespace IdentityServer.Persistence.EF
 
 
         }
+
     }
 }

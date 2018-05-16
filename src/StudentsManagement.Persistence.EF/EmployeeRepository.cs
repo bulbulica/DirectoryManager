@@ -112,6 +112,11 @@ namespace IdentityServer.Persistence.EF
             return EmployeeDbContext.Positions.SingleOrDefault(testp => testp.RoleName.Equals("TeamLead"));
         }
 
+        public Position GetDepartmentManagerPosition()
+        {
+            return EmployeeDbContext.Positions.SingleOrDefault(testp => testp.RoleName.Equals("DepManager"));
+        }
+
         public EmployeeDbContext EmployeeDbContext
         {
             get

@@ -55,9 +55,13 @@ namespace IdentityServer
                 int idTeam = id ?? default(int);
 
                 var team = _employeeService.GetTeam(idTeam);
+                var teamLeader = _employeeService.GetTeamLeader(team);
+                team.Employees.Remove(teamLeader);
+
                 var model = new SingleTeam
                 {
-                    Team = team
+                    Team = team,
+                    TeamLeader = teamLeader
                 };
 
                 return View(model);
@@ -107,9 +111,6 @@ namespace IdentityServer
                         Name = model.Name,
                         Description = model.Description,
                         Employees = new List<Employee>()
-                        //TODO
-                        //TeamLeader is required
-                        //Department is required
                     };
                     _employeeService.AddTeam(team);
                 }
@@ -185,8 +186,8 @@ namespace IdentityServer
 
             Team team = _employeeService.GetTeam(idTeam);
 
-            //TODO: add employees from team's list to options
             var employees = _employeeService.GetAllUnassignedEmployees().ToList();
+            employees.AddRange(team.Employees);
 
             var model = new AssignTeamLeader
             {

@@ -1,6 +1,7 @@
 ﻿using IdentityServer.Core.Shared;
 using IdentityServer.Domain;
 using IdentityServer.Persistence;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -146,19 +147,17 @@ namespace IdentityServer.Core
             var department = PersistenceContext.EmployeeRepository.GetDepartmentById(idDepartment);
             if (department != null)
             {
+                var departmentManager = GetDepartmentManager(department);
+                departmentManager.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
                 foreach(var team in department.Teams)
                 {
-                    _persistenceContext.EmployeeRepository.DeleteTeam(team);
+                    team.Department = null;
                 }
 
                 foreach (var employee in department.Employees)
                 {
                     employee.Department = null;
                 }
-
-                var teamLeader = PersistenceContext.EmployeeRepository.GetEmployeeById(department.DepartmentManager.Id);
-                teamLeader.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
-                teamLeader.Department = null;
 
                 PersistenceContext.EmployeeRepository.DeleteDepartment(department);
                 PersistenceContext.Complete();
@@ -170,13 +169,13 @@ namespace IdentityServer.Core
             var team = PersistenceContext.EmployeeRepository.GetTeamById(idTeam);
             if (team != null)
             {
-                foreach(var employee in team.Employees)
+                var teamManager = GetTeamLeader(team);
+                teamManager.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
+                foreach (var employee in team.Employees)
                 {
                     employee.Team = null;
                 }
-                var teamLeader = PersistenceContext.EmployeeRepository.GetEmployeeById(team.TeamLeader.Id);
-                teamLeader.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
-                teamLeader.Team = null;
+              
                 PersistenceContext.EmployeeRepository.DeleteTeam(team);
                 PersistenceContext.Complete();
             }
@@ -202,22 +201,43 @@ namespace IdentityServer.Core
         public void UpdateTeamLeader(Team team, Employee employee)
         {
             var updatedTeam = PersistenceContext.EmployeeRepository.GetTeamById(team.Id);
+            var updatedEmployee = PersistenceContext.EmployeeRepository.GetEmployeeById(employee.Id);
             if (updatedTeam.Employees.Contains(employee))
             {
-                updatedTeam.Employees.Remove(employee);
+                if (GetTeamLeader(updatedTeam) != null)
+                {
+                    var exTeamLeader = GetTeamLeader(updatedTeam);
+                    exTeamLeader.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
+                }
+                updatedEmployee.Position = PersistenceContext.EmployeeRepository.GetTeamLeaderPosition();
             }
-
-            if(updatedTeam.TeamLeader != null)
+            else
             {
-                var OldTeamLeader = updatedTeam.TeamLeader;
-                OldTeamLeader.Position = _persistenceContext.EmployeeRepository.GetDeveloperPosition();
-                updatedTeam.Employees.Add(OldTeamLeader);
+                updatedTeam.Employees.Add(updatedEmployee);
+                updatedEmployee.Position = PersistenceContext.EmployeeRepository.GetTeamLeaderPosition();
             }
-
-            updatedTeam.TeamLeader = employee;
-            employee.Position = PersistenceContext.EmployeeRepository.GetTeamLeaderPosition();
 
             PersistenceContext.Complete();
+        }
+
+        public Employee GetTeamLeader(Team team)
+        {
+            foreach(var employee in team.Employees)
+            {
+                if (employee.Position == PersistenceContext.EmployeeRepository.GetTeamLeaderPosition())
+                    return employee;
+            }
+            return null;
+        }
+
+        public Employee GetDepartmentManager(Department department)
+        {
+            foreach (var employee in department.Employees)
+            {
+                if (employee.Position == PersistenceContext.EmployeeRepository.GetDepartmentManagerPosition())
+                    return employee;
+            }
+            return null;
         }
     }
 }

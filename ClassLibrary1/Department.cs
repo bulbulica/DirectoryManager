@@ -13,7 +13,5 @@ namespace IdentityServer.Domain
 
         public virtual ICollection<Employee> Employees { get; set; }
         
-        public int DepartmentManagerId { get; set; }
-        public virtual Employee DepartmentManager { get; set; }
     }
 }
