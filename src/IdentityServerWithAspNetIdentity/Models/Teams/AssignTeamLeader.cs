@@ -9,9 +9,6 @@ namespace IdentityServer
 {
     public class AssignTeamLeader
     {
-        [Required]
-        public int Id { get; set; }
-
         public Team Team { get; set; }
         public IEnumerable<Employee> Employees {get;set;}
         public Employee TeamLeader { get; set; }

@@ -181,15 +181,12 @@ namespace IdentityServer
         [Route("{id}")]
         public IActionResult AssignTeamLeader(int? id)
         {
-
             int idTeam = id ?? default(int);
 
             Team team = _employeeService.GetTeam(idTeam);
 
-
             //TODO: add employees from team's list to options
             var employees = _employeeService.GetAllUnassignedEmployees().ToList();
-            
 
             var model = new AssignTeamLeader
             {
@@ -201,15 +198,16 @@ namespace IdentityServer
         }
 
         [HttpPost]
-        [Route("{id}")]
         [ValidateAntiForgeryToken]
-        public IActionResult AssignTeamLeader(int? id, Employee TeamLeader)
+        public IActionResult AssignTeamLeaderToTeam(Team ModelTeam, Employee TeamLeader)
         {
-            int idTeam = id ?? default(int);
+            int idTeam = ModelTeam.Id;
             var team = _employeeService.GetTeam(idTeam);
 
             if (team == null)
+            {
                 return NotFound();
+            }
 
             if (ModelState.IsValid)
             {
