@@ -198,11 +198,13 @@ namespace IdentityServer
         }
 
         [HttpPost]
+        [Route("{id}")]
         [ValidateAntiForgeryToken]
-        public IActionResult AssignTeamLeaderToTeam(Team ModelTeam, Employee TeamLeader)
+        public IActionResult AssignTeamLeaderToTeam(Team ModelTeam, int IdTeamLeader)
         {
             int idTeam = ModelTeam.Id;
             var team = _employeeService.GetTeam(idTeam);
+            var TeamLeader = _employeeService.GetEmployee(IdTeamLeader);
 
             if (team == null)
             {

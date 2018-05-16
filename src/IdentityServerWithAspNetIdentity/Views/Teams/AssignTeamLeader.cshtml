@@ -13,16 +13,16 @@
             <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" asp-for="Team.Id" value="@Model.Team.Id" class="form-control" />
             <div class="form-group">
-                <label asp-for="TeamLeader" class="control-label">Select new Team Leader</label>
+                <label asp-for="IdTeamLeader" class="control-label">Select new Team Leader</label>
                 <br />
-                <select asp-for="TeamLeader">
+                <select asp-for="IdTeamLeader">
                 @{
                     if (Model.Employees.ToList().Count != 0)
                     {
                         var employeesList = Model.Employees.ToList();
                         foreach (var employee in employeesList)
                         {
-                            <option value="@employee">@employee.Name</option>
+                            <option value="@employee.Id">@employee.Name</option>
                         }
                     }
                 }

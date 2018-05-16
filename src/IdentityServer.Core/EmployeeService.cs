@@ -109,6 +109,7 @@ namespace IdentityServer.Core
         {
             var employee = PersistenceContext.EmployeeRepository.GetEmployeeById(idEmployee);
             if (employee != null) {
+                if(employee.Position.AccessLevel > 3)
                 PersistenceContext.EmployeeRepository.Delete(employee);
                 PersistenceContext.Complete();
             }
@@ -145,6 +146,20 @@ namespace IdentityServer.Core
             var department = PersistenceContext.EmployeeRepository.GetDepartmentById(idDepartment);
             if (department != null)
             {
+                foreach(var team in department.Teams)
+                {
+                    _persistenceContext.EmployeeRepository.DeleteTeam(team);
+                }
+
+                foreach (var employee in department.Employees)
+                {
+                    employee.Department = null;
+                }
+
+                var teamLeader = PersistenceContext.EmployeeRepository.GetEmployeeById(department.DepartmentManager.Id);
+                teamLeader.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
+                teamLeader.Department = null;
+
                 PersistenceContext.EmployeeRepository.DeleteDepartment(department);
                 PersistenceContext.Complete();
             }
@@ -155,6 +170,13 @@ namespace IdentityServer.Core
             var team = PersistenceContext.EmployeeRepository.GetTeamById(idTeam);
             if (team != null)
             {
+                foreach(var employee in team.Employees)
+                {
+                    employee.Team = null;
+                }
+                var teamLeader = PersistenceContext.EmployeeRepository.GetEmployeeById(team.TeamLeader.Id);
+                teamLeader.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
+                teamLeader.Team = null;
                 PersistenceContext.EmployeeRepository.DeleteTeam(team);
                 PersistenceContext.Complete();
             }
@@ -180,15 +202,21 @@ namespace IdentityServer.Core
         public void UpdateTeamLeader(Team team, Employee employee)
         {
             var updatedTeam = PersistenceContext.EmployeeRepository.GetTeamById(team.Id);
+            if (updatedTeam.Employees.Contains(employee))
+            {
+                updatedTeam.Employees.Remove(employee);
+            }
 
             if(updatedTeam.TeamLeader != null)
             {
                 var OldTeamLeader = updatedTeam.TeamLeader;
                 OldTeamLeader.Position = _persistenceContext.EmployeeRepository.GetDeveloperPosition();
-
+                updatedTeam.Employees.Add(OldTeamLeader);
             }
+
             updatedTeam.TeamLeader = employee;
             employee.Position = PersistenceContext.EmployeeRepository.GetTeamLeaderPosition();
+
             PersistenceContext.Complete();
         }
     }
