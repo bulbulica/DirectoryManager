@@ -24,26 +24,26 @@
                         <th scope="col">Name</th>
                     </tr>
                 </thead>
-                   <tbody>
-                    @{var employeesList = Model.Team.Employees.ToList();
-                        @if (employeesList.Count != 0)
+                <tbody>
+                @{var employeesList = Model.Team.Employees.ToList();
+                    @if (employeesList.Count != 0)
+                    {
+                        foreach (var employee in employeesList)
                         {
-                            foreach (var employee in employeesList)
-                            {
-                                <tr>
-                                    <td scope="row">
-                                        <a asp-action="EmployeeInfo" asp-controller="Employees" asp-route-id="@employee.Id">@employee.Name</a>
-                                    </td>
-                                    </tr>
+                            <tr>
+                                <td scope="row">
+                                    <a asp-action="EmployeeInfo" asp-controller="Employees" asp-route-id="@employee.Id">@employee.Name</a>
+                                </td>
+                                </tr>
 
-                            }
                         }
-                     }
-                    </tbody>
-                </table>
-                                    <a asp-action="TeamEdit" asp-route-id="@Model.Team.Id">Edit this Team</a>
+                    }
+                }
+                </tbody>
+            </table>
+            <a asp-action="TeamEdit" asp-route-id="@Model.Team.Id">Edit this Team</a>
             <br />
-                                    <a asp-action="ManageTeams">Back to all Teams</a>
+            <a asp-action="ManageTeams">Back to all Teams</a>
         </div>
     </div>
 </div>

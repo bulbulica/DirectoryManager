@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IdentityServer.Persistence.EF.Migrations
 {
     [DbContext(typeof(EmployeeDbContext))]
-    [Migration("20180510091020_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20180516090602_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -155,7 +155,7 @@ namespace IdentityServer.Persistence.EF.Migrations
 
             modelBuilder.Entity("IdentityServer.Domain.Team", b =>
                 {
-                    b.HasOne("IdentityServer.Domain.Department")
+                    b.HasOne("IdentityServer.Domain.Department", "Department")
                         .WithMany("Teams")
                         .HasForeignKey("DepartmentId");
 
