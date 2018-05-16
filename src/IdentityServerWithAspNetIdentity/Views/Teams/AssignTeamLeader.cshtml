@@ -1,49 +1,41 @@
 ﻿@model AssignTeamLeader
 
 @{
+    Layout = "/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Assign Team Leader to " + Model.Team.Name;
 }
-
-<script type="text/javascript" src="~/js/autocomplete.js"></script>
-
-<script type="text/javascript">
-
-                             var employees = [];
-                @foreach (var employee in Model.Employees.ToList())
-                {
-                    <text>
-                        employees.push("@employee.Name");
-                    </text>
-                }
-</script>
 
 <h3>Add Students to activity: @Model.Team.Name</h3>
 
 <div class="row">
     <div class="col-md-4">
-        <form autocomplete="off" asp-action="AssignTeamLeader">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Team.Id" value="@Model.Team.Id" class="form-control" />
 
-            </br>
-            <div class="autocomplete" style="width:300px;">
-                <input class="form-control" id="inputList" type="text" placeholder="Employee" autocomplete="off">
-            </div>
-            <div class="form-group">
-
-                <input type="submit" value="Add" class="btn btn-default" />
-
-            </div>
+        <form asp-action="AssignTeamLeader" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" value="@Model.Id" class="form-control" />
+              <div class="form-group">
+                <label asp-for="TeamLeader" class="control-label">Select new Team Leader</label>
+                <br />
+                <select asp-for="TeamLeader">
+                    @{
+                        if (Model.Employees.ToList().Count != 0)
+                        {
+                            var employeesList = Model.Employees.ToList();
+                            foreach (var employee in employeesList)
+                            {
+                                <option value="@employee">@employee.Name</option>
+                            }
+                        }
+                    }
+                </select>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Submit" class="btn btn-primary" />
+                </div>
         </form>
-    </div>
+        </div>
 </div>
 <div>
     <br />
     <a asp-route="ManageTeam">Back to team list</a>
 </div>
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
-}
-<script>
-    autocomplete(document.getElementById("inputList"), employees);
-</script>

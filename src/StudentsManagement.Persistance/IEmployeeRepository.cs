@@ -22,5 +22,7 @@ namespace IdentityServer.Persistence
         void DeleteDepartment(Department department);
         void DeleteTeam(Team team);
         IEnumerable<Employee> GetAllUnassignedEmployees();
+        Position GetDeveloperPosition();
+        Position GetTeamLeaderPosition();
     }
 }

@@ -102,6 +102,15 @@ namespace IdentityServer.Persistence.EF
             return unassignedEmployees;
         }
 
+        public Position GetDeveloperPosition()
+        {
+            return EmployeeDbContext.Positions.SingleOrDefault(testp => testp.RoleName.Equals("Dev"));
+        }
+
+        public Position GetTeamLeaderPosition()
+        {
+            return EmployeeDbContext.Positions.SingleOrDefault(testp => testp.RoleName.Equals("TeamLead"));
+        }
 
         public EmployeeDbContext EmployeeDbContext
         {

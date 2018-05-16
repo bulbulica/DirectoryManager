@@ -177,5 +177,19 @@ namespace IdentityServer.Core
             return PersistenceContext.EmployeeRepository.GetAllUnassignedEmployees();
         }
 
+        public void UpdateTeamLeader(Team team, Employee employee)
+        {
+            var updatedTeam = PersistenceContext.EmployeeRepository.GetTeamById(team.Id);
+
+            if(updatedTeam.TeamLeader != null)
+            {
+                var OldTeamLeader = updatedTeam.TeamLeader;
+                OldTeamLeader.Position = _persistenceContext.EmployeeRepository.GetDeveloperPosition();
+
+            }
+            updatedTeam.TeamLeader = employee;
+            employee.Position = PersistenceContext.EmployeeRepository.GetTeamLeaderPosition();
+            PersistenceContext.Complete();
+        }
     }
 }

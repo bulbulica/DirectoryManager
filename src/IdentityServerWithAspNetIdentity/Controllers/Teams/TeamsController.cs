@@ -202,8 +202,9 @@ namespace IdentityServer
             Team team = _employeeService.GetTeam(idTeam);
 
 
-            //TODO: filter the students which already participate to activity
-            var employees = _employeeService.GetAllUnassignedEmployees();
+            //TODO: add employees from team's list to options
+            var employees = _employeeService.GetAllUnassignedEmployees().ToList();
+            
 
             var model = new AssignTeamLeader
             {
@@ -213,5 +214,29 @@ namespace IdentityServer
 
             return View(model);
         }
+
+        [HttpPost]
+        [Route("{id}")]
+        [ValidateAntiForgeryToken]
+        public IActionResult AssignTeamLeader(int? id, Employee TeamLeader)
+        {
+            int idTeam = id ?? default(int);
+            var team = _employeeService.GetTeam(idTeam);
+
+            if (team == null)
+                return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                if (TeamLeader != null)
+                {
+                    _employeeService.UpdateTeamLeader(team, TeamLeader);
+                    return RedirectToAction(nameof(ManageTeams));
+                }
+                return View();
+            }
+            return NotFound();
+        }
+
     }
 }
