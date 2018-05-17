@@ -1,0 +1,24 @@
+﻿@model AddImageEmployee
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Add Image to " + Model.Name;
+}
+<h1>@ViewData["Title"]</h1>
+<div class="row">
+    <div class="col-md-4">
+        @if (Model.Error != null)
+        {
+        <h3>@Model.Error</h3>
+        }
+        <form asp-action="EmployeeAddImage" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger hidden"></div>
+            <input type="hidden" asp-for="Id" value="@Model.Id" class="form-control" />
+            <input type="file" name="file" />
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Add Image" class="btn btn-primary" />
+            </div>
+        </form>
+        <a asp-action="EmployeeInfo" asp-route-id="@Model.Id"><h5>Back to employee info</h5></a>
+    </div>
+</div>

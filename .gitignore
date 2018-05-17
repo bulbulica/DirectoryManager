@@ -30,6 +30,12 @@ project.assets.json
 *.csslintrc
 *.ps1
 *.nuspec
+*.jpeg
+*.jpg
+*.png
+*.pdf
+*.doc
+*.docx
 /src/IdentityServerWithAspNetIdentity/bower_components/bootstrap/js
 /src/IdentityServerWithAspNetIdentity/bower_components/bootstrap/grunt
 /src/IdentityServerWithAspNetIdentity/bower_components

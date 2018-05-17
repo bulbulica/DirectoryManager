@@ -300,5 +300,11 @@ namespace IdentityServer.Core
             employee.CV = filePath;
             PersistenceContext.Complete();
         }
+
+        public void UpdateImage(Employee employee, string filePath)
+        {
+            employee.Picture = filePath;
+            PersistenceContext.Complete();
+        }
     }
 }

@@ -114,25 +114,40 @@ namespace IdentityServer
                 var employee = _employeeService.GetEmployee(idEmployee);
 
                 if (Path.GetExtension(file.FileName).ToLower() != ".pdf"
-               && Path.GetExtension(file.FileName).ToLower() != ".doc"
-               && Path.GetExtension(file.FileName).ToLower() != ".docx")
+                    && Path.GetExtension(file.FileName).ToLower() != ".doc"
+                    && Path.GetExtension(file.FileName).ToLower() != ".docx")
                 {
-                    //Temporar pana modificam view-ul
-                    return NotFound();
+                    var error = "Not a valid format: .pdf, .doc or .docx)";
+
+                    var model = new AddCVEmployee
+                    {
+                        Id = employee.Id,
+                        Name = employee.Name,
+                        Error = error
+                    };
+
+                    return View(model);
                 }
 
                 if (file.Length > 10000000)
                 {
-                    return NotFound();
+                    var error = "File exceeded size limit";
+
+                    var model = new AddCVEmployee
+                    {
+                        Id = employee.Id,
+                        Name = employee.Name,
+                        Error = error
+                    };
+
+                    return View(model);
                 }
                
-                //HARD CODED filePath
-               //TODO
-                var directoryPath = Path.Combine("wwwroot", "uploads");
-                directoryPath = Path.Combine(directoryPath, "CV");
-                //TODO
-                //folosim doar Name pentru salvare CV, temporar, ar fi ok Nume + prenume dar nu le introducem la register
-                var filePath = Path.Combine(directoryPath, employee.Name);
+                var fileName = FileName(employee.Name);
+
+                var directoryPath = Path.Combine("wwwroot", "docs");
+                var filePath = Path.Combine(directoryPath, fileName);
+                fileName = string.Concat(fileName, Path.GetExtension(file.FileName).ToLower());
                 filePath = string.Concat(filePath, Path.GetExtension(file.FileName).ToLower());
                 {
                     using (var stream = new FileStream(filePath, FileMode.Create))
@@ -142,9 +157,103 @@ namespace IdentityServer
                 }
                 if (employee != null)
                 {
-                    _employeeService.UpdateCV(employee, filePath);
+                    _employeeService.UpdateCV(employee, fileName);
                 }
                 return RedirectToAction(nameof(ManageEmployees));
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        // GET: Employees/EmployeeAddImage/{id}
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult EmployeeAddImage(int? id)
+        {
+            //if (_auth.IsUserSignedIn(User))
+            if (true)
+            {
+                int idEmployee = id ?? default(int);
+
+                var employee = _employeeService.GetEmployee(idEmployee);
+                var model = new AddImageEmployee
+                {
+                    Id = employee.Id,
+                    Name = employee.Name
+                };
+
+                return View(model);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        // POST: Employees/EmployeeAddImage/{id}
+        [HttpPost]
+        [Route("{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EmployeeAddImage(int? id, IFormFile file)
+        {
+            //if (_auth.IsUserSignedIn(User))
+            if (true)
+            {
+                int idEmployee = id ?? default(int);
+                var employee = _employeeService.GetEmployee(idEmployee);
+
+                if (Path.GetExtension(file.FileName).ToLower() != ".jpeg"
+                    && Path.GetExtension(file.FileName).ToLower() != ".jpg"
+                    && Path.GetExtension(file.FileName).ToLower() != ".png")
+                {
+                    var error = "Not a valid format: .jpeg, .jpg or .png)";
+
+                    var model = new AddImageEmployee
+                    {
+                        Id = employee.Id,
+                        Name = employee.Name,
+                        Error = error
+                    };
+
+                    return View(model);
+                }
+
+                if (file.Length > 5000000)
+                {
+                    var error = "File exceeded size limit";
+
+                    var model = new AddImageEmployee
+                    {
+                        Id = employee.Id,
+                        Name = employee.Name,
+                        Error = error
+                    };
+
+                    return View(model);
+                }
+
+                var fileName = FileName(employee.Name);
+                var directoryPath = Path.Combine("wwwroot", "img");
+                var filePath = Path.Combine(directoryPath, fileName);
+                fileName = string.Concat(fileName, Path.GetExtension(file.FileName).ToLower());
+                filePath = string.Concat(filePath, Path.GetExtension(file.FileName).ToLower());
+                {
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                }
+                if (employee != null)
+                {
+                    _employeeService.UpdateImage(employee, fileName);
+                }
+                return RedirectToAction(nameof(ManageEmployees));
+            }
+            else
+            {
+                return NotFound();
             }
         }
 
@@ -263,9 +372,9 @@ namespace IdentityServer
                     Active = employee.Active,
                     AllPositions = _employeeService.GetAllPositions(),
                     Department = employee.Department.Name,
-                    Picture = "", // am modificat si aici !!!
+                    Picture = employee.Picture,
                     Team = employee.Team,
-                    CV = "", // am modificat si aici !!!
+                    CV = employee.CV,
                     Position = employee.Position.RoleName,
                     AllDepartments = _employeeService.GetAllDepartments()
                 };
@@ -352,11 +461,32 @@ namespace IdentityServer
         {
             //TODO 
             //check accessLevel before 
-
-            int idEmployee = id ?? default(int);
-            _employeeService.DeleteEmployee(idEmployee);
-            return RedirectToAction(nameof(ManageEmployees));
+            if (true)
+            {
+                int idEmployee = id ?? default(int);
+                _employeeService.DeleteEmployee(idEmployee);
+                return RedirectToAction(nameof(ManageEmployees));
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
+        // Get the name of the employee and make file name_surname
+        private string FileName(string EmployeeName)
+        {
+            EmployeeName = EmployeeName.Replace('-', ' ');
+            string[] fileSplitName = EmployeeName.Split(' ', '\t');
+
+            var fileName = "";
+            foreach (var pieceOfName in fileSplitName)
+            {
+                fileName += pieceOfName + "_";
+            }
+
+            fileName = fileName.Remove(fileName.Length - 1);
+            return fileName;
+        }
     }
 }

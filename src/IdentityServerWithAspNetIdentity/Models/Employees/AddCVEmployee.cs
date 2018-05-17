@@ -16,5 +16,7 @@ namespace IdentityServer
         public string Name { get; set; }
 
         public IFormFile CV { set; get; }
+
+        public string Error { set; get; }
     }
 }

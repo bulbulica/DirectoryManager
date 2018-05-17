@@ -11,13 +11,15 @@
     <hr />
     <div class="row">
         <div class="col-md-4">
-            @if (Model.Employee.Picture != null)
+            @if (Model.Employee.Picture != null && Model.Employee.CV.Length > 0)
             {
                 <img src="../../img/@Model.Employee.Picture" class="rounded float-left" alt="@Model.Employee.Name" height="300" width="300">
+                <a asp-action="EmployeeAddImage" asp-route-id="@Model.Employee.Id"><h5>Upload new image</h5></a>
             }
             else
             {
                 <img src="../../img/avatarNotFound.png" class="rounded float-left" alt="@Model.Employee.Name" height="300" width="300">
+                <a asp-action="EmployeeAddImage" asp-route-id="@Model.Employee.Id"><h5>Upload his image</h5></a>
             }
         </div>
         <div class="col-md-6">
