@@ -6,7 +6,7 @@
 <h1>@ViewData["Title"]</h1>
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="EmployeeAddCv" method="post" enctype="multipart/form-data">
+        <form asp-action="EmployeeAddCV" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="All" class="text-danger hidden"></div>
             <input type="hidden" asp-for="Id" value="@Model.Id" class="form-control" />
             <input type="file" name="file" />

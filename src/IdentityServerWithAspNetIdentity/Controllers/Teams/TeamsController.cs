@@ -185,6 +185,9 @@ namespace IdentityServer
 
             Team team = _employeeService.GetTeam(idTeam);
 
+            //TODO 
+            //incarca in lista doar employee cu grad mai mic decat general manager
+
             var employees = _employeeService.GetAllUnassignedEmployees().ToList();
             employees.AddRange(team.Employees);
 

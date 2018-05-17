@@ -110,9 +110,8 @@ namespace IdentityServer.Core
         {
             var employee = PersistenceContext.EmployeeRepository.GetEmployeeById(idEmployee);
             if (employee != null) {
-                if(employee.Position.AccessLevel > 3)
-                PersistenceContext.EmployeeRepository.Delete(employee);
-                PersistenceContext.Complete();
+                if (employee.Position.AccessLevel > 3)
+                    employee.Active = false;
             }
         }
 
