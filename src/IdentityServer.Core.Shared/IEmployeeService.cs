@@ -1,6 +1,7 @@
 ﻿using IdentityServer.Domain;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,5 +31,10 @@ namespace IdentityServer.Core.Shared
         void UpdateTeamLeader(Team team, Employee employee);
         Employee GetTeamLeader(Team team);
         Employee GetDepartmentManager(Department department);
+        IEnumerable<Position> GetRegisterPositionsByAccessLevel(string username);
+        Position GetDepartmentManagerPosition();
+        void UpdateDepartmentManager(Department department, Employee employee);
+        Position GetTeamLeaderPosition();
+        void UpdateCV(Employee employee, string filePath);
     }
 }

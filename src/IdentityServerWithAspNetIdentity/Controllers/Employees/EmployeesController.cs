@@ -7,7 +7,11 @@ using IdentityServer.Domain;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 using System.Threading.Tasks;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace IdentityServer
 {
@@ -88,7 +92,7 @@ namespace IdentityServer
                     Id = employee.Id,
                     Name = employee.Name
                 };
-                
+
                 return View(model);
             }
             else
@@ -101,17 +105,46 @@ namespace IdentityServer
         [HttpPost]
         [Route("{id}")]
         [ValidateAntiForgeryToken]
-        public IActionResult EmployeeAddCV(AddCVEmployee model)
+        public async Task<IActionResult> EmployeeAddCV(int? id, IFormFile file)
         {
             //if (_auth.IsUserSignedIn(User))
             if (true)
-            { 
-                // AICI TREBUIE ADAUGAT PENTRU CV
-                return ManageEmployees();
-            }
-            else
             {
-                return NotFound();
+                int idEmployee = id ?? default(int);
+                var employee = _employeeService.GetEmployee(idEmployee);
+
+                if (Path.GetExtension(file.FileName).ToLower() != ".pdf"
+               && Path.GetExtension(file.FileName).ToLower() != ".doc"
+               && Path.GetExtension(file.FileName).ToLower() != ".docx")
+                {
+                    //Temporar pana modificam view-ul
+                    return NotFound();
+                }
+
+                if (file.Length > 10000000)
+                {
+                    return NotFound();
+                }
+               
+                //HARD CODED filePath
+               //TODO
+                var directoryPath = Path.Combine("wwwroot", "uploads");
+                directoryPath = Path.Combine(directoryPath, "CV");
+                //TODO
+                //folosim doar Name pentru salvare CV, temporar, ar fi ok Nume + prenume dar nu le introducem la register
+                var filePath = Path.Combine(directoryPath, employee.Name);
+                filePath = string.Concat(filePath, Path.GetExtension(file.FileName).ToLower());
+                {
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                }
+                if (employee != null)
+                {
+                    _employeeService.UpdateCV(employee, filePath);
+                }
+                return RedirectToAction(nameof(ManageEmployees));
             }
         }
 
@@ -122,12 +155,15 @@ namespace IdentityServer
             //if (_auth.IsUserSignedIn(User))
             if (true)
             {
+                var username = User.Claims.FirstOrDefault(c => c.Type == "email");
+
                 var model = new AddEmployee()
                 {
                     Active = true,
+                    //AllPositions = _employeeService.GetRegisterPositionsByAccessLevel(username.ToString()),
+                    //folosim codul de mai sus dupa ce suntem logati, deocamdata o sa dea crash
                     AllPositions = _employeeService.GetAllPositions(),
                     AllDepartments = _employeeService.GetAllDepartments()
-                    
                 };
 
                 return View(model);
@@ -156,11 +192,6 @@ namespace IdentityServer
                     var position = _employeeService.GetPositionByName(model.Position);
                     var department = _employeeService.GetDepartmentByName(model.Department);
 
-
-                    //TODO check if position is departmentmanager and if that department already has a manager.
-                    //if so update
-
-
                     if (position != null && department != null)
                     {
                         var user = new ApplicationUser { UserName = model.Name, Email = model.Username };
@@ -177,18 +208,31 @@ namespace IdentityServer
                                 CV = "" // am modificat si aici !!!
                             };
                             _employeeService.AddEmployee(employee);
+                            if (employee.Position == _employeeService.GetDepartmentManagerPosition())
+                            {
+                                _employeeService.UpdateDepartmentManager(employee.Department, employee);
+                            }
 
                         }
-                    }
+                        else
+                        {
+                            var ErrorMessage = $"the password does not meet the password policy requirements.";
+                            var policyRequirements = $"* At least an uppercase and a special character";
 
-                    else
-                    {
-                        string ErrorMessage = $"the password does not meet the password policy requirements.";
-                        var policyRequirements = $"* At least an uppercase and a special character";
+                            ViewBag.Error = ErrorMessage;
+                            ViewBag.policyRequirments = policyRequirements;
 
-                        ViewBag.Error = ErrorMessage;
-                        ViewBag.policyRequirments = policyRequirements;
-                        return View();
+                            var returnModel = new AddEmployee()
+                            {
+                                Active = true,
+                                //AllPositions = _employeeService.GetRegisterPositionsByAccessLevel(username.ToString()),
+                                //folosim codul de mai sus dupa ce suntem logati, deocamdata o sa dea crash
+                                AllPositions = _employeeService.GetAllPositions(),
+                                AllDepartments = _employeeService.GetAllDepartments()
+                            };
+
+                            return View(returnModel);
+                        }
                     }
                 }
 
@@ -254,36 +298,50 @@ namespace IdentityServer
                 {
                     var position = _employeeService.GetPositionByName(model.Position);
                     var department = _employeeService.GetDepartmentByName(model.Department);
+                    var employee = _employeeService.GetEmployee(idEmployee);
 
                     if (position != null && department != null)
                     {
-                        var employee = new Employee
-                        {
-                            Id = idEmployee,
-                            Name = model.Name,
-                            Active = true,
-                            Position = position,
-                            Department = department,
-                            CV = model.CV
+                        employee.Name = model.Name;
+                        employee.Active = true;
+                        employee.Position = position;
+                        employee.Department = department;
+                        employee.CV = model.CV;
+                    };
 
-                        };
-                        _employeeService.UpdateEmployee(employee);
-                    }
-                    else
+                    _employeeService.UpdateEmployee(employee);
+
+                    if (employee.Position == _employeeService.GetDepartmentManagerPosition())
                     {
-                        string ErrorMessage = $"the password does not meet the password policy requirements.";
-                        var policyRequirements = $"* At least an uppercase and a special character";
+                        _employeeService.UpdateDepartmentManager(employee.Department, employee);
+                    }
 
-                        ViewBag.Error = ErrorMessage;
-                        ViewBag.policyRequirments = policyRequirements;
-                        return View("EmployeeEdit", model);
+                    else if (employee.Position == _employeeService.GetTeamLeaderPosition())
+                    {
+                        if (employee.Team != null)
+                        {
+                            if (_employeeService.GetTeamLeader(employee.Team) != employee)
+                            {
+                                _employeeService.UpdateTeamLeader(employee.Team, employee);
+                            }
+                        }
                     }
                 }
+                else
+                {
+                    string ErrorMessage = $"the password does not meet the password policy requirements.";
+                    var policyRequirements = $"* At least an uppercase and a special character";
+
+                    ViewBag.Error = ErrorMessage;
+                    ViewBag.policyRequirments = policyRequirements;
+                    return View("EmployeeEdit", model);
+                }
+
                 return ManageEmployees();
             }
             else
             {
-                return Forbid();
+                return NotFound();
             }
         }
 
@@ -300,11 +358,5 @@ namespace IdentityServer
             return RedirectToAction(nameof(ManageEmployees));
         }
 
-        public IActionResult Error(string errorId)
-        {
-            var vm = new ErrorViewModel();
-
-            return View("Error", vm);
-        }
     }
 }

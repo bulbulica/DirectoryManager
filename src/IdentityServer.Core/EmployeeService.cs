@@ -246,5 +246,60 @@ namespace IdentityServer.Core
             }
             return null;
         }
+
+        public IEnumerable<Position> GetRegisterPositionsByAccessLevel(string username)
+        {
+            var employee = PersistenceContext.EmployeeRepository.GetEmployeeByName(username);
+            var accessLevel = employee.Position.AccessLevel;
+
+            var allPositions = GetAllPositions().ToList();
+            foreach(var position in allPositions)
+            {
+                if (position.AccessLevel > accessLevel)
+                    allPositions.Remove(position);
+            }
+            return allPositions;
+        }
+
+        public Position GetDepartmentManagerPosition()
+        {
+            return PersistenceContext.EmployeeRepository.GetDepartmentManagerPosition();
+        }
+
+        public Position GetTeamLeaderPosition()
+        {
+            return PersistenceContext.EmployeeRepository.GetTeamLeaderPosition();
+        }
+
+        public void UpdateDepartmentManager(Department department, Employee employee)
+        {
+            var exDepartmentManager = GetDepartmentManager(department);
+
+            if (department.Employees.Contains(employee))
+            {
+                if (exDepartmentManager != null)
+                {
+                    exDepartmentManager.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
+                }
+                employee.Position = PersistenceContext.EmployeeRepository.GetDepartmentManagerPosition();
+            }
+            else
+            {
+                if (exDepartmentManager != null)
+                {
+                    exDepartmentManager.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
+                }
+                department.Employees.Add(employee);
+                employee.Department = department;
+                employee.Position = PersistenceContext.EmployeeRepository.GetDepartmentManagerPosition();
+            }
+            PersistenceContext.Complete();
+        }
+
+        public void UpdateCV(Employee employee, string filePath)
+        {
+            employee.CV = filePath;
+            PersistenceContext.Complete();
+        }
     }
 }
