@@ -6,8 +6,12 @@
 
 <h1>@ViewData["Title"] - @Model.Department.Description</h1>
 <h2>
-    Department Manager : <a asp-action="EmployeeInfo" asp-controller="Employees" asp-route-id="@Model.Department.DepartmentManager.Id">@Model.Department.DepartmentManager.Name</a>
-</h2>
+    @{ if (Model.DepartmentManager != null)
+        {
+            <a asp-action="EmployeeInfo" asp-controller="Employees" asp-route-id="@Model.DepartmentManager.Id">Department manager: @Model.Department.Name</a>
+            } 
+        }
+        </h2>
 <div>
     <hr />
     <div class="row">

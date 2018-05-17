@@ -104,7 +104,7 @@ namespace IdentityServer.Persistence.EF
 
         public Position GetDeveloperPosition()
         {
-            return EmployeeDbContext.Positions.SingleOrDefault(testp => testp.RoleName.Equals("Dev"));
+            return EmployeeDbContext.Positions.SingleOrDefault(testp => testp.RoleName.Equals("Developer"));
         }
 
         public Position GetTeamLeaderPosition()

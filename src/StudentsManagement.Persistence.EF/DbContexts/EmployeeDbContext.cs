@@ -16,13 +16,6 @@ namespace IdentityServer.Persistence.EF
             builder.Entity<Department>()
                 .HasMany(d => d.Employees);
 
-
-            builder.Entity<Employee>()
-                .HasOne(e => e.Team);
-
-            builder.Entity<Employee>()
-                .HasOne(e => e.Department);
-
             builder.Entity<Team>()
                .HasMany(d => d.Employees);
 

@@ -10,7 +10,6 @@ namespace IdentityServer.Domain
         public string Description { get; set; }
 
         public virtual ICollection<Team> Teams { get; set; }
-
         public virtual ICollection<Employee> Employees { get; set; }
         
     }

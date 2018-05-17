@@ -56,7 +56,6 @@ namespace IdentityServer
 
                 var team = _employeeService.GetTeam(idTeam);
                 var teamLeader = _employeeService.GetTeamLeader(team);
-                team.Employees.Remove(teamLeader);
 
                 var model = new SingleTeam
                 {

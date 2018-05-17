@@ -29,5 +29,6 @@ namespace IdentityServer.Core.Shared
         IEnumerable<Employee> GetAllUnassignedEmployees();
         void UpdateTeamLeader(Team team, Employee employee);
         Employee GetTeamLeader(Team team);
+        Employee GetDepartmentManager(Department department);
     }
 }

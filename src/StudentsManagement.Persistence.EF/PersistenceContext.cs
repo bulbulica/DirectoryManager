@@ -97,10 +97,10 @@ namespace IdentityServer.Persistence.EF
 
             EmployeeRepository.AddPositions(
                 new List<Position>{
-                    position1,
-                    position2,
+                    position4,
                     position3,
-                    position4
+                    position2,
+                    position1
                 });
 
            
@@ -134,7 +134,7 @@ namespace IdentityServer.Persistence.EF
                     Username = "asaawd@asd.bcom",
                     Active = true,
                     CV = null,
-                    Position = position2
+                    Position = position1
                 };
 
                 var employee3 = new Employee
@@ -144,7 +144,7 @@ namespace IdentityServer.Persistence.EF
                     Username = "qwqwq@asd.bcom",
                     Active = true,
                     CV = null,
-                    Position = position2
+                    Position = position1
                 };
 
                 var employee4 = new Employee
@@ -154,7 +154,7 @@ namespace IdentityServer.Persistence.EF
                     Username = "soto@soto.ro",
                     Active = true,
                     CV = null,
-                    Position = position3
+                    Position = position1
                 };
 
                 EmployeeRepository.Add(employee0);
@@ -173,6 +173,7 @@ namespace IdentityServer.Persistence.EF
                    }
                 };
 
+
                 var team2 = new Team
                 {
                     Name = "Mustaciosii",
@@ -186,6 +187,9 @@ namespace IdentityServer.Persistence.EF
                 EmployeeRepository.AddTeam(team1);
                 EmployeeRepository.AddTeam(team2);
 
+                employee1.Team = team1;
+                employee0.Team = team2;
+
                 var dep = new Department
                 {
                     Name = "Java dev",
@@ -194,12 +198,18 @@ namespace IdentityServer.Persistence.EF
                     {
                         team1,
                         team2
-                    },
+                    }
                 };
 
-                EmployeeRepository.AddDepartment(dep);
+            EmployeeRepository.AddDepartment(dep);
 
-                Complete();
+            employee0.Department = dep;
+            employee1.Department = dep;
+            employee2.Department = dep;
+            employee3.Department = dep;
+            employee4.Department = dep;
+
+            Complete();
             }
 
 

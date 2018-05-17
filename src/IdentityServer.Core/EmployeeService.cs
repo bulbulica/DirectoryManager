@@ -200,31 +200,38 @@ namespace IdentityServer.Core
 
         public void UpdateTeamLeader(Team team, Employee employee)
         {
-            var updatedTeam = PersistenceContext.EmployeeRepository.GetTeamById(team.Id);
-            var updatedEmployee = PersistenceContext.EmployeeRepository.GetEmployeeById(employee.Id);
-            if (updatedTeam.Employees.Contains(employee))
+            var exTeamLeader = GetTeamLeader(team);
+
+            if (team.Employees.Contains(employee))
             {
-                if (GetTeamLeader(updatedTeam) != null)
+                if (exTeamLeader != null)
                 {
-                    var exTeamLeader = GetTeamLeader(updatedTeam);
                     exTeamLeader.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
                 }
-                updatedEmployee.Position = PersistenceContext.EmployeeRepository.GetTeamLeaderPosition();
+                employee.Position = PersistenceContext.EmployeeRepository.GetTeamLeaderPosition();
             }
             else
             {
-                updatedTeam.Employees.Add(updatedEmployee);
-                updatedEmployee.Position = PersistenceContext.EmployeeRepository.GetTeamLeaderPosition();
+                if (exTeamLeader != null)
+                {
+                    exTeamLeader.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
+                }
+                team.Employees.Add(employee);
+                employee.Team = team;
+                employee.Department = team.Department;
+                employee.Position = PersistenceContext.EmployeeRepository.GetTeamLeaderPosition();
             }
-
             PersistenceContext.Complete();
+
         }
 
         public Employee GetTeamLeader(Team team)
         {
-            foreach(var employee in team.Employees)
+            var teamLeadPosition = PersistenceContext.EmployeeRepository.GetTeamLeaderPosition();
+
+            foreach (var employee in team.Employees)
             {
-                if (employee.Position == PersistenceContext.EmployeeRepository.GetTeamLeaderPosition())
+                if (employee.Position == teamLeadPosition)
                     return employee;
             }
             return null;

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IdentityServer.Persistence.EF.Migrations
 {
     [DbContext(typeof(EmployeeDbContext))]
-    [Migration("20180516093617_ModifiedTeamAndDepartment")]
-    partial class ModifiedTeamAndDepartment
+    [Migration("20180517070206_NewMigration")]
+    partial class NewMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -56,8 +56,6 @@ namespace IdentityServer.Persistence.EF.Migrations
 
                     b.Property<int?>("TeamId");
 
-                    b.Property<int?>("TeamId1");
-
                     b.Property<string>("Username");
 
                     b.HasKey("Id");
@@ -67,8 +65,6 @@ namespace IdentityServer.Persistence.EF.Migrations
                     b.HasIndex("PositionId");
 
                     b.HasIndex("TeamId");
-
-                    b.HasIndex("TeamId1");
 
                     b.ToTable("Employees");
                 });
@@ -121,12 +117,8 @@ namespace IdentityServer.Persistence.EF.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("IdentityServer.Domain.Team", "Team")
-                        .WithMany()
-                        .HasForeignKey("TeamId");
-
-                    b.HasOne("IdentityServer.Domain.Team")
                         .WithMany("Employees")
-                        .HasForeignKey("TeamId1");
+                        .HasForeignKey("TeamId");
                 });
 
             modelBuilder.Entity("IdentityServer.Domain.Team", b =>

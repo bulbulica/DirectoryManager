@@ -105,9 +105,12 @@ namespace IdentityServer.Controllers.Departments
                 int idDepartment = id ?? default(int);
 
                 var department = _employeeService.GetDepartment(idDepartment);
+                var departmentManager = _employeeService.GetDepartmentManager(department);
+                department.Employees.Remove(departmentManager);
                 var model = new SingleDepartment
                 {
-                    Department = department
+                    Department = department,
+                    DepartmentManager = departmentManager
                 };
 
                 return View(model);

@@ -9,5 +9,6 @@ namespace IdentityServer
     public class SingleDepartment
     {
         public Department Department { get; set; }
+        public Employee DepartmentManager { get; set; }
     }
 }
