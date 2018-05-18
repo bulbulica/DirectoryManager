@@ -11,7 +11,7 @@
     <hr />
     <div class="row">
         <div class="col-md-4">
-            @if (Model.Employee.Picture != null && Model.Employee.CV.Length > 0)
+            @if (Model.Employee.Picture != null && Model.Employee.Picture.Length > 0)
             {
                 <img src="../../img/@Model.Employee.Picture" class="rounded float-left" alt="@Model.Employee.Name" height="300" width="300">
                 <a asp-action="EmployeeAddImage" asp-route-id="@Model.Employee.Id"><h5>Upload new image</h5></a>
@@ -19,7 +19,7 @@
             else
             {
                 <img src="../../img/avatarNotFound.png" class="rounded float-left" alt="@Model.Employee.Name" height="300" width="300">
-                <a asp-action="EmployeeAddImage" asp-route-id="@Model.Employee.Id"><h5>Upload his image</h5></a>
+                <a asp-action="EmployeeAddImage" asp-route-id="@Model.Employee.Id"><h5>Upload image</h5></a>
             }
         </div>
         <div class="col-md-6">
@@ -50,10 +50,16 @@
             }
             else
             {
-                <a asp-action="EmployeeAddCV" asp-route-id="@Model.Employee.Id"><h4>Upload his CV</h4></a>
+                <a asp-action="EmployeeAddCV" asp-route-id="@Model.Employee.Id"><h4>Upload CV</h4></a>
             }
-            <a asp-action="EmployeeEdit" asp-route-id="@Model.Employee.Id"><h3>Edit his data</h3></a>
-            <a asp-action="ManageEmployees">Back to all Employees</a>
+
+            <a asp-action="EmployeeEditName" asp-route-id="@Model.Employee.Id"><h4>Edit my name</h4></a>
+            <!--
+                
+            De modificat !!!
+                <a asp-action="EmployeeEdit" asp-route-id="@Model.Employee.Id"><h3>Edit his data</h3></a>
+                <a asp-action="ManageEmployees">Back to all Employees</a>
+            -->
         </div>
     </div>
 </div>

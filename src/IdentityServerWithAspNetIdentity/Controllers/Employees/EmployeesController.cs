@@ -283,7 +283,7 @@ namespace IdentityServer
             }
         }
 
-        // POST: Employees/AddEmployee
+        // POST: Employees/EmployeeAdd
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EmployeeAdd(AddEmployee model)
@@ -387,7 +387,7 @@ namespace IdentityServer
             }
         }
 
-        // GET: Employees/EmployeeEdit/{id}
+        // POST: Employees/EmployeeEdit/{id}
         [HttpPost]
         [Route("{id}")]
         [ValidateAntiForgeryToken]
@@ -454,7 +454,107 @@ namespace IdentityServer
             }
         }
 
-        // POST: Employees/EmployeeDelete/{id}
+        // GET: Employees/EmployeeEditName/{id}
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult EmployeeEditName(int? id)
+        {
+            //if (_auth.IsUserSignedIn(User))
+            if (true)
+            {
+                int idEmployee = id ?? default(int);
+
+                var employee = _employeeService.GetEmployee(idEmployee);
+
+                var model = new EditEmployee
+                {
+                    Id = idEmployee,
+                    Name = employee.Name,
+                    Picture = employee.Picture,
+                    CV = employee.CV
+                };
+
+                return View(model);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        // POST: Employees/EmployeeEditName/{id}
+        [HttpPost]
+        [Route("{id}")]
+        [ValidateAntiForgeryToken]
+        public IActionResult EmployeeEditName(EditEmployee model, int? id)
+        {
+            //if (_auth.IsUserSignedIn(User))
+            if (true)
+            {
+                if (model.CV == null)
+                    model.CV = "";
+                if (model.Picture == null)
+                    model.Picture = "";
+                int idEmployee = id ?? default(int);
+
+
+                if (ModelState.IsValid)
+                {
+                    /*
+                     * AICI TREBUIE VERIFICI DACA MERGE
+                     * */
+
+                    /*var employee = _employeeService.GetEmployee(idEmployee);
+
+                    if (position != null && department != null)
+                    {
+                        employee.Name = model.Name;
+                        employee.Active = true;
+                        employee.Position = position;
+                        employee.Department = department;
+                        employee.CV = model.CV;
+                    };
+
+                    _employeeService.UpdateEmployee(employee);
+
+                    if (employee.Position == _employeeService.GetDepartmentManagerPosition())
+                    {
+                        _employeeService.UpdateDepartmentManager(employee.Department, employee);
+                    }
+
+                    else if (employee.Position == _employeeService.GetTeamLeaderPosition())
+                    {
+                        if (employee.Team != null)
+                        {
+                            if (_employeeService.GetTeamLeader(employee.Team) != employee)
+                            {
+                                _employeeService.UpdateTeamLeader(employee.Team, employee);
+                            }
+                        }
+                    }
+                    */
+                }
+                else
+                {
+                    /*
+                    string ErrorMessage = $"the password does not meet the password policy requirements.";
+                    var policyRequirements = $"* At least an uppercase and a special character";
+
+                    ViewBag.Error = ErrorMessage;
+                    ViewBag.policyRequirments = policyRequirements;
+                    return View("EmployeeEdit", model);
+                    */
+                }
+
+                return EmployeeInfo(idEmployee);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        // GET: Employees/EmployeeDelete/{id}
         [HttpGet]
         [Route("{id}")]
         public IActionResult EmployeeDelete(int? id)
