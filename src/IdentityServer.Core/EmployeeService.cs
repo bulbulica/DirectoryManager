@@ -109,9 +109,16 @@ namespace IdentityServer.Core
         public void DeleteEmployee(int idEmployee)
         {
             var employee = PersistenceContext.EmployeeRepository.GetEmployeeById(idEmployee);
-            if (employee != null) {
+            if (employee != null)
+            {
                 if (employee.Position.AccessLevel > 3)
+                {
                     employee.Active = false;
+                    employee.Department = null;
+                    employee.Team = null;
+                    employee.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
+                    PersistenceContext.Complete();
+                }
             }
         }
 
