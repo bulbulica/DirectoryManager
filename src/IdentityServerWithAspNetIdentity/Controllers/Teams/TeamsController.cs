@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer.Core.Shared;
 using IdentityServer.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityServer
 {
     [Route("[controller]/[action]")]
     [SecurityHeaders]
+    [Authorize]
     public class TeamsController : Controller
     {
         private readonly IAuthentication _auth;
@@ -49,10 +51,17 @@ namespace IdentityServer
         [Route("{id}")]
         public IActionResult TeamInfo(int? id)
         {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            int idTeam = id ?? default(int);
+
+            if (user.Position.AccessLevel > 3)
             {
-                int idTeam = id ?? default(int);
+                return NotFound();
+            }
+            if(user.Position.AccessLevel == 3 && user.Team == _employeeService.GetTeam(idTeam))
+            {
+                
 
                 var team = _employeeService.GetTeam(idTeam);
                 var teamLeader = _employeeService.GetTeamLeader(team);
@@ -65,39 +74,48 @@ namespace IdentityServer
 
                 return View(model);
             }
-            else
-            {
-                return NotFound();
-            }
+            return NotFound();
         }
 
         // GET: Teams/TeamAdd
         [HttpGet]
         public IActionResult TeamAdd()
         {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+
+            if (user.Position.AccessLevel < 3)
             {
-                var model = new AddTeam()
+                if (user.Position.AccessLevel == 2)
                 {
-
-                };
-
-                return View(model);
+                    var model = new AddTeam()
+                    {
+                        Department = user.Department
+                    };
+                    return View(model);
+                }
+                else
+                {
+                 //TODO depends on how it will evolve   
+                }
             }
             else
             {
                 return NotFound();
             }
+            return NotFound();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult TeamAdd(AddTeam model)
         {
-            //if (_auth.IsUserSignedIn(User))
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
 
-            if (true)
+            if (user.Position.AccessLevel < 3)
+
+                if (true)
             {
                 // Add roles required !!! - delete this when you add 
                 // the function to populate the model with roles,
@@ -108,6 +126,7 @@ namespace IdentityServer
                     var team = new Team
                     {
                         Name = model.Name,
+                        Department = model.Department,
                         Description = model.Description,
                         Employees = new List<Employee>()
                     };
@@ -127,8 +146,10 @@ namespace IdentityServer
         [Route("{id}")]
         public IActionResult TeamEdit(int? id)
         {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+
+            if (user.Position.AccessLevel < 3)
             {
                 int idTeam = id ?? default(int);
 
@@ -159,8 +180,10 @@ namespace IdentityServer
         public IActionResult TeamEdit(int? id, [Bind("Id, Name, Description")] EditTeam editTeam)
         {
 
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+
+            if (user.Position.AccessLevel < 3)
             {
                 if (ModelState.IsValid)
                 {

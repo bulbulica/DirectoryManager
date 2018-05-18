@@ -33,28 +33,28 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <!--
-                        
-                    De modificat !!!
-                        - asp-route-id="1" sa aiba Employee.Id
-                       
-                    <li><a asp-area="" asp-controller="Employees" asp-action="EmployeeInfo" asp-route-id="1">My information</a></li>
-                    --> 
+
+        De modificat !!!
+            - asp-route-id="1" sa aiba Employee.Id
+
+        <li><a asp-area="" asp-controller="Employees" asp-action="EmployeeInfo" asp-route-id="1">My information</a></li>
+        -->
                     <li><a asp-area="" asp-controller="Employees" asp-action="ManageEmployees">Manage Employees</a></li>
                     <li><a asp-area="" asp-controller="Departments" asp-action="ManageDepartments">Manage Departments</a></li>
                     <li><a asp-area="" asp-controller="Teams" asp-action="ManageTeams">Manage Teams</a></li>
                 </ul>
+                @if (!string.IsNullOrWhiteSpace(name))
+                {
+                    <ul class="nav navbar-nav pull-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">@name <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a asp-action="Logout" asp-controller="Account">Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                }
             </div>
-            @if (!string.IsNullOrWhiteSpace(name))
-            {
-                <ul class="nav navbar-nav">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">@name <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a asp-action="Logout" asp-controller="Account">Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            }
         </div>
     </div>
 

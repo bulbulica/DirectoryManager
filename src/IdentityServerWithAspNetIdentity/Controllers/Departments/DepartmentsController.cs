@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer.Core.Shared;
 using IdentityServer.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityServer.Controllers.Departments
 {
     [Route("[controller]/[action]")]
     [SecurityHeaders]
+    [Authorize]
     public class DepartmentsController : Controller
     {
         private readonly IAuthentication _auth;

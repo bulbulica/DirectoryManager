@@ -35,6 +35,7 @@ namespace IdentityServer.Core.Shared
         Position GetDepartmentManagerPosition();
         void UpdateDepartmentManager(Department department, Employee employee);
         Position GetTeamLeaderPosition();
+        Employee GetEmployeeByName(string employeeName);
         void UpdateCV(Employee employee, string filePath);
         void UpdateImage(Employee employee, string filePath);
     }

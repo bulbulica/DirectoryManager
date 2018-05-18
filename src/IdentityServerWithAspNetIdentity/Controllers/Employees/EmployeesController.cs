@@ -12,11 +12,13 @@ using System.Web;
 using System.Threading.Tasks;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IdentityServer
 {
     [Route("[controller]/[action]")]
     [SecurityHeaders]
+    [Authorize]
     public class EmployeesController : Controller
     {
         private readonly IAuthentication _auth;

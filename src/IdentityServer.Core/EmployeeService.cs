@@ -122,6 +122,11 @@ namespace IdentityServer.Core
             }
         }
 
+        public Employee GetEmployeeByName(string employeeName)
+        {
+            return PersistenceContext.EmployeeRepository.GetEmployeeByName(employeeName);
+        }
+
         public Department GetDepartment(int idDepartment)
         {
             return PersistenceContext.EmployeeRepository.GetDepartmentById(idDepartment);
