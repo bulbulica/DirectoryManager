@@ -49,6 +49,8 @@ namespace IdentityServer
         /// <summary>
         /// Handle postback from username/password login
         /// </summary>
+        /// 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginInputModel model, string button)
@@ -72,7 +74,10 @@ namespace IdentityServer
               var result = await _auth.LoginProcess(model.Username, model.Password, model.RememberLogin);
                 if (result)
                 {
+                    if(model.ReturnUrl != null)
                         return Redirect(model.ReturnUrl);
+                    return RedirectToAction("Index", "Home", new { area = "" });
+
                 }
                 ModelState.AddModelError("", AccountOptions.InvalidCredentialsErrorMessage);
             }
@@ -230,7 +235,7 @@ namespace IdentityServer
                 };
             }
 
-            var allowLocal = _auth.GetAllowLocalAsync(returnUrl);
+            var allowLocal = await _auth.GetAllowLocalAsync(returnUrl);
 
             return new LoginViewModel
             {
@@ -261,7 +266,7 @@ namespace IdentityServer
             }
 
             var context = await _auth.GetLogoutContextShowSignoutPromptAsync(logoutId);
-            if (context == false)
+            if (context != null)
             {
                 // it's safe to automatically sign-out
                 vm.ShowLogoutPrompt = false;

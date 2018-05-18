@@ -330,19 +330,24 @@ namespace IdentityServer.Authentication
             return false;
         }
 
-        Task<bool> IAuthentication.GetLogoutContextShowSignoutPromptAsync(string logoutId)
-        {
-            throw new NotImplementedException();
-        }
 
-        bool IAuthentication.GetAllowLocalAsync(string returnUrl)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<LogoutContext> GetLogoutContext(string returnUrl)
+
+        public async Task<LogoutContext> GetLogoutContext(string logoutId)
         {
-            throw new NotImplementedException();
+            var context = await _interaction.GetLogoutContextAsync(logoutId);
+            if (context != null)
+            {
+                var logoutContext = new LogoutContext
+                {
+                    ClientName = context.ClientName,
+                    ClientId = context.ClientId,
+                    PostLogoutRedirectUri = context.PostLogoutRedirectUri,
+                    SignOutIFrameUrl = context.SignOutIFrameUrl
+                };
+                return logoutContext;
+            }
+            return null;
         }
 
         public async Task<string> CreateLogoutContextAsync()

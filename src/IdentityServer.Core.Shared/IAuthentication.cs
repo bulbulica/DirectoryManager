@@ -15,9 +15,9 @@ namespace IdentityServer.Core.Shared
         Task<bool> CancelButtonProcessAsync(string returnUrl);
         Task LogoutProcess(ClaimsPrincipal user);
         Task<string> GetAuthorizationContextAsync(string returnUrl);
-        Task<bool> GetLogoutContextShowSignoutPromptAsync(string logoutId);
-        bool GetAllowLocalAsync(string returnUrl);
-        Task<LogoutContext> GetLogoutContext(string returnUrl);
+        Task<LogoutContext> GetLogoutContextShowSignoutPromptAsync(string logoutId);
+        Task<bool> GetAllowLocalAsync(string returnUrl);
+        Task<LogoutContext> GetLogoutContext(string logoutId);
         Task<string> CreateLogoutContextAsync();
         Task<string> GetUserRoleByUsernameAsync(string email);
         Task<bool> RegisterProcess(ApplicationUser user, string password);
