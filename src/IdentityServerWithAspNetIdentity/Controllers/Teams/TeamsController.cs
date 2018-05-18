@@ -266,12 +266,20 @@ namespace IdentityServer
         [Route("{id}")]
         public IActionResult TeamDelete(int? id)
         {
-            //TODO 
-            //check accessLevel before 
-
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
             int idTeam = id ?? default(int);
-            _employeeService.DeleteTeam(idTeam);
-            return RedirectToAction(nameof(ManageTeams));
+            var team = _employeeService.GetTeam(idTeam);
+
+            if (user.Position.AccessLevel < 3)
+            {
+                if (user.Department == team.Department)
+                {
+                    _employeeService.DeleteTeam(idTeam);
+                    return RedirectToAction(nameof(ManageTeams));
+                }
+            }
+            return NotFound();
         }
     }
 }

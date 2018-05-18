@@ -3,7 +3,7 @@
     string name = null;
     if (!true.Equals(ViewData["signed-out"]))
     {
-        name = Context.User?.GetDisplayName();
+        name = Context.User?.GetDisplayName();        
     }
 }
 <!DOCTYPE html>
@@ -39,9 +39,12 @@
                        
                     <li><a asp-area="" asp-controller="Employees" asp-action="EmployeeInfo" asp-route-id="1">My information</a></li>
                     --> 
-                    <li><a asp-area="" asp-controller="Employees" asp-action="ManageEmployees">Manage Employees</a></li>
-                    <li><a asp-area="" asp-controller="Departments" asp-action="ManageDepartments">Manage Departments</a></li>
-                    <li><a asp-area="" asp-controller="Teams" asp-action="ManageTeams">Manage Teams</a></li>
+                    @if (Context.User.IsInRole("GM"))
+                    { 
+                        <li><a asp-area="" asp-controller="Employees" asp-action="ManageEmployees">Manage Employees</a></li>
+                        <li><a asp-area="" asp-controller="Departments" asp-action="ManageDepartments">Manage Departments</a></li>
+                        <li><a asp-area="" asp-controller="Teams" asp-action="ManageTeams">Manage Teams</a></li>
+                    }
                 </ul>
                 @if (!string.IsNullOrWhiteSpace(name))
                 {
