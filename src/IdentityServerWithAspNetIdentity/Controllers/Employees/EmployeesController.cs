@@ -168,6 +168,16 @@ namespace IdentityServer
                 return NotFound();
             }
         }
+    
+        public IActionResult GetEmployeeInfo(string username)
+        {
+            var user = _employeeService.GetEmployeeByName(username);
+            if (user != null)
+            {
+                return RedirectToAction("EmployeeInfo", new { id = user.Id });
+            }
+            return NotFound();
+        }
 
         // GET: Employees/EmployeeAddImage/{id}
         [HttpGet]
