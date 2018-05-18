@@ -17,6 +17,8 @@ namespace IdentityServer
 
         //[Required]
         //aici trebuie modific cu un select pentru care departament e echipa respectiva
+        public List<Department> Departments { get; set; }
+        
         public Department Department { get; set; }
 
         public Employee TeamLeader { get; set; }

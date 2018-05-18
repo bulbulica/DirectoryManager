@@ -90,14 +90,22 @@ namespace IdentityServer
                 {
                     var model = new AddTeam()
                     {
-                        Department = user.Department
+                        Departments =
+                        new List<Department>{
+                            user.Department
+                        }
                     };
                     return View(model);
                 }
                 else
                 {
-                 //TODO depends on how it will evolve   
+                    var model = new AddTeam()
+                    {
+                        Departments = _employeeService.GetAllDepartments().ToList()       
+                    };
+                    return View(model);
                 }
+
             }
             else
             {
@@ -114,13 +122,7 @@ namespace IdentityServer
             var user = _employeeService.GetEmployeeByName(username);
 
             if (user.Position.AccessLevel < 3)
-
-                if (true)
             {
-                // Add roles required !!! - delete this when you add 
-                // the function to populate the model with roles,
-                // in case not all inputs are added
-
                 if (ModelState.IsValid)
                 {
                     var team = new Team
@@ -132,7 +134,6 @@ namespace IdentityServer
                     };
                     _employeeService.AddTeam(team);
                 }
-
                 else
                 {
                     return View();
@@ -206,21 +207,33 @@ namespace IdentityServer
         {
             int idTeam = id ?? default(int);
 
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
             Team team = _employeeService.GetTeam(idTeam);
 
-            //TODO 
-            //incarca in lista doar employee cu grad mai mic decat general manager
-
-            var employees = _employeeService.GetAllUnassignedEmployees().ToList();
-            employees.AddRange(team.Employees);
-
-            var model = new AssignTeamLeader
+            if (user.Position.AccessLevel < 3)
             {
-                Team = team,
-                Employees = employees
-            };
+                if (user.Position.AccessLevel == 2 && user.Department == team.Department)
+                {
 
-            return View(model);
+                    var employees = _employeeService.GetAllUnassignedEmployees().ToList();
+                    employees.AddRange(team.Employees);
+                    foreach (var employee in employees)
+                    {
+                        if (employee.Position.AccessLevel < 2)
+                            employees.Remove(employee);
+                    }
+
+                    var model = new AssignTeamLeader
+                    {
+                        Team = team,
+                        Employees = employees
+                    };
+                    return View(model);
+                }
+            }
+
+            return NotFound();
         }
 
         [HttpPost]
