@@ -96,13 +96,21 @@ namespace IdentityServer.Core
         {
             var newEmployee = PersistenceContext.EmployeeRepository.GetEmployeeById(employee.Id);
 
+            
             newEmployee.Name = employee.Name;
             newEmployee.Picture = employee.Picture;
             newEmployee.Position = employee.Position;
-            newEmployee.Team = employee.Team;
-            newEmployee.Department = employee.Department;
+
+            if (employee.Team != null)
+                newEmployee.Team = employee.Team;
+
+            if (employee.Department != null)
+                newEmployee.Department = employee.Department;
             newEmployee.CV = employee.CV;
-            newEmployee.Active = employee.Active;
+
+            if (employee.Active != null)
+                newEmployee.Active = employee.Active;
+
             PersistenceContext.Complete();
         }
 
@@ -264,12 +272,13 @@ namespace IdentityServer.Core
             var accessLevel = employee.Position.AccessLevel;
 
             var allPositions = GetAllPositions().ToList();
+            List<Position> positionsToBeReturned = new List<Position>();
             foreach(var position in allPositions)
             {
                 if (position.AccessLevel > accessLevel)
-                    allPositions.Remove(position);
+                    positionsToBeReturned.Add(position);
             }
-            return allPositions;
+            return positionsToBeReturned;
         }
 
         public Position GetDepartmentManagerPosition()

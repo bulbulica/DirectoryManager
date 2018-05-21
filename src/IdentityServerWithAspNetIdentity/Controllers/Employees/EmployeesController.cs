@@ -371,18 +371,19 @@ namespace IdentityServer
         public IActionResult EmployeeEdit(int? id)
         {
             //if (_auth.IsUserSignedIn(User))
-            if (true)
-            {
-                int idEmployee = id ?? default(int);
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            int idEmployee = id ?? default(int);
 
+            if (user.Position.AccessLevel < 2) {
                 var employee = _employeeService.GetEmployee(idEmployee);
-
+                var positions = _employeeService.GetRegisterPositionsByAccessLevel(User.Identity.Name);
                 var model = new EditEmployee
                 {
                     Id = idEmployee,
                     Name = employee.Name,
                     Active = employee.Active,
-                    AllPositions = _employeeService.GetAllPositions(),
+                    AllPositions = positions,
                     Department = employee.Department.Name,
                     Picture = employee.Picture,
                     Team = employee.Team,
@@ -391,6 +392,19 @@ namespace IdentityServer
                     AllDepartments = _employeeService.GetAllDepartments()
                 };
 
+                return View(model);
+            }
+            else if(user.Position.AccessLevel == 4)
+            {
+                var employee = _employeeService.GetEmployee(idEmployee);
+                var positions = _employeeService.GetRegisterPositionsByAccessLevel(User.Identity.Name);
+                var model = new EditEmployeeHimself
+                {
+                    Id = idEmployee,
+                    Name = employee.Name,
+                    Picture = employee.Picture,
+                    CV = employee.CV,
+                };
                 return View(model);
             }
             else
@@ -452,6 +466,50 @@ namespace IdentityServer
                 {
                     string ErrorMessage = $"the password does not meet the password policy requirements.";
                     var policyRequirements = $"* At least an uppercase and a special character";
+
+                    ViewBag.Error = ErrorMessage;
+                    ViewBag.policyRequirments = policyRequirements;
+                    return View("EmployeeEdit", model);
+                }
+
+                return ManageEmployees();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost]
+        [Route("{id}")]
+        [ValidateAntiForgeryToken]
+        public IActionResult EmployeeEdit(EditEmployee model, int? id)
+        {
+            //if (_auth.IsUserSignedIn(User))
+            if (true)
+            {
+                if (model.CV == null)
+                    model.CV = "";
+                if (model.Picture == null)
+                    model.Picture = "";
+                int idEmployee = id ?? default(int);
+
+
+                if (ModelState.IsValid)
+                {
+                    var employee = _employeeService.GetEmployee(idEmployee);
+                    {
+                        employee.Name = model.Name;
+                        employee.Active = true;
+                        employee.CV = model.CV;
+                    };
+
+                    _employeeService.UpdateEmployee(employee);
+
+                    if (employee.Position == _employeeService.GetDepartmentManagerPosition())
+                    {
+                        _employeeService.UpdateDepartmentManager(employee.Department, employee);
+                    }
 
                     ViewBag.Error = ErrorMessage;
                     ViewBag.policyRequirments = policyRequirements;
