@@ -510,7 +510,8 @@ namespace IdentityServer
                     {
                         _employeeService.UpdateDepartmentManager(employee.Department, employee);
                     }
-
+                    string ErrorMessage = $"the password does not meet the password policy requirements.";
+                    var policyRequirements = $"* At least an uppercase and a special character";
                     ViewBag.Error = ErrorMessage;
                     ViewBag.policyRequirments = policyRequirements;
                     return View("EmployeeEdit", model);
