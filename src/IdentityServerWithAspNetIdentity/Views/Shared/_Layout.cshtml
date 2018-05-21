@@ -46,24 +46,24 @@
                     {
                         <li><a asp-area="" asp-controller="Employees" asp-action="GetEmployeeInfo" asp-route-username="@this.User.Identity.Name">Manage Account</a></li>
                     }
-                    @if (Context.User.IsInRole("TeamLeader"))
+                    @if (Context.User.IsInRole(Constants.TeamLeaderRole))
                     {
-                        <li><a asp-area="" asp-controller="Employees" asp-action="GetManageEmployees" asp-route-username="@this.User.Identity.Name">Manage Employees</a></li>
+                        <li><a asp-area="" asp-controller="Employees" asp-action="ManageEmployees" asp-route-username="@this.User.Identity.Name">Manage Employees</a></li>
                         <li><a asp-area="" asp-controller="Teams" asp-action="GetTeamInfo" asp-route-username="@this.User.Identity.Name">Manage Team</a></li>
                     }
-                    @if (Context.User.IsInRole("DepartmentManager"))
+                    @if (Context.User.IsInRole(Constants.DeveloperRole))
                     {
                         <li><a asp-area="" asp-controller="Employees" asp-action="GetManageEmployees" asp-route-username="@this.User.Identity.Name">Manage Employees</a></li>
                         <li><a asp-area="" asp-controller="Departments" asp-action="GetDepartmentInfo" asp-route-username="@this.User.Identity.Name">Manage Department</a></li>
                         <li><a asp-area="" asp-controller="Teams" asp-action="ManageTeams">Manage Teams</a></li>
                     }
-                    @if (Context.User.IsInRole("GeneralManager"))
+                    @if (Context.User.IsInRole(Constants.GeneralManagerRole))
                     {
                         <li><a asp-area="" asp-controller="Employees" asp-action="ManageEmployees">Manage Employees</a></li>
                         <li><a asp-area="" asp-controller="Departments" asp-action="ManageDepartments">Manage Departments</a></li>
                         <li><a asp-area="" asp-controller="Teams" asp-action="ManageTeams">Manage Teams</a></li>
                     }
-                    @if (Context.User.IsInRole("OfficeManager"))
+                    @if (Context.User.IsInRole(Constants.OfficeManagerRole))
                     {
                         <li><a asp-area="" asp-controller="Employees" asp-action="ManageEmployees">Manage Employees</a></li>
                     }

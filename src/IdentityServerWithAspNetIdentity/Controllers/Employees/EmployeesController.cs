@@ -39,7 +39,7 @@ namespace IdentityServer
         {
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
-            if (user.Position.AccessLevel < 2)  
+            if (user.Position.AccessLevel < 2)
             {
                 List<Employee> employees = _employeeService.GetAllEmployees();
 
@@ -55,34 +55,55 @@ namespace IdentityServer
             }
         }
 
-        // GET: Employees/ManageEmployees
-        [HttpGet("{username}")]
-        public IActionResult ManageEmployees(string username)
+        [HttpGet]
+        public IActionResult ManageDepartmentEmployees(Department department)
         {
-            var user = _employeeService.GetEmployeeByName(username);
+            List<Employee> employees = _employeeService.GetAllEmployeesFromDepartment(department);
 
+            var model = new AllEmployees
+            {
+                Employees = employees
+            };
+            return View("ManageEmployees", model);
+        }
+
+        [HttpGet]
+        public IActionResult ManageTeamEmployees(Team team)
+        {
+            List<Employee> employees = _employeeService.GetAllEmployeesFromTeam(team);
+
+            var model = new AllEmployees
+            {
+                Employees = employees
+            };
+
+            return View("ManageEmployees", model);
+        }
+
+
+
+        [HttpGet("{username}")]
+        public IActionResult GetManageEmployees(string username)
+        {
+            if(username != User.Identity.Name)
+            {
+                return NotFound();
+            }
+
+            var user = _employeeService.GetEmployeeByName(username);
             if (user.Position.AccessLevel == 2)
             {
-                var team = user.Team;
-                List<Employee> employees = _employeeService.GetAllEmployeesFromTeam(team);
-
-                var model = new AllEmployees
-                {
-                    Employees = employees
-                };
-                return View("ManageEmployees", model);
+                return RedirectToAction("ManageDepartmentEmployees", new { department = user.Department });
             }
-            else if (user.Position.AccessLevel == 3)
+            else if(user.Position.AccessLevel == 3)
             {
-                var department = user.Department;
-                List<Employee> employees = _employeeService.GetAllEmployeesFromDepartment(department);
-                var model = new AllEmployees
-                {
-                    Employees = employees
-                };
-                return View("ManageEmployees", model);
+               
+                return RedirectToAction("ManageTeamEmployees", new { team = user.Team });
             }
-            else
+            else if (user.Position.AccessLevel == 1)
+            {
+                return RedirectToAction(nameof(ManageEmployees));
+            }
             {
                 return NotFound();
             }
