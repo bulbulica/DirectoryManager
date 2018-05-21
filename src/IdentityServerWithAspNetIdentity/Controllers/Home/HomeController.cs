@@ -4,12 +4,14 @@
 
 using IdentityServer.Core.Shared;
 using IdentityServer4.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace IdentityServer
 {
     [SecurityHeaders]
+    [Authorize]
     public class Home : Controller
     {
         private readonly IIdentityServerInteractionService _interaction;
