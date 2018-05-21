@@ -68,51 +68,57 @@ namespace IdentityServer.Persistence.EF
         {
             InitializeDbContext(serviceProvider);
 
-            var position1 = new Position
-                {
-                    RoleName = "Developer",
-                    AccessLevel = 4,
-                    Description = "Software dev"
-                };
+            var qaPosition = new Position
+            {
+                RoleName = "QA",
+                AccessLevel = 4,
+                Description = "Quality assurance"
+            };
 
-                var position2 = new Position
-                {
-                    RoleName = "TeamLeader",
-                    AccessLevel = 3,
-                    Description = "Team Leader"
-                };
+            var devPosition = new Position
+            {
+                RoleName = "Developer",
+                AccessLevel = 4,
+                Description = "Software dev"
+            };
 
-                var position3 = new Position
-                {
-                    RoleName = "DepartmentManager",
-                    AccessLevel = 2,
-                    Description = "Department Manager"
-                };
+            var teamLeaderPosition = new Position
+            {
+                RoleName = "TeamLeader",
+                AccessLevel = 3,
+                Description = "Team Leader"
+            };
 
-                var position4 = new Position
-                {
-                    RoleName = "GeneralManager",
-                    AccessLevel = 1,
-                    Description = "General Manager"
-                };
+            var departmentManagerPosition = new Position
+            {
+                RoleName = "DepartmentManager",
+                AccessLevel = 2,
+                Description = "Department Manager"
+            };
 
-                var position5 = new Position
-                {
-                    RoleName = "OfficeManager",
-                    AccessLevel = 255,
-                    Description = "Office Manager"
-                };
+            var generalManagerPosition = new Position
+            {
+                RoleName = "GeneralManager",
+                AccessLevel = 1,
+                Description = "General Manager"
+            };
+
+            var officeManagerPosition = new Position
+            {
+                RoleName = "OfficeManager",
+                AccessLevel = 255,
+                Description = "Office Manager"
+            };
 
             EmployeeRepository.AddPositions(
-                new List<Position>{
-                    position5,
-                    position4,
-                    position3,
-                    position2,
-                    position1
-                });
-
-           
+            new List<Position>{
+                officeManagerPosition,
+                generalManagerPosition,
+                departmentManagerPosition,
+                teamLeaderPosition,
+                devPosition,
+                qaPosition
+            });
 
             if(EmployeeRepository.GetAllEmployees().Count() == 0)
             {
@@ -123,7 +129,7 @@ namespace IdentityServer.Persistence.EF
                     Username = "as2qawd@asd.com",
                     Active = true,
                     CV = null,
-                    Position = position1
+                    Position = devPosition
                 };
 
                 var employee1 = new Employee
@@ -133,7 +139,7 @@ namespace IdentityServer.Persistence.EF
                     Username = "asd@asd.com",
                     Active = true,
                     CV = null,
-                    Position = position1
+                    Position = devPosition
                 };
 
                 var employee2 = new Employee
@@ -143,7 +149,7 @@ namespace IdentityServer.Persistence.EF
                     Username = "asaawd@asd.bcom",
                     Active = true,
                     CV = null,
-                    Position = position1
+                    Position = devPosition
                 };
 
                 var employee3 = new Employee
@@ -153,7 +159,7 @@ namespace IdentityServer.Persistence.EF
                     Username = "qwqwq@asd.bcom",
                     Active = true,
                     CV = null,
-                    Position = position1
+                    Position = devPosition
                 };
 
                 var employee4 = new Employee
@@ -163,7 +169,7 @@ namespace IdentityServer.Persistence.EF
                     Username = "soto@soto.ro",
                     Active = true,
                     CV = null,
-                    Position = position1
+                    Position = devPosition
                 };
 
                 EmployeeRepository.Add(employee0);
@@ -220,9 +226,6 @@ namespace IdentityServer.Persistence.EF
 
             Complete();
             }
-
-
         }
-
     }
 }
