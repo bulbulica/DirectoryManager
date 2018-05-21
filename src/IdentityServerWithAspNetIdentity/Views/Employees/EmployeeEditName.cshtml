@@ -1,4 +1,4 @@
-﻿@model EditEmployee
+﻿@model EditEmployeeName
 @{
     Layout = "/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Edit Employee Name";
@@ -6,7 +6,7 @@
 <h1>@ViewData["Title"]</h1>
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="EmployeeEdit" method="post">
+        <form asp-action="EmployeeEditName" method="post">
             <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" asp-for="Id" value="@Model.Id" class="form-control" />
             <div class="form-group">
@@ -19,16 +19,5 @@
             </div>
         </form>
         <a asp-action="EmployeeInfo" asp-route-id="@Model.Id"><h5>Back to employee info</h5></a>
-    </div>
-    <div class="col-md-3">
-        @if (Model.Picture != null && Model.Picture.Length > 0)
-        {
-        <img src="../../img/@Model.Picture" class="rounded float-left" alt="@Model.Name" height="300" width="300">
-        }
-        @if (Model.CV != null && Model.CV.Length > 0)
-        {
-        <br /><br />
-        <a href="../../docs/@Model.CV">View CV</a>
-        }
     </div>
 </div>

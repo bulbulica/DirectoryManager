@@ -337,5 +337,11 @@ namespace IdentityServer.Core
         {
             return PersistenceContext.EmployeeRepository.GetAllEmployeesFromDepartment(department);
         }
+
+        public void UpdateEmployeeName(Employee employee, string name)
+        {
+            employee.Name = name;
+            PersistenceContext.Complete();
+        }
     }
 }
