@@ -39,7 +39,7 @@ namespace IdentityServer
         {
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
-            if (user.Position.AccessLevel < 2)
+            if (user.Position.AccessLevel < 6)
             {
                 List<Employee> employees = _employeeService.GetAllEmployees();
 
@@ -449,12 +449,8 @@ namespace IdentityServer
                 var positions = _employeeService.GetRegisterPositionsByAccessLevel(User.Identity.Name);
                 if (localUser.Id == employee.Id)
                 {
-                    var model = new EditEmployeeHimself
+                    var model = new 
                     {
-                        Id = idEmployee,
-                        Name = employee.Name,
-                        Picture = employee.Picture,
-                        CV = employee.CV,
                     };
                     return View("EmployeeEditHimself", model);
                 }
