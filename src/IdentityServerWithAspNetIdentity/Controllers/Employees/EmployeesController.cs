@@ -400,20 +400,25 @@ namespace IdentityServer
             else if(user.Position.AccessLevel == 4)
             {
                 var employee = _employeeService.GetEmployee(idEmployee);
+                var localUser = _employeeService.GetEmployeeByName(User.Identity.Name);
                 var positions = _employeeService.GetRegisterPositionsByAccessLevel(User.Identity.Name);
-                var model = new EditEmployeeHimself
+                if (localUser.Id == employee.Id)
                 {
-                    Id = idEmployee,
-                    Name = employee.Name,
-                    Picture = employee.Picture,
-                    CV = employee.CV,
-                };
-                return View(model);
+                    var model = new EditEmployeeHimself
+                    {
+                        Id = idEmployee,
+                        Name = employee.Name,
+                        Picture = employee.Picture,
+                        CV = employee.CV,
+                    };
+                    return View("EmployeeEditHimself",model);
+                }
             }
             else
             {
                 return NotFound();
             }
+            return View();
         }
 
         // POST: Employees/EmployeeEdit/{id}
@@ -483,50 +488,6 @@ namespace IdentityServer
             }
         }
 
-        [HttpPost]
-        [Route("{id}")]
-        [ValidateAntiForgeryToken]
-        public IActionResult EmployeeEdit(EditEmployee model, int? id)
-        {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
-            {
-                if (model.CV == null)
-                    model.CV = "";
-                if (model.Picture == null)
-                    model.Picture = "";
-                int idEmployee = id ?? default(int);
-
-
-                if (ModelState.IsValid)
-                {
-                    var employee = _employeeService.GetEmployee(idEmployee);
-                    {
-                        employee.Name = model.Name;
-                        employee.Active = true;
-                        employee.CV = model.CV;
-                    };
-
-                    _employeeService.UpdateEmployee(employee);
-
-                    if (employee.Position == _employeeService.GetDepartmentManagerPosition())
-                    {
-                        _employeeService.UpdateDepartmentManager(employee.Department, employee);
-                    }
-                    string ErrorMessage = $"the password does not meet the password policy requirements.";
-                    var policyRequirements = $"* At least an uppercase and a special character";
-                    ViewBag.Error = ErrorMessage;
-                    ViewBag.policyRequirments = policyRequirements;
-                    return View("EmployeeEdit", model);
-                }
-
-                return ManageEmployees();
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
 
         // GET: Employees/EmployeeEditName/{id}
         [HttpGet]
