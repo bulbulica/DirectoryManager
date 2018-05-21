@@ -12,14 +12,12 @@ namespace IdentityServer.Core
     {
         private IPersistenceContext _persistenceContext;
 
-
         public EmployeeService(IPersistenceContext persistenceContext)
         {
             PersistenceContext = persistenceContext;
         }
 
         public IPersistenceContext PersistenceContext { get => _persistenceContext; set => _persistenceContext = value; }
-
 
         public void AddEmployee(ApplicationUser user)
         {
@@ -342,6 +340,11 @@ namespace IdentityServer.Core
         {
             employee.Name = name;
             PersistenceContext.Complete();
+        }
+
+        public Position GetDeveloperPosition()
+        {
+            return PersistenceContext.EmployeeRepository.GetDeveloperPosition();
         }
     }
 }

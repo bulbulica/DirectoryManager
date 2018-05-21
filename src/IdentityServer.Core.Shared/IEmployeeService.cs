@@ -9,6 +9,7 @@ namespace IdentityServer.Core.Shared
 {
     public interface IEmployeeService
     {
+        Position GetDeveloperPosition();
         List<Employee> GetAllEmployees();
         Employee GetEmployee(int idEmployee);
         IEnumerable<Position> GetAllPositions();

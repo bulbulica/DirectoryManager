@@ -225,6 +225,65 @@ namespace IdentityServer
             return NotFound();
         }
 
+
+        // GET: Employees/EmployeeChangePosition/{id}
+        [HttpGet("{id}")]
+        public IActionResult EmployeeChangePosition(int? id)
+        {
+            int idEmployee = id ?? default(int);
+            var employee = _employeeService.GetEmployee(idEmployee);
+            var user = _employeeService.GetEmployeeByName(User.Identity.Name);
+
+            if (user.Position.AccessLevel < _employeeService.GetDeveloperPosition().AccessLevel)
+            {
+                var positions = _employeeService.GetRegisterPositionsByAccessLevel(user.Username);
+                var model = new EditEmployee
+                {
+                    Id = employee.Id,
+                    Name = employee.Name,
+                    AllPositions = positions,
+                    Position = employee.Position.RoleName
+                    
+                };
+
+                return View(model);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost("{id}")]
+        [ValidateAntiForgeryToken]
+        public IActionResult EmployeeChangePosition(int? id, EditEmployee model)
+        {
+            int idEmployee = id ?? default(int);
+            var employee = _employeeService.GetEmployee(idEmployee);
+            var user = _employeeService.GetEmployeeByName(User.Identity.Name);
+            var position = _employeeService.GetPositionByName(model.Position);
+            if (user.Position.AccessLevel > employee.Position.AccessLevel
+               || user.Position.AccessLevel > position.AccessLevel)
+            {
+                return NotFound();
+            }
+
+            if (position == _employeeService.GetDepartmentManagerPosition()
+                && employee.Department != null)
+            {
+                _employeeService.UpdateDepartmentManager(employee.Department, employee);
+            }
+
+            else if (position == _employeeService.GetTeamLeaderPosition()
+                && employee.Team != null)
+            {
+                _employeeService.UpdateTeamLeader(employee.Team,employee);
+            }
+                return RedirectToAction("EmployeeInfoFromTeamLeader", idEmployee);
+            //Adaugare warnings/errors in caz ca nu se updateaza
+        }
+
+
         // GET: Employees/EmployeeAddImage/{id}
         [HttpGet("{id}")]
         public IActionResult EmployeeAddImage(int? id)
