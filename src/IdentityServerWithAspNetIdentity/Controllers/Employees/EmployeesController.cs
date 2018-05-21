@@ -438,14 +438,6 @@ namespace IdentityServer
                 {
                     Id = idEmployee,
                     Name = employee.Name,
-                    Active = employee.Active,
-                    AllPositions = positions,
-                    Department = employee.Department.Name,
-                    Picture = employee.Picture,
-                    Team = employee.Team,
-                    CV = employee.CV,
-                    Position = employee.Position.RoleName,
-                    AllDepartments = _employeeService.GetAllDepartments()
                 };
 
                 return View(model);
@@ -554,12 +546,10 @@ namespace IdentityServer
 
                 var employee = _employeeService.GetEmployee(idEmployee);
 
-                var model = new EditEmployee
+                var model = new EditEmployeeName
                 {
                     Id = idEmployee,
-                    Name = employee.Name,
-                    Picture = employee.Picture,
-                    CV = employee.CV
+                    Name = employee.Name
                 };
 
                 return View(model);
@@ -574,67 +564,20 @@ namespace IdentityServer
         [HttpPost]
         [Route("{id}")]
         [ValidateAntiForgeryToken]
-        public IActionResult EmployeeEditName(EditEmployee model, int? id)
+        public IActionResult EmployeeEditName(EditEmployeeName model, int? id)
         {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
+            int idEmployee = id ?? default(int);
+
+            if (ModelState.IsValid)
             {
-                if (model.CV == null)
-                    model.CV = "";
-                if (model.Picture == null)
-                    model.Picture = "";
-                int idEmployee = id ?? default(int);
-
-
-                if (ModelState.IsValid)
+                var employee = _employeeService.GetEmployee(idEmployee);
+                if (model.Name.Length > 6)
                 {
-                    /*
-                     * AICI TREBUIE VERIFICI DACA MERGE
-                     * */
-
-                    /*var employee = _employeeService.GetEmployee(idEmployee);
-
-                    if (position != null && department != null)
-                    {
-                        employee.Name = model.Name;
-                        employee.Active = true;
-                        employee.Position = position;
-                        employee.Department = department;
-                        employee.CV = model.CV;
-                    };
-
-                    _employeeService.UpdateEmployee(employee);
-
-                    if (employee.Position == _employeeService.GetDepartmentManagerPosition())
-                    {
-                        _employeeService.UpdateDepartmentManager(employee.Department, employee);
-                    }
-
-                    else if (employee.Position == _employeeService.GetTeamLeaderPosition())
-                    {
-                        if (employee.Team != null)
-                        {
-                            if (_employeeService.GetTeamLeader(employee.Team) != employee)
-                            {
-                                _employeeService.UpdateTeamLeader(employee.Team, employee);
-                            }
-                        }
-                    }
-                    */
+                    _employeeService.UpdateEmployeeName(employee, model.Name);
                 }
-                else
-                {
-                    /*
-                    string ErrorMessage = $"the password does not meet the password policy requirements.";
-                    var policyRequirements = $"* At least an uppercase and a special character";
+                //Add Error 
 
-                    ViewBag.Error = ErrorMessage;
-                    ViewBag.policyRequirments = policyRequirements;
-                    return View("EmployeeEdit", model);
-                    */
-                }
-
-                return RedirectToAction("EmployeeInfo", idEmployee);
+            return RedirectToAction("EmployeeInfo", idEmployee);
             }
             else
             {
