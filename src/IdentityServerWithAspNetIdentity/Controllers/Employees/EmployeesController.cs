@@ -168,7 +168,10 @@ namespace IdentityServer
                 return NotFound();
             }
         }
-    
+
+        // GET: Employees/GetEmployeeInfo/{username}
+        [HttpGet]
+        [Route("{username}")]
         public IActionResult GetEmployeeInfo(string username)
         {
             var user = _employeeService.GetEmployeeByName(username);

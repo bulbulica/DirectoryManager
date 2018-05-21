@@ -34,23 +34,19 @@
                 <ul class="nav navbar-nav">
                     <!--
 
-    De modificat !!!
-        - asp-route-id="1" sa aiba Employee.Id
+                    De modificat !!!
+                    - asp-route-id="1" sa aiba Employee.Id
 
-    <li><a asp-area="" asp-controller="Employees" asp-action="EmployeeInfo" asp-route-id="1">My information</a></li>
-    -->
-                    @*@if (Context.User.IsInRole("GM"))
-                    {
-                        <li><a asp-area="" asp-controller="Employees" asp-action="ManageEmployees">Manage Employees</a></li>
-                        <li><a asp-area="" asp-controller="Departments" asp-action="ManageDepartments">Manage Departments</a></li>
-                        <li><a asp-area="" asp-controller="Teams" asp-action="ManageTeams">Manage Teams</a></li>
-                    }
+                    <li><a asp-area="" asp-controller="Employees" asp-action="EmployeeInfo" asp-route-id="1">My information</a></li>
+                    -->
+                    
 
                     @if (Context.User.IsInRole("Developer") || Context.User.IsInRole("QA"))
                     {
-                        <li><a asp-area="" asp-controller="Employees" asp-action="GetEmployeeInfo" asp-route="@Context.User.Identity.Name)">Manage Account</a></li>
+                        <!--
+                            <li><a asp-area="" asp-controller="Employees" asp-action="GetEmployeeInfo" asp-route="@Context.User.Identity.Name">Manage Account</a></li>
+                        -->
                     }
-
                     @if (Context.User.IsInRole("TeamLeader"))
                     {
                         <li><a asp-area="" asp-controller="Employees" asp-action="ManageEmployees">Manage Employees</a></li>
@@ -61,13 +57,22 @@
                         <li><a asp-area="" asp-controller="Employees" asp-action="ManageEmployees">Manage Employees</a></li>
                         <li><a asp-area="" asp-controller="Departments" asp-action="ManageDepartment">Manage Departments</a></li>
                         <li><a asp-area="" asp-controller="Teams" asp-action="ManageTeams">Manage Teams</a></li>
-                    }*@
-
-
+                    }
+                    @if (Context.User.IsInRole("GeneralManager"))
+                    {
                         <li><a asp-area="" asp-controller="Employees" asp-action="ManageEmployees">Manage Employees</a></li>
                         <li><a asp-area="" asp-controller="Departments" asp-action="ManageDepartments">Manage Departments</a></li>
                         <li><a asp-area="" asp-controller="Teams" asp-action="ManageTeams">Manage Teams</a></li>
-
+                    }
+                    @if (Context.User.IsInRole("OfficeManager"))
+                    {
+                        <li><a asp-area="" asp-controller="Employees" asp-action="ManageEmployees">Manage Employees</a></li>
+                        <li><a asp-area="" asp-controller="Departments" asp-action="ManageDepartments">Manage Departments</a></li>
+                        <li><a asp-area="" asp-controller="Teams" asp-action="ManageTeams">Manage Teams</a></li>
+                    }
+                    <li><a asp-area="" asp-controller="Employees" asp-action="ManageEmployees">Manage Employees</a></li>
+                    <li><a asp-area="" asp-controller="Departments" asp-action="ManageDepartments">Manage Departments</a></li>
+                    <li><a asp-area="" asp-controller="Teams" asp-action="ManageTeams">Manage Teams</a></li>
                 </ul>
                 @if (!string.IsNullOrWhiteSpace(name))
                 {
