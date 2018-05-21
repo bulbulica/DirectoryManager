@@ -89,8 +89,7 @@ namespace IdentityServer
         }
 
         // GET: Employees/EmployeeInfo/{id}
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("{id}")]
         public IActionResult EmployeeInfo(int? id)
         {
             //if (_auth.IsUserSignedIn(User))
@@ -113,8 +112,7 @@ namespace IdentityServer
         }
 
         // GET: Employees/EmployeeAddCV/{id}
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("{id}")]
         public IActionResult EmployeeAddCV(int? id)
         {
             //if (_auth.IsUserSignedIn(User))
@@ -138,8 +136,7 @@ namespace IdentityServer
         }
 
         // POST: Employees/EmployeeAddCV/{id}
-        [HttpPost]
-        [Route("{id}")]
+        [HttpPost("{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EmployeeAddCV(int? id, IFormFile file)
         {
@@ -195,7 +192,8 @@ namespace IdentityServer
                 {
                     _employeeService.UpdateCV(employee, fileName);
                 }
-                return RedirectToAction(nameof(ManageEmployees));
+
+                return RedirectToAction("EmployeeInfo", idEmployee);
             }
             else
             {
@@ -215,10 +213,8 @@ namespace IdentityServer
             return NotFound();
         }
 
-
         // GET: Employees/EmployeeAddImage/{id}
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("{id}")]
         public IActionResult EmployeeAddImage(int? id)
         {
             //if (_auth.IsUserSignedIn(User))
@@ -298,7 +294,8 @@ namespace IdentityServer
                 {
                     _employeeService.UpdateImage(employee, fileName);
                 }
-                return RedirectToAction(nameof(ManageEmployees));
+
+                return RedirectToAction("EmployeeInfo", idEmployee);
             }
             else
             {
@@ -446,7 +443,7 @@ namespace IdentityServer
                         Picture = employee.Picture,
                         CV = employee.CV,
                     };
-                    return View("EmployeeEditHimself",model);
+                    return View("EmployeeEditHimself", model);
                 }
             }
             else
@@ -616,7 +613,7 @@ namespace IdentityServer
                     */
                 }
 
-                return EmployeeInfo(idEmployee);
+                return RedirectToAction("EmployeeInfo", idEmployee);
             }
             else
             {
