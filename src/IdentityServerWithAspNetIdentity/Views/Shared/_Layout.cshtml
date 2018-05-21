@@ -42,13 +42,12 @@
     -->
 
 
-                    @if (this.User.IsInRole(Constants.QARole) || this.User.IsInRole(Constants.DeveloperRole))
+                    @if (this.User.IsAuthenticated())
                     {
                         <li><a asp-area="" asp-controller="Employees" asp-action="GetEmployeeInfo" asp-route-username="@this.User.Identity.Name">Manage Account</a></li>
                     }
                     @if (Context.User.IsInRole(Constants.TeamLeaderRole))
                     {
-                        <li><a asp-area="" asp-controller="Employees" asp-action="GetManageEmployees" asp-route-username="@this.User.Identity.Name">Manage Employees</a></li>
                         <li><a asp-area="" asp-controller="Teams" asp-action="GetTeamInfo" asp-route-username="@this.User.Identity.Name">Manage Team</a></li>
                     }
                     @if (Context.User.IsInRole(Constants.DepartmentManagerRole))
