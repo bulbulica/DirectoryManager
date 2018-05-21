@@ -55,9 +55,10 @@ namespace IdentityServer
             }
         }
 
-        [HttpGet]
-        public IActionResult ManageDepartmentEmployees(Department department)
+        [HttpGet("{departmentId}")]
+        public IActionResult ManageDepartmentEmployees(int departmentId)
         {
+            var department = _employeeService.GetDepartment(departmentId);
             List<Employee> employees = _employeeService.GetAllEmployeesFromDepartment(department);
 
             var model = new AllEmployees
@@ -66,21 +67,6 @@ namespace IdentityServer
             };
             return View("ManageEmployees", model);
         }
-
-        [HttpGet]
-        public IActionResult ManageTeamEmployees(Team team)
-        {
-            List<Employee> employees = _employeeService.GetAllEmployeesFromTeam(team);
-
-            var model = new AllEmployees
-            {
-                Employees = employees
-            };
-
-            return View("ManageEmployees", model);
-        }
-
-
 
         [HttpGet("{username}")]
         public IActionResult GetManageEmployees(string username)
@@ -93,12 +79,7 @@ namespace IdentityServer
             var user = _employeeService.GetEmployeeByName(username);
             if (user.Position.AccessLevel == 2)
             {
-                return RedirectToAction("ManageDepartmentEmployees", new { department = user.Department });
-            }
-            else if(user.Position.AccessLevel == 3)
-            {
-               
-                return RedirectToAction("ManageTeamEmployees", new { team = user.Team });
+                return RedirectToAction("ManageDepartmentEmployees", new { departmentId = user.Department.Id });
             }
             else if (user.Position.AccessLevel == 1)
             {

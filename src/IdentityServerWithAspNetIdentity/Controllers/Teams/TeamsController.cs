@@ -85,7 +85,7 @@ namespace IdentityServer
             if (user != null)
             {
                 if(user.Position.AccessLevel == 3)
-                return RedirectToAction("EmployeeInfo", new { id = user.Team.Id });
+                return RedirectToAction("TeamInfo", new { id = user.Team.Id });
             }
             return NotFound();
         }
@@ -233,20 +233,23 @@ namespace IdentityServer
             if (user.Position.AccessLevel < 3)
             {
                 // If User = Deparment Manager
-                if (user.Position.AccessLevel == 2 && user.Department == team.Department)
+                if (user.Position.AccessLevel == 2 && user.Department == team.Department
+                    || user.Position.AccessLevel < 2)
                 {
                     var employees = _employeeService.GetAllUnassignedEmployees().ToList();
                     employees.AddRange(team.Employees);
+                    List<Employee> candidatesEmployees = new List<Employee>();
+
                     foreach (var employee in employees)
                     {
-                        if (employee.Position.AccessLevel < 2)
-                            employees.Remove(employee);
+                        if (employee.Position.AccessLevel > 2)
+                            candidatesEmployees.Add(employee);
                     }
 
                     var model = new AssignTeamLeader
                     {
                         Team = team,
-                        Employees = employees
+                        Employees = candidatesEmployees
                     };
                     return View(model);
                 }
