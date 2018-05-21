@@ -76,6 +76,19 @@ namespace IdentityServer
             return NotFound();
         }
 
+        [HttpGet("{username}")]
+        public IActionResult GetTeamInfo(string username)
+        {
+            var user = _employeeService.GetEmployeeByName(username);
+            if (user != null)
+            {
+                if(user.Position.AccessLevel == 3)
+                return RedirectToAction("EmployeeInfo", new { id = user.Team.Id });
+            }
+            return NotFound();
+        }
+
+
         // GET: Teams/TeamAdd
         [HttpGet]
         public IActionResult TeamAdd()

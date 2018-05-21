@@ -55,6 +55,39 @@ namespace IdentityServer
             }
         }
 
+        // GET: Employees/ManageEmployees
+        [HttpGet("{username}")]
+        public IActionResult ManageEmployees(string username)
+        {
+            var user = _employeeService.GetEmployeeByName(username);
+
+            if (user.Position.AccessLevel == 2)
+            {
+                var team = user.Team;
+                List<Employee> employees = _employeeService.GetAllEmployeesFromTeam(team);
+
+                var model = new AllEmployees
+                {
+                    Employees = employees
+                };
+                return View("ManageEmployees", model);
+            }
+            else if (user.Position.AccessLevel == 3)
+            {
+                var department = user.Department;
+                List<Employee> employees = _employeeService.GetAllEmployeesFromDepartment(department);
+                var model = new AllEmployees
+                {
+                    Employees = employees
+                };
+                return View("ManageEmployees", model);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         // GET: Employees/EmployeeInfo/{id}
         [HttpGet]
         [Route("{id}")]
@@ -181,6 +214,7 @@ namespace IdentityServer
             }
             return NotFound();
         }
+
 
         // GET: Employees/EmployeeAddImage/{id}
         [HttpGet]

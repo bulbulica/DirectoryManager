@@ -122,6 +122,19 @@ namespace IdentityServer.Controllers.Departments
             }
         }
 
+        [HttpGet("{username}")]
+        public IActionResult GetDepartmentInfo(string username)
+        {
+            var user = _employeeService.GetEmployeeByName(username);
+            if (user != null)
+            {
+                if(user.Position.AccessLevel==2)
+                return RedirectToAction("DepartmentInfo", new { id = user.Department.Id });
+            }
+            return NotFound();
+        }
+
+
         [HttpPost]
         [Route("{id}")]
         [ValidateAntiForgeryToken]

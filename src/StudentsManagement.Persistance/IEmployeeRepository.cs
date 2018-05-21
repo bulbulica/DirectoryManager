@@ -25,5 +25,7 @@ namespace IdentityServer.Persistence
         Position GetDeveloperPosition();
         Position GetTeamLeaderPosition();
         Position GetDepartmentManagerPosition();
+        List<Employee> GetAllEmployeesFromDepartment(Department department);
+        List<Employee> GetAllEmployeesFromTeam(Team team);
     }
 }

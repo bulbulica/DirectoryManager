@@ -38,5 +38,8 @@ namespace IdentityServer.Core.Shared
         Employee GetEmployeeByName(string employeeName);
         void UpdateCV(Employee employee, string filePath);
         void UpdateImage(Employee employee, string filePath);
+        List<Employee> GetAllEmployeesFromTeam(Team team);
+        List<Employee> GetAllEmployeesFromDepartment(Department department);
+
     }
 }

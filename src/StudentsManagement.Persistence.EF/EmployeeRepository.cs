@@ -117,6 +117,16 @@ namespace IdentityServer.Persistence.EF
             return EmployeeDbContext.Positions.SingleOrDefault(testp => testp.RoleName.Equals("DepManager"));
         }
 
+        public List<Employee> GetAllEmployeesFromDepartment(Department department)
+        {
+            return EmployeeDbContext.Employees.Where(e => e.Department == department).ToList();
+        }
+
+        public List<Employee> GetAllEmployeesFromTeam(Team team)
+        {
+            return EmployeeDbContext.Employees.Where(e => e.Team == team).ToList();
+        }
+
         public EmployeeDbContext EmployeeDbContext
         {
             get

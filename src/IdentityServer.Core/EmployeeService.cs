@@ -327,5 +327,15 @@ namespace IdentityServer.Core
             employee.Picture = filePath;
             PersistenceContext.Complete();
         }
+
+        public List<Employee> GetAllEmployeesFromTeam(Team team)
+        {
+            return PersistenceContext.EmployeeRepository.GetAllEmployeesFromTeam(team);
+        }
+
+        public List<Employee> GetAllEmployeesFromDepartment(Department department)
+        {
+            return PersistenceContext.EmployeeRepository.GetAllEmployeesFromDepartment(department);
+        }
     }
 }
