@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace IdentityServer.Persistence.EF
 {
@@ -76,14 +77,14 @@ namespace IdentityServer.Persistence.EF
 
                 var position2 = new Position
                 {
-                    RoleName = "TeamLead",
+                    RoleName = "TeamLeader",
                     AccessLevel = 3,
                     Description = "Team Leader"
                 };
 
                 var position3 = new Position
                 {
-                    RoleName = "DepManager",
+                    RoleName = "DepartmentManager",
                     AccessLevel = 2,
                     Description = "Department Manager"
                 };
@@ -95,8 +96,16 @@ namespace IdentityServer.Persistence.EF
                     Description = "General Manager"
                 };
 
+                var position5 = new Position
+                {
+                    RoleName = "OfficeManager",
+                    AccessLevel = 255,
+                    Description = "Office Manager"
+                };
+
             EmployeeRepository.AddPositions(
                 new List<Position>{
+                    position5,
                     position4,
                     position3,
                     position2,

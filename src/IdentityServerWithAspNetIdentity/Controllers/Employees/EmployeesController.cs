@@ -37,8 +37,9 @@ namespace IdentityServer
         [HttpGet]
         public IActionResult ManageEmployees()
         {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            if (user.Position.AccessLevel < 2)  
             {
                 List<Employee> employees = _employeeService.GetAllEmployees();
 
@@ -170,8 +171,7 @@ namespace IdentityServer
         }
 
         // GET: Employees/GetEmployeeInfo/{username}
-        [HttpGet]
-        [Route("{username}")]
+        [HttpGet("{username}")]
         public IActionResult GetEmployeeInfo(string username)
         {
             var user = _employeeService.GetEmployeeByName(username);
@@ -319,7 +319,7 @@ namespace IdentityServer
                     if (position != null && department != null)
                     {
                         var user = new ApplicationUser { UserName = model.Name, Email = model.Username };
-                        var result = await _auth.RegisterProcess(user, model.Password);
+                        var result = await _auth.RegisterProcess(user, model.Password, position);
                         if (result)
                         {
                             var employee = new Employee
@@ -336,6 +336,7 @@ namespace IdentityServer
                             {
                                 _employeeService.UpdateDepartmentManager(employee.Department, employee);
                             }
+                            
 
                         }
                         else

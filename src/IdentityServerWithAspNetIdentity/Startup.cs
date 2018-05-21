@@ -27,7 +27,7 @@ namespace IdentityServerWithAspNetIdentity
         public void ConfigureServices(IServiceCollection services)
         {
 
-            var authService = new AuthenticationServices(null, null, null, null, null);
+            var authService = new AuthenticationServices(null, null, null, null, null, null);
             authService.InitializeContext(services, Configuration);
             services.AddScoped<IAuthentication, AuthenticationServices>();
 

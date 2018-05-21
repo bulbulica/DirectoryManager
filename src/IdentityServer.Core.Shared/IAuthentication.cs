@@ -1,4 +1,5 @@
 ﻿using IdentityServer.Core.Shared.Models;
+using IdentityServer.Domain;
 using IdentityServer.Shared.Abstractions;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -20,7 +21,7 @@ namespace IdentityServer.Core.Shared
         Task<LogoutContext> GetLogoutContext(string logoutId);
         Task<string> CreateLogoutContextAsync();
         Task<string> GetUserRoleByUsernameAsync(string email);
-        Task<bool> RegisterProcess(ApplicationUser user, string password);
+        Task<bool> RegisterProcess(ApplicationUser user, string password, Position position);
 
         //Task<string> GetUserNameAsync(ClaimsPrincipal User);
         //Task<string> GetUserIdAsync(ClaimsPrincipal User);

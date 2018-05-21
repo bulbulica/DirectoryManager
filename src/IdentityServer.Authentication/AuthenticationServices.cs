@@ -17,6 +17,7 @@ using IdentityServer.Core.Shared.Models;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using IdentityServer.Shared.Abstractions;
 
 namespace IdentityServer.Authentication
 {
@@ -24,28 +25,36 @@ namespace IdentityServer.Authentication
     {
         private UserManager<ApplicationUser> _userManager = null;
         private SignInManager<ApplicationUser> _signInManager = null;
+        private RoleManager<IdentityRole> _roleManager = null;
         private IIdentityServerInteractionService _interaction = null;
         private IClientStore _clientStore = null;
         private IEventService _eventService = null;
-
         private void InitializeManagers(IServiceProvider serviceProvider)
         {
-            if (_userManager == null || _signInManager == null ||_interaction == null || _clientStore == null || _eventService == null)
+            if (_userManager == null || _signInManager == null 
+                || _roleManager ==null ||_interaction == null 
+                || _clientStore == null || _eventService == null)
             {                 
                 _userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
                 _signInManager = serviceProvider.GetService<SignInManager<ApplicationUser>>();
+                _roleManager = serviceProvider.GetService <RoleManager<IdentityRole>>();
                 _interaction = serviceProvider.GetService<IIdentityServerInteractionService>();
                 _clientStore = serviceProvider.GetService<IClientStore>();
                 _eventService = serviceProvider.GetService<IEventService>();
+
+
             }
 
-        }        
+        }
 
-        public AuthenticationServices(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
+        public AuthenticationServices(UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            RoleManager<IdentityRole> roleManager,
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IEventService events)
         {
+            _roleManager = roleManager;
             _userManager = userManager;
             _signInManager = signInManager;
             _interaction = interaction;
@@ -57,27 +66,6 @@ namespace IdentityServer.Authentication
         {
             throw new System.NotImplementedException();
         }
-
-        //public AuthenticationProperties ExternalLogin(string provider, string redirectUrl)
-        //{
-        //    var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
-        //    return properties;
-        //}
-
-        //public async Task<bool> ExternalLoginCallBack()
-        //{
-        //    var info = await _signInManager.GetExternalLoginInfoAsync();
-        //    if (info == null)
-        //    {
-        //        return false;
-        //    }
-
-        //    // Sign in the user with this external login provider if the user already has a login.
-        //    var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
-
-        //    return result.Succeeded;
-        //}
-
 
         public async Task<bool> LoginProcess(string email, string password, bool remember)
         {
@@ -96,131 +84,15 @@ namespace IdentityServer.Authentication
             await _eventService.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
         }
 
-        public async Task<bool> RegisterProcess(ApplicationUser user, string password)
+        public async Task<bool> RegisterProcess(ApplicationUser user, string password, Position position)
         {
             var result = await _userManager.CreateAsync(user, password);
+            if(result.Succeeded)
+            await _userManager.AddToRoleAsync(user, position.RoleName);
+            
 
             return result.Succeeded;
         }
-
-        //public async Task<ApplicationUser> Index(ClaimsPrincipal claimsPrincipalUser)
-        //{
-        //    var user = await _userManager.GetUserAsync(claimsPrincipalUser);
-        //    if (user == null)
-        //    {
-        //        throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(claimsPrincipalUser)}'.");
-        //    }
-
-        //    return user;
-        //}
-
-        //public async Task<bool> ProfileUpdate(ClaimsPrincipal claimsPrincipalUser, string modelEmail, string modelPhoneNumber)
-        //{
-        //    var user = await _userManager.GetUserAsync(claimsPrincipalUser);
-        //    if (user == null)
-        //    {
-        //        throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(claimsPrincipalUser)}'.");
-        //    }
-
-        //    var email = user.Email;
-        //    if (modelEmail != email)
-        //    {
-        //        var setEmailResult = await _userManager.SetEmailAsync(user, modelEmail);
-        //        if (!setEmailResult.Succeeded)
-        //        {
-        //            throw new ApplicationException($"Unexpected error occurred setting email for user with ID '{user.Id}'.");
-        //        }
-        //    }
-
-        //    var phoneNumber = user.PhoneNumber;
-        //    if (modelPhoneNumber != phoneNumber)
-        //    {
-        //        var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, modelPhoneNumber);
-        //        if (!setPhoneResult.Succeeded)
-        //        {
-        //            throw new ApplicationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
-        //        }
-        //    }
-        //    return true;
-        //}
-
-        //public async Task<bool> CheckPasswordData(ClaimsPrincipal claimsPrincipalUser)
-        //{
-        //    var user = await _userManager.GetUserAsync(claimsPrincipalUser);
-        //    if (user == null)
-        //    {
-        //        throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(claimsPrincipalUser)}'.");
-        //    }
-
-        //    var hasPassword = await _userManager.HasPasswordAsync(user);
-
-        //    return hasPassword;
-        //}
-
-        //public async Task<bool> ChangePassword(ClaimsPrincipal claimsPrincipalUser, string oldPassword, string newPassword)
-        //{
-        //    var user = await _userManager.GetUserAsync(claimsPrincipalUser);
-        //    if (user == null)
-        //    {
-        //        throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(claimsPrincipalUser)}'.");
-        //    }
-
-        //    var changePasswordResult = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
-        //    if (!changePasswordResult.Succeeded)
-        //    {
-        //        return false;
-        //    }
-
-        //    await _signInManager.SignInAsync(user, isPersistent: false);
-        //    return true;
-        //}
-
-        //public async Task<bool> SetPassword(ClaimsPrincipal claimsPrincipalUser, string newPassword)
-        //{
-        //    var user = await _userManager.GetUserAsync(claimsPrincipalUser);
-        //    if (user == null)
-        //    {
-        //        throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(claimsPrincipalUser)}'.");
-        //    }
-
-        //    var addPasswordResult = await _userManager.AddPasswordAsync(user, newPassword);
-        //    if (!addPasswordResult.Succeeded)
-        //    {
-        //        return false;
-        //    }
-
-        //    await _signInManager.SignInAsync(user, isPersistent: false);
-        //    return true;
-        //}
-
-        //public async Task<bool> IsTeacher(ClaimsPrincipal User)
-        //{
-        //    var user = await _userManager.GetUserAsync(User);
-        //    if (user == null)
-        //    {
-        //        throw new ApplicationException($"Unable to load user with ID ");
-        //    }
-        //    var roles = await _userManager.GetRolesAsync(user);
-
-        //    foreach (var role in roles)
-        //    {
-        //        if (role == "Teacher")
-        //            return true;
-        //    }
-        //    return false;
-
-        //}
-
-        //public async Task<bool> IsUserValid(ClaimsPrincipal User)
-        //{
-        //    var user = await _userManager.GetUserAsync(User);
-        //    if (user == null)
-        //        return false;
-        //    else
-        //        return true;
-
-        //}
-
         public bool IsUserSignedIn(ClaimsPrincipal User)
         {
             var result = _signInManager.IsSignedIn(User);
@@ -232,7 +104,43 @@ namespace IdentityServer.Authentication
 
         public void InitializeData(IServiceProvider serviceProvider)
         {
-           
+            
+            
+            if (!_roleManager.RoleExistsAsync(Constants.GeneralManagerRole).Result)
+            {
+                var role = new IdentityRole(Constants.GeneralManagerRole);
+                var result = _roleManager.CreateAsync(role);
+            }
+
+            if (!_roleManager.RoleExistsAsync(Constants.DepartmentManagerRole).Result)
+            {
+                var role = new IdentityRole(Constants.DepartmentManagerRole);
+                var result = _roleManager.CreateAsync(role);
+                result.Wait();
+            }
+
+            if (!_roleManager.RoleExistsAsync(Constants.TeamLeaderRole).Result)
+            {
+                var role = new IdentityRole(Constants.TeamLeaderRole);
+                var result = _roleManager.CreateAsync(role);
+                result.Wait();
+            }
+
+            if (!_roleManager.RoleExistsAsync(Constants.DeveloperRole).Result)
+            {
+                var role = new IdentityRole(Constants.DeveloperRole);
+                var result = _roleManager.CreateAsync(role);
+                result.Wait();
+            }
+
+            if (!_roleManager.RoleExistsAsync(Constants.QARole).Result)
+            {
+                var role = new IdentityRole(Constants.QARole);
+                var result = _roleManager.CreateAsync(role);
+                result.Wait();
+            }
+
+
         }
 
         public void InitializeContext(IServiceCollection services, IConfiguration Configuration)
@@ -365,28 +273,5 @@ namespace IdentityServer.Authentication
             return roles.SingleOrDefault();
         }
 
-
-        //public async Task<string> GetUserNameAsync(ClaimsPrincipal User)
-        //{
-        //    var user = await _userManager.GetUserAsync(User);
-        //    return user.UserName;
-        //}
-
-        //public Task<IEnumerable<AuthenticationScheme>> GetExternalAuthenticationSchemesAsync()
-        //{
-        //    return _signInManager.GetExternalAuthenticationSchemesAsync();
-        //}
-
-        //public async Task<string> GetUserIdAsync(ClaimsPrincipal User)
-        //{
-        //    var user = await _userManager.GetUserAsync(User);
-        //    return user.Id;
-        //}
-
-        //public async Task SetUserRole(ApplicationUser user, string roleName)
-        //{
-        //   var result = await _userManager.AddToRoleAsync(user, roleName);
-        //    Console.WriteLine(result.Errors);
-        //}
     }
 }

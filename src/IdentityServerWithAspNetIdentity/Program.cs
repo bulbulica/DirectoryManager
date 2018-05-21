@@ -39,7 +39,7 @@ namespace IdentityServerWithAspNetIdentity
                 var authService = scope.ServiceProvider.GetService<IAuthentication>();
                 if (authService != null)
                 {
-                    authService.InitializeData(scope.ServiceProvider);
+                   authService.InitializeData(scope.ServiceProvider);
                 }
             }
 
