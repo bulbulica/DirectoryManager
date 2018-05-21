@@ -55,14 +55,13 @@ namespace IdentityServer
             var user = _employeeService.GetEmployeeByName(username);
             int idTeam = id ?? default(int);
 
+            // if User = DEV/QA
             if (user.Position.AccessLevel > 3)
             {
                 return NotFound();
             }
             if(user.Position.AccessLevel == 3 && user.Team == _employeeService.GetTeam(idTeam))
             {
-                
-
                 var team = _employeeService.GetTeam(idTeam);
                 var teamLeader = _employeeService.GetTeamLeader(team);
 
@@ -86,6 +85,7 @@ namespace IdentityServer
 
             if (user.Position.AccessLevel < 3)
             {
+                // if User = Department Manager
                 if (user.Position.AccessLevel == 2)
                 {
                     var model = new AddTeam()
@@ -97,6 +97,7 @@ namespace IdentityServer
                     };
                     return View(model);
                 }
+                // Else User = General Manager
                 else
                 {
                     var model = new AddTeam()
@@ -121,6 +122,7 @@ namespace IdentityServer
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
 
+            // if User = DEV/QA
             if (user.Position.AccessLevel < 3)
             {
                 if (ModelState.IsValid)
@@ -150,6 +152,7 @@ namespace IdentityServer
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
 
+            // If User = Deparment Manager/General Manager
             if (user.Position.AccessLevel < 3)
             {
                 int idTeam = id ?? default(int);
@@ -184,6 +187,7 @@ namespace IdentityServer
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
 
+            // If User = Deparment Manager/General Manager
             if (user.Position.AccessLevel < 3)
             {
                 if (ModelState.IsValid)
@@ -213,9 +217,9 @@ namespace IdentityServer
 
             if (user.Position.AccessLevel < 3)
             {
+                // If User = Deparment Manager
                 if (user.Position.AccessLevel == 2 && user.Department == team.Department)
                 {
-
                     var employees = _employeeService.GetAllUnassignedEmployees().ToList();
                     employees.AddRange(team.Employees);
                     foreach (var employee in employees)
@@ -271,6 +275,7 @@ namespace IdentityServer
             int idTeam = id ?? default(int);
             var team = _employeeService.GetTeam(idTeam);
 
+            // If User = Deparment Manager/General Manager
             if (user.Position.AccessLevel < 3)
             {
                 if (user.Department == team.Department)
