@@ -14,7 +14,7 @@ namespace IdentityServer.Persistence.EF
  
         public Employee GetEmployeeByName(string name)
         {
-                return EmployeeDbContext.Employees.SingleOrDefault(testc => testc.Name.Equals(name));
+                return EmployeeDbContext.Employees.SingleOrDefault(testc => testc.Username.Equals(name));
         }
 
         public IEnumerable<Employee> GetAllEmployees()
@@ -104,17 +104,22 @@ namespace IdentityServer.Persistence.EF
 
         public Position GetDeveloperPosition()
         {
-            return EmployeeDbContext.Positions.SingleOrDefault(testp => testp.RoleName.Equals("Developer"));
+            return EmployeeDbContext.Positions.SingleOrDefault(testp => testp.RoleName.Equals(Constants.DeveloperRole));
+        }
+
+        public Position GetQAPosition()
+        {
+            return EmployeeDbContext.Positions.SingleOrDefault(testp => testp.RoleName.Equals(Constants.QARole));
         }
 
         public Position GetTeamLeaderPosition()
         {
-            return EmployeeDbContext.Positions.SingleOrDefault(testp => testp.RoleName.Equals("TeamLead"));
+            return EmployeeDbContext.Positions.SingleOrDefault(testp => testp.RoleName.Equals(Constants.TeamLeaderRole));
         }
 
         public Position GetDepartmentManagerPosition()
         {
-            return EmployeeDbContext.Positions.SingleOrDefault(testp => testp.RoleName.Equals("DepManager"));
+            return EmployeeDbContext.Positions.SingleOrDefault(testp => testp.RoleName.Equals(Constants.DepartmentManagerRole));
         }
 
         public List<Employee> GetAllEmployeesFromDepartment(Department department)

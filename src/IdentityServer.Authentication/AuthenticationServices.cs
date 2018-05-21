@@ -273,5 +273,9 @@ namespace IdentityServer.Authentication
             return roles.SingleOrDefault();
         }
 
+        public void UpdateEmployeeName(string name1, string name2)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

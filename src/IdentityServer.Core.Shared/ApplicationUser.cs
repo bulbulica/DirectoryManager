@@ -7,5 +7,6 @@ namespace IdentityServer.Core.Shared
 {
     public class ApplicationUser : IdentityUser
     {
+        public string FullName { get; set; }
     }
 }

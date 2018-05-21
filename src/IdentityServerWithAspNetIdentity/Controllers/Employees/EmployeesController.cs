@@ -113,12 +113,22 @@ namespace IdentityServer
         [HttpGet("{id}")]
         public IActionResult EmployeeInfo(int? id)
         {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
-            {
-                int idEmployee = id ?? default(int);
+            int idEmployee = id ?? default(int);
+            var employee = _employeeService.GetEmployee(idEmployee);
+            var user = _employeeService.GetEmployeeByName(User.Identity.Name);
 
-                var employee = _employeeService.GetEmployee(idEmployee);
+            if (user.Position.AccessLevel < employee.Position.AccessLevel)
+            {
+                var model = new SingleEmployee
+                {
+                    Employee = employee
+                };
+
+                return View(model);
+            }
+            
+            else if(user.Name == employee.Username)
+            { 
                 var model = new SingleEmployee
                 {
                     Employee = employee
@@ -370,7 +380,7 @@ namespace IdentityServer
 
                     if (position != null && department != null)
                     {
-                        var user = new ApplicationUser { UserName = model.Name, Email = model.Username };
+                        var user = new ApplicationUser { UserName = model.Username, FullName = model.Name, Email = model.Username };
                         var result = await _auth.RegisterProcess(user, model.Password, position);
                         if (result)
                         {
@@ -434,15 +444,19 @@ namespace IdentityServer
             if (user.Position.AccessLevel < 2) {
                 var employee = _employeeService.GetEmployee(idEmployee);
                 var positions = _employeeService.GetRegisterPositionsByAccessLevel(User.Identity.Name);
+                var departments = _employeeService.GetAllDepartments();
                 var model = new EditEmployee
                 {
                     Id = idEmployee,
                     Name = employee.Name,
+                    AllPositions = positions,
+                    AllDepartments = departments
+                    
                 };
 
                 return View(model);
             }
-            else if(user.Position.AccessLevel == 4)
+            else
             {
                 var employee = _employeeService.GetEmployee(idEmployee);
                 var localUser = _employeeService.GetEmployeeByName(User.Identity.Name);
@@ -458,12 +472,8 @@ namespace IdentityServer
                     };
                     return View("EmployeeEditHimself", model);
                 }
-            }
-            else
-            {
-                return NotFound();
-            }
-            return View();
+            }   
+            return NotFound();
         }
 
         // POST: Employees/EmployeeEdit/{id}

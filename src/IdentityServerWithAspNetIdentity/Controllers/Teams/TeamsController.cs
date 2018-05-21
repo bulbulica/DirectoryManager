@@ -55,15 +55,17 @@ namespace IdentityServer
             var user = _employeeService.GetEmployeeByName(username);
             int idTeam = id ?? default(int);
 
+            var team = _employeeService.GetTeam(idTeam);
+            var teamLeader = _employeeService.GetTeamLeader(team);
             // if User = DEV/QA
             if (user.Position.AccessLevel > 3)
             {
                 return NotFound();
             }
-            if(user.Position.AccessLevel == 3 && user.Team == _employeeService.GetTeam(idTeam))
+            if ((user.Position.AccessLevel == 3 && user.Team == _employeeService.GetTeam(idTeam))
+                || user.Position.AccessLevel < 2
+                || user.Position.AccessLevel == 2 && user.Department.Teams.Contains(team) )
             {
-                var team = _employeeService.GetTeam(idTeam);
-                var teamLeader = _employeeService.GetTeamLeader(team);
 
                 var model = new SingleTeam
                 {
