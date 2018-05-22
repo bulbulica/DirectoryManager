@@ -83,7 +83,6 @@ namespace IdentityServer.Controllers.Departments
                     };
                     _employeeService.AddDepartment(department);
                 }
-
                 else
                 {
                     return View();
@@ -111,7 +110,6 @@ namespace IdentityServer.Controllers.Departments
                     Department = department,
                     DepartmentManager = departmentManager
                 };
-
                 return View(model);
             }
             else
@@ -134,7 +132,6 @@ namespace IdentityServer.Controllers.Departments
             {
                 return RedirectToAction("DepartmentInfo", idDepartment);
             }
-                
             if (user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel)
             {
                 var model = new SingleDepartment
@@ -142,7 +139,6 @@ namespace IdentityServer.Controllers.Departments
                     Department = department,
                     DepartmentManager = departmentManager
                 };
-
                 return View(model);
             }
             else
@@ -163,7 +159,6 @@ namespace IdentityServer.Controllers.Departments
             return NotFound();
         }
 
-
         [HttpPost]
         [Route("{id}")]
         [ValidateAntiForgeryToken]
@@ -178,7 +173,6 @@ namespace IdentityServer.Controllers.Departments
                 {
                     var department = new Department { Id = newDepartment.Id, Name = newDepartment.Name, Description = newDepartment.Description };
                     _employeeService.UpdateDepartment(department);
-
                 }
                 else
                 {
@@ -195,6 +189,8 @@ namespace IdentityServer.Controllers.Departments
         {
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
+            var departments = _employeeService.GetAllDepartments();
+
             if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
             {
                 var model = new AllDepartments
@@ -218,11 +214,7 @@ namespace IdentityServer.Controllers.Departments
             var user = _employeeService.GetEmployeeByName(username);
             if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
             {
-                var model = new AddDepartment()
-                {
-
-                };
-
+                var model = new AddDepartment();
                 return View(model);
             }
             else
@@ -236,12 +228,18 @@ namespace IdentityServer.Controllers.Departments
         [Route("{id}")]
         public IActionResult DepartmentDelete(int? id)
         {
-            //TODO 
-            //check accessLevel before 
-
-            int idDepartment = id ?? default(int);
-            _employeeService.DeleteDepartment(idDepartment);
-            return RedirectToAction(nameof(ManageDepartments));
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
+            {
+                int idDepartment = id ?? default(int);
+                _employeeService.DeleteDepartment(idDepartment);
+                return RedirectToAction(nameof(ManageDepartments));
+            }
+            else
+            {
+                return NotFound();
+            }
         }
     }
 }
