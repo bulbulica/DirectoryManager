@@ -639,7 +639,7 @@ namespace IdentityServer
             var user = _employeeService.GetEmployeeByName(username);
             int idEmployee = id ?? default(int);
 
-            if (user.Position.AccessLevel < 2) {
+            if (user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel) {
                 var employee = _employeeService.GetEmployee(idEmployee);
                 var positions = _employeeService.GetRegisterPositionsByAccessLevel(User.Identity.Name);
                 var departments = _employeeService.GetAllDepartments();

@@ -30,8 +30,8 @@ namespace IdentityServer
         [HttpGet]
         public IActionResult ManageTeams()
         {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
+            var user = _employeeService.GetEmployeeByName(User.Identity.Name);
+            if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
             {
                 List<Team> teams = _employeeService.GetAllTeams().ToList();
 
@@ -52,7 +52,7 @@ namespace IdentityServer
         {
 
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
-            if(user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
+            if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
             {
                 List<Team> teams = _employeeService.GetAllTeams().ToList();
 
@@ -62,7 +62,7 @@ namespace IdentityServer
                 };
                 return View(model);
             }
-            else if(user.Position.AccessLevel== Constants.DepartmentManagerAccessLevel)
+            else if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
             {
                 return RedirectToAction(nameof(ManageTeams));
             }
@@ -73,6 +73,7 @@ namespace IdentityServer
         [Route("{id}")]
         public IActionResult TeamInfo(int? id)
         {
+
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
             int idTeam = id ?? default(int);
@@ -84,9 +85,8 @@ namespace IdentityServer
             {
                 return NotFound();
             }
-            if ((user.Position.AccessLevel == Constants.TeamLeaderAccessLevel && user.Team == _employeeService.GetTeam(idTeam))
-                || user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel
-                || user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel && user.Department.Teams.Contains(team) )
+            if ((user.Position.AccessLevel == Constants.TeamLeaderAccessLevel
+                && user.Team == _employeeService.GetTeam(idTeam)))
             {
 
                 var model = new SingleTeam
@@ -96,6 +96,11 @@ namespace IdentityServer
                 };
 
                 return View(model);
+            }
+            if (user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel
+                 || user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel && user.Department.Teams.Contains(team))
+            {
+                return RedirectToAction(nameof(TeamInfoAdvanced));
             }
             return NotFound();
         }
@@ -115,7 +120,7 @@ namespace IdentityServer
             {
                 return RedirectToAction(nameof(TeamInfo));
             }
-            if ( user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel
+            if (user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel
                 || user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel && user.Department.Teams.Contains(team))
             {
 
@@ -136,8 +141,8 @@ namespace IdentityServer
             var user = _employeeService.GetEmployeeByName(username);
             if (user != null)
             {
-                if(user.Position.AccessLevel == Constants.TeamLeaderAccessLevel)
-                return RedirectToAction("TeamInfo", new { id = user.Team.Id });
+                if (user.Position.AccessLevel == Constants.TeamLeaderAccessLevel)
+                    return RedirectToAction("TeamInfo", new { id = user.Team.Id });
             }
             return NotFound();
         }
@@ -169,7 +174,7 @@ namespace IdentityServer
                 {
                     var model = new AddTeam()
                     {
-                        Departments = _employeeService.GetAllDepartments().ToList()       
+                        Departments = _employeeService.GetAllDepartments().ToList()
                     };
                     return View(model);
                 }
@@ -190,7 +195,7 @@ namespace IdentityServer
             var user = _employeeService.GetEmployeeByName(username);
 
             // if User = DEV/QA
-            if (user.Position.AccessLevel < 3)
+            if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {
                 if (ModelState.IsValid)
                 {
@@ -218,14 +223,13 @@ namespace IdentityServer
         {
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
+            int idTeam = id ?? default(int);
+            var team = _employeeService.GetTeam(idTeam);
 
             // If User = Deparment Manager/General Manager
-            if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
+            if (user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel
+                || user.Department == team.Department)
             {
-                int idTeam = id ?? default(int);
-
-                var team = _employeeService.GetTeam(idTeam);
-
                 if (team.Description == null)
                     team.Description = "";
 
@@ -253,9 +257,10 @@ namespace IdentityServer
 
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
-
+            var oldTeam = _employeeService.GetTeam(editTeam.Id);
             // If User = Deparment Manager/General Manager
-            if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
+            if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel
+                ||user.Department == oldTeam.Department)
             {
                 if (ModelState.IsValid)
                 {
@@ -280,7 +285,7 @@ namespace IdentityServer
 
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
-            Team team = _employeeService.GetTeam(idTeam);
+            var team = _employeeService.GetTeam(idTeam);
 
             if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {

@@ -37,8 +37,9 @@ namespace IdentityServer.Controllers.Departments
         [Route("{id}")]
         public IActionResult DepartmentEdit(int? id)
         {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            if(user.Position.AccessLevel<Constants.DepartmentManagerAccessLevel)
             {
                 int idDepartment = id ?? default(int);
 
@@ -67,13 +68,10 @@ namespace IdentityServer.Controllers.Departments
         [ValidateAntiForgeryToken]
         public IActionResult DepartmentAdd(AddDepartment model)
         {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            if (user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel)
             {
-                // Add roles required !!! - delete this when you add 
-                // the function to populate the model with roles,
-                // in case not all inputs are added
-
                 if (ModelState.IsValid)
                 {
                     var department = new Department
@@ -81,7 +79,6 @@ namespace IdentityServer.Controllers.Departments
                         Name = model.Name,
                         Description = model.Description,
                         Employees = new List<Employee>()
-                        //DepartmentLeader is required
 
                     };
                     _employeeService.AddDepartment(department);
@@ -101,13 +98,45 @@ namespace IdentityServer.Controllers.Departments
         [Route("{id}")]
         public IActionResult DepartmentInfo(int? id)
         {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
-            {
-                int idDepartment = id ?? default(int);
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            int idDepartment = id ?? default(int);
+            var department = _employeeService.GetDepartment(idDepartment);
+            var departmentManager = _employeeService.GetDepartmentManager(department);
 
-                var department = _employeeService.GetDepartment(idDepartment);
-                var departmentManager = _employeeService.GetDepartmentManager(department);
+            if (user.Id == departmentManager.Id)
+            {
+                var model = new SingleDepartment
+                {
+                    Department = department,
+                    DepartmentManager = departmentManager
+                };
+
+                return View(model);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult DepartmentInfoAdvanced(int? id)
+        {
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            int idDepartment = id ?? default(int);
+            var department = _employeeService.GetDepartment(idDepartment);
+            var departmentManager = _employeeService.GetDepartmentManager(department);
+
+            if (user.Id == departmentManager.Id)
+            {
+                return RedirectToAction("DepartmentInfo", idDepartment);
+            }
+                
+            if (user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel)
+            {
                 var model = new SingleDepartment
                 {
                     Department = department,
