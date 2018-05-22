@@ -56,7 +56,7 @@ namespace IdentityServer
         }
 
         [HttpGet("{departmentId}")]
-        public IActionResult ManageDepartmentEmployees(int departmentId)
+        public IActionResult ManageEmployeesForDepartmentManager(int departmentId)
         {
             var department = _employeeService.GetDepartment(departmentId);
             List<Employee> employees = _employeeService.GetAllEmployeesFromDepartment(department);
@@ -65,7 +65,7 @@ namespace IdentityServer
             {
                 Employees = employees
             };
-            return View("ManageEmployees", model);
+            return View(model);
         }
 
         [HttpGet("{username}")]
@@ -79,7 +79,7 @@ namespace IdentityServer
             var user = _employeeService.GetEmployeeByName(username);
             if (user.Position.AccessLevel == 2)
             {
-                return RedirectToAction("ManageDepartmentEmployees", new { departmentId = user.Department.Id });
+                return RedirectToAction("ManageEmployeesForDepartmentManager", new { departmentId = user.Department.Id });
             }
             else if (user.Position.AccessLevel == 1)
             {
@@ -538,14 +538,12 @@ namespace IdentityServer
             //if (_auth.IsUserSignedIn(User))
             if (true)
             {
-                var username = User.Claims.FirstOrDefault(c => c.Type == "email");
+                var username = User.Identity.Name;
 
                 var model = new AddEmployee()
                 {
                     Active = true,
-                    //AllPositions = _employeeService.GetRegisterPositionsByAccessLevel(username.ToString()),
-                    //folosim codul de mai sus dupa ce suntem logati, deocamdata o sa dea crash
-                    AllPositions = _employeeService.GetAllPositions(),
+                    AllPositions = _employeeService.GetRegisterPositionsByAccessLevel(username.ToString()),
                     AllDepartments = _employeeService.GetAllDepartments()
                 };
 
@@ -613,9 +611,7 @@ namespace IdentityServer
                             var returnModel = new AddEmployee()
                             {
                                 Active = true,
-                                //AllPositions = _employeeService.GetRegisterPositionsByAccessLevel(username.ToString()),
-                                //folosim codul de mai sus dupa ce suntem logati, deocamdata o sa dea crash
-                                AllPositions = _employeeService.GetAllPositions(),
+                                AllPositions = _employeeService.GetRegisterPositionsByAccessLevel(User.Identity.Name),
                                 AllDepartments = _employeeService.GetAllDepartments()
                             };
 

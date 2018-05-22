@@ -44,7 +44,7 @@
                     @if (Context.User.IsInRole(Constants.DepartmentManagerRole))
                     {
                         <li><a asp-area="" asp-controller="Employees" asp-action="GetManageEmployees" asp-route-username="@this.User.Identity.Name">Manage Employees</a></li>
-                        <li><a asp-area="" asp-controller="Teams" asp-action="ManageTeamsForDepartmentManager">Manage Teams</a></li>
+                        <li><a asp-area="" asp-controller="Teams" asp-action="ManageEmployeesForDepartmentManager">Manage Teams</a></li>
                     }
                     @if (Context.User.IsInRole(Constants.GeneralManagerRole))
                     {
