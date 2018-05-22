@@ -24,22 +24,20 @@
                         {
                             foreach (var team in teamList)
                             {
-                    <tr>
-                        <td scope="row">
-                            <a asp-action="TeamInfoAdvanced" asp-route-id="@team.Id">@team.Name</a>
-                        </td>
-                        <td scope="row">
-                            @team.Description
-                        </td>
-                        <td scope="row">
-                            @if (team.Department != null)
-                                 {
-                            <a asp-action="DepartmentInfo" asp-controller="Departments" asp-route-id="@team.Id">
-                                @team.Department.Name
-                            </a>
-                                 }
-                        </td>
-                    </tr>
+                                <tr>
+                                    <td scope="row">
+                                        <a asp-action="TeamInfoAdvanced" asp-route-id="@team.Id">@team.Name</a>
+                                    </td>
+                                    <td scope="row">
+                                        @team.Description
+                                    </td>
+                                    <td scope="row">
+                                @if (team.Department != null)
+                                {
+                                    <a asp-action="DepartmentInfo" asp-controller="Departments" asp-route-id="@team.Id">@team.Department.Name</a>
+                                }
+                                    </td>
+                                </tr>
                             }
                         }
                     }
