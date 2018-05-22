@@ -202,9 +202,48 @@ namespace IdentityServer
             }
         }
 
-        // GET: Employees/EmployeeInfoFromDepartmentManager/{id}
+        // GET: Employees/EmployeeInfoFromGeneralManager/{id}
         [HttpGet("{id}")]
-        public IActionResult EmployeeInfoFromDepartmentM(int? id)
+        public IActionResult EmployeeInfoFromGeneralManager(int? id)
+        {
+            int idEmployee = id ?? default(int);
+            var employee = _employeeService.GetEmployee(idEmployee);
+            var user = _employeeService.GetEmployeeByName(User.Identity.Name);
+
+            if (user.Position.RoleName != Constants.TeamLeaderRole)
+            {
+                return RedirectToAction("EmployeeInfo", idEmployee);
+            }
+
+            if (user.Position.AccessLevel < employee.Position.AccessLevel
+                || user.Id == employee.Id)
+            {
+                var model = new SingleEmployee
+                {
+                    Employee = employee
+                };
+
+                return View(model);
+            }
+
+            else if (user.Name == employee.Username)
+            {
+                var model = new SingleEmployee
+                {
+                    Employee = employee
+                };
+
+                return View(model);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        // GET: Employees/EmployeeInfoFromOfficeManager/{id}
+        [HttpGet("{id}")]
+        public IActionResult EmployeeInfoFromOfficeManager(int? id)
         {
             int idEmployee = id ?? default(int);
             var employee = _employeeService.GetEmployee(idEmployee);
