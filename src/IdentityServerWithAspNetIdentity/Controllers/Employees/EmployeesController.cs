@@ -345,8 +345,7 @@ namespace IdentityServer
                     return View(model);
                 }
                
-                var fileName = FileName(employee.Name);
-
+                var fileName = employee.Username;
                 var directoryPath = Path.Combine("wwwroot", "docs");
                 var filePath = Path.Combine(directoryPath, fileName);
                 fileName = string.Concat(fileName, Path.GetExtension(file.FileName).ToLower());
@@ -508,7 +507,7 @@ namespace IdentityServer
                     return View(model);
                 }
 
-                var fileName = FileName(employee.Name);
+                var fileName = employee.Username;
                 var directoryPath = Path.Combine("wwwroot", "img");
                 var filePath = Path.Combine(directoryPath, fileName);
                 fileName = string.Concat(fileName, Path.GetExtension(file.FileName).ToLower());
@@ -805,22 +804,6 @@ namespace IdentityServer
             {
                 return NotFound();
             }
-        }
-
-        // Get the name of the employee and make file name_surname
-        private string FileName(string EmployeeName)
-        {
-            EmployeeName = EmployeeName.Replace('-', ' ');
-            string[] fileSplitName = EmployeeName.Split(' ', '\t');
-
-            var fileName = "";
-            foreach (var pieceOfName in fileSplitName)
-            {
-                fileName += pieceOfName + "_";
-            }
-
-            fileName = fileName.Remove(fileName.Length - 1);
-            return fileName;
         }
     }
 }
