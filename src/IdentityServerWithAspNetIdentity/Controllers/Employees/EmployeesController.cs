@@ -39,7 +39,7 @@ namespace IdentityServer
         {
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
-            if (user.Position.AccessLevel < 6)
+            if (user.Position.AccessLevel < 3)
             {
                 List<Employee> employees = _employeeService.GetAllEmployees();
 
