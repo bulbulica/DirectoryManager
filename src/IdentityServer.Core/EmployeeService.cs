@@ -346,5 +346,11 @@ namespace IdentityServer.Core
         {
             return PersistenceContext.EmployeeRepository.GetDeveloperPosition();
         }
+
+        public void UpdateEmployeePosition(Position position, Employee employee)
+        {
+            employee.Position = position;
+            PersistenceContext.Complete();
+        }
     }
 }

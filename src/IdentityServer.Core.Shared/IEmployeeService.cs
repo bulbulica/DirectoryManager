@@ -42,5 +42,6 @@ namespace IdentityServer.Core.Shared
         List<Employee> GetAllEmployeesFromTeam(Team team);
         List<Employee> GetAllEmployeesFromDepartment(Department department);
         void UpdateEmployeeName(Employee employee, string name);
+        void UpdateEmployeePosition(Position position, Employee employee);
     }
 }

@@ -1,11 +1,12 @@
 ﻿@model SingleEmployee
+@using IdentityServer.Domain
 @{
     Layout = "/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = Model.Employee.Name;
 }
 @if (Model.Employee.Position != null)
 {
-<h1>@ViewData["Title"] - @Model.Employee.Position.RoleName</h1>
+    <h1>@ViewData["Title"] - @Model.Employee.Position.RoleName</h1>
 }
 <div>
     <hr />
@@ -40,6 +41,10 @@
             @if (Model.Employee.CV != null && Model.Employee.CV.Length > 0)
             {
                 <a href="../../docs/@Model.Employee.CV">View CV</a>
+            }
+            @if (this.User.IsInRole(Constants.TeamLeaderRole))
+            {
+                <a asp-action="EmployeeChangePosition" asp-route-id="@Model.Employee.Id"><h4>Change employee position</h4></a>
             }
         </div>
     </div>
