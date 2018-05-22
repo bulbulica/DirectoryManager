@@ -277,5 +277,22 @@ namespace IdentityServer.Authentication
         {
             throw new NotImplementedException();
         }
+
+        public async Task UpdatePositionAsync(Employee employee, string position)
+        {
+            var oldUser = await _userManager.FindByEmailAsync(employee.Username);
+            var oldRole = _roleManager.Roles.Where(a => a.Name == employee.Position.RoleName).SingleOrDefault().Name ;
+
+            if (oldRole != null)
+            {
+                await _userManager.RemoveFromRoleAsync(oldUser, oldRole );
+                await _userManager.AddToRoleAsync(oldUser, position);
+            }
+            else
+            {
+                await _userManager.AddToRoleAsync(oldUser, position);
+            }
+        }
+
     }
 }

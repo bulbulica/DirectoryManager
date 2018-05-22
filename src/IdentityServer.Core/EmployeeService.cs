@@ -239,7 +239,6 @@ namespace IdentityServer.Core
                 employee.Position = PersistenceContext.EmployeeRepository.GetTeamLeaderPosition();
             }
             PersistenceContext.Complete();
-
         }
 
         public Employee GetTeamLeader(Team team)

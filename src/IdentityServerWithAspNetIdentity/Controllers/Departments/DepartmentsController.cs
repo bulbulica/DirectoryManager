@@ -16,13 +16,6 @@ namespace IdentityServer.Controllers.Departments
     {
         private readonly IAuthentication _auth;
         private readonly IBusinessLayer _businessLogic;
-        /**
-         *  EmployeeService ?! trebuie modificat pe alt service !!!
-         *  Gen : _departmentService
-         *  private readonly IDepartmentService _departmentService;
-         *  sa dai cu CTRL+R sa modifici in toate partile atunci cand 
-         *  vei modifica numele de la employeeService
-         * */
         private readonly IEmployeeService _employeeService;
 
         public DepartmentsController(IAuthentication auth,

@@ -23,6 +23,7 @@ namespace IdentityServer.Core.Shared
         Task<string> GetUserRoleByUsernameAsync(string email);
         Task<bool> RegisterProcess(ApplicationUser user, string password, Position position);
         void UpdateEmployeeName(string name1, string name2);
+        Task UpdatePositionAsync(Employee employee, string position);
 
         //Task<string> GetUserNameAsync(ClaimsPrincipal User);
         //Task<string> GetUserIdAsync(ClaimsPrincipal User);

@@ -318,11 +318,12 @@ namespace IdentityServer
         [HttpPost]
         [Route("{id}")]
         [ValidateAntiForgeryToken]
-        public IActionResult AssignTeamLeaderToTeam(Team ModelTeam, int IdTeamLeader)
+        public async Task<IActionResult> AssignTeamLeaderToTeam(Team ModelTeam, int IdTeamLeader)
         {
             int idTeam = ModelTeam.Id;
             var team = _employeeService.GetTeam(idTeam);
             var TeamLeader = _employeeService.GetEmployee(IdTeamLeader);
+            var ExTeamLeader = _employeeService.GetTeamLeader(team);
 
             if (team == null)
             {
@@ -333,6 +334,10 @@ namespace IdentityServer
             {
                 if (TeamLeader != null)
                 {
+                    if (ExTeamLeader != null)
+                    {
+                       await _auth.UpdatePositionAsync(TeamLeader, Constants.DeveloperRole);
+                    }
                     _employeeService.UpdateTeamLeader(team, TeamLeader);
                     return RedirectToAction(nameof(ManageTeams));
                 }
