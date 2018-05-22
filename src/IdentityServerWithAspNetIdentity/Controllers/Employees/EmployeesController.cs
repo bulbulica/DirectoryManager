@@ -574,6 +574,7 @@ namespace IdentityServer
                 {
                     var position = _employeeService.GetPositionByName(model.Position);
                     var department = _employeeService.GetDepartmentByName(model.Department);
+                    var exDepartmentManager = _employeeService.GetDepartmentManager(department);
 
                     if (position != null && department != null)
                     {
@@ -592,6 +593,10 @@ namespace IdentityServer
                             _employeeService.AddEmployee(employee);
                             if (employee.Position == _employeeService.GetDepartmentManagerPosition())
                             {
+                                if (exDepartmentManager != null)
+                                {
+                                    await _auth.UpdatePositionAsync(exDepartmentManager, Constants.DeveloperRole);
+                                }
                                 _employeeService.UpdateDepartmentManager(employee.Department, employee);
                             }
                             
