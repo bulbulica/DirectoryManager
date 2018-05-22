@@ -8,13 +8,14 @@
     <h3>Manage all the employees</h3>
     <hr />
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <table class="table">
                 <thead>
                     <tr>
                         <th scope="col">Name</th>
                         <th scope="col">Department</th>
                         <th scope="col">Team</th>
+                        <th scope="col">Position</th>
                         <th scope="col">Active</th>
                     </tr>
                 </thead>
@@ -59,6 +60,7 @@
                                             @employee.Team.Name
                                         }
                                     </td>
+                                    <td scope="row">@employee.Position.RoleName</td>
                                     <td scope="row">@employee.Active</td>
                                     <td>
                                         @{ 
