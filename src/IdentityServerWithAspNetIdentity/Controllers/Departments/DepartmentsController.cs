@@ -170,8 +170,9 @@ namespace IdentityServer.Controllers.Departments
         public IActionResult DepartmentEdit(int? id, [Bind("Id, Name, Description")] EditDepartment newDepartment)
         {
 
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
             {
                 if (ModelState.IsValid)
                 {
@@ -192,21 +193,20 @@ namespace IdentityServer.Controllers.Departments
         [HttpGet]
         public IActionResult ManageDepartments()
         {
-            //if (_auth.IsUserSignedIn(User))
-            //{
-            List<Department> departments = (List<Department>)_employeeService.GetAllDepartments();
-
-            var model = new AllDepartments
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
             {
-                Departments = departments
-            };
-            return View(model);
-
-            //}
-            //else
-            //{
-            //    return NotFound();
-            //}
+                var model = new AllDepartments
+                {
+                    Departments = departments
+                };
+                return View(model);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
 
@@ -214,8 +214,9 @@ namespace IdentityServer.Controllers.Departments
         [HttpGet]
         public IActionResult DepartmentAdd()
         {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
             {
                 var model = new AddDepartment()
                 {

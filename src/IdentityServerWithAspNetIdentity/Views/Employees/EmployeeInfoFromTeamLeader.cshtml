@@ -16,6 +16,9 @@
             {
                 <img src="../../img/@Model.Employee.Picture" class="rounded float-left" alt="@Model.Employee.Name" height="300" width="300">
             }
+            else {
+            <img src="../../img/avatarNotFound.png" class="rounded float-left" alt="@Model.Employee.Name" height="300" width="300">
+            }
         </div>
         <div class="col-md-6">
             @if (Model.Employee.Department != null && Model.Employee.Department.Name.Length > 0)
