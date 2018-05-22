@@ -351,5 +351,10 @@ namespace IdentityServer.Core
             employee.Position = position;
             PersistenceContext.Complete();
         }
+
+        public List<Team> GetAllTeamsFromDepartment(Department department)
+        {
+            return PersistenceContext.EmployeeRepository.GetAllTeamsFromDepartment(department);
+        }
     }
 }

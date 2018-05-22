@@ -132,6 +132,11 @@ namespace IdentityServer.Persistence.EF
             return EmployeeDbContext.Employees.Where(e => e.Team == team).ToList();
         }
 
+        public List<Team> GetAllTeamsFromDepartment(Department department)
+        {
+            return EmployeeDbContext.Teams.Where(e => e.Department == department).ToList();
+        }
+
         public EmployeeDbContext EmployeeDbContext
         {
             get

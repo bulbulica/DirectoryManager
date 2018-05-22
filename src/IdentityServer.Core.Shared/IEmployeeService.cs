@@ -40,6 +40,7 @@ namespace IdentityServer.Core.Shared
         void UpdateCV(Employee employee, string filePath);
         void UpdateImage(Employee employee, string filePath);
         List<Employee> GetAllEmployeesFromTeam(Team team);
+        List<Team> GetAllTeamsFromDepartment(Department department);
         List<Employee> GetAllEmployeesFromDepartment(Department department);
         void UpdateEmployeeName(Employee employee, string name);
         void UpdateEmployeePosition(Position position, Employee employee);
