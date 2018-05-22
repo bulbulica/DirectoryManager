@@ -98,7 +98,8 @@ namespace IdentityServer
             var employee = _employeeService.GetEmployee(idEmployee);
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
 
-            if (user.Position.AccessLevel < employee.Position.AccessLevel)
+            if (user.Position.AccessLevel < employee.Position.AccessLevel
+                ||user.Id ==employee.Id)
             {
                 var model = new SingleEmployee
                 {
