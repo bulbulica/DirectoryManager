@@ -20,24 +20,48 @@
                 <tbody>
                     @{
                         var teamList = Model.Teams.ToList();
+                        int count = 1;
                         if (teamList.Count() != 0)
                         {
                             foreach (var team in teamList)
                             {
-                                <tr>
-                                    <td scope="row">
-                                        <a asp-action="TeamInfoAdvanced" asp-route-id="@team.Id">@team.Name</a>
-                                    </td>
-                                    <td scope="row">
-                                        @team.Description
-                                    </td>
-                                    <td scope="row">
-                                @if (team.Department != null)
-                                {
-                                    <a asp-action="DepartmentInfo" asp-controller="Departments" asp-route-id="@team.Id">@team.Department.Name</a>
-                                }
-                                    </td>
-                                </tr>
+                    <tr>
+                        <td scope="row">
+                            <a asp-action="TeamInfoAdvanced" asp-route-id="@team.Id">@team.Name</a>
+                        </td>
+                        <td scope="row">
+                            @team.Description
+                        </td>
+                        <td scope="row">
+                            @if (team.Department != null)
+                                 {
+                            <a asp-action="DepartmentInfo" asp-controller="Departments" asp-route-id="@team.Id">
+                                @team.Department.Name
+                            </a>
+                                 }
+                        </td>
+                        <td>
+                            @{ 
+                                var simpleName = "delete" + count++;
+                                var complexName = "#" + simpleName;
+                            }
+                            <a asp-action="TeamEdit" asp-route-id="@team.Id">Edit</a> |
+                            <a href="@complexName" id="@complexName" class="trigger-btn" data-toggle="modal">Delete</a>
+                            <div id="@simpleName" class="modal fade">
+                                <div class="modal-dialog modal-confirm">
+                                    <div class="modal-content">
+                                        <div class="modal-body">
+                                            <h4>Do you really want to delete this record? It cannot be undone.</h4>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a asp-action="TeamDelete" asp-route-id="@team.Id"><button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-ok"></span> Delete</button></a>
+                                            <button type="button" class="btn btn-info" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
                             }
                         }
                     }

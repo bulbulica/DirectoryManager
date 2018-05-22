@@ -48,25 +48,21 @@ namespace IdentityServer
         }
 
         [HttpGet]
-        public IActionResult ManageTeamsAdvanced()
+        public IActionResult ManageTeamsForDepartmentManager()
         {
 
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
-            if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
+            if (user == null || user.Position.AccessLevel != Constants.DepartmentManagerAccessLevel)
             {
-                List<Team> teams = _employeeService.GetAllTeams().ToList();
+                return NotFound();
+            }
+                List<Team> teams = _employeeService.GetAllTeamsFromDepartment(user.Department);
 
                 var model = new AllTeams
                 {
                     Teams = teams
                 };
                 return View(model);
-            }
-            else if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
-            {
-                return RedirectToAction(nameof(ManageTeams));
-            }
-            return NotFound();
         }
 
         [HttpGet]
