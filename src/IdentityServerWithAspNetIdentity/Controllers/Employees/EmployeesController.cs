@@ -432,7 +432,6 @@ namespace IdentityServer
                                 Active = true,
                                 Position = position,
                                 Department = department,
-                                CV = "" // am modificat si aici !!!
                             };
                             _employeeService.AddEmployee(employee);
                             if (employee.Position == _employeeService.GetDepartmentManagerPosition())
