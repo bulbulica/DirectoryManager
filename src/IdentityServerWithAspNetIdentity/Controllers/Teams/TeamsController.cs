@@ -48,6 +48,28 @@ namespace IdentityServer
         }
 
         [HttpGet]
+        public IActionResult ManageTeamsAdvanced()
+        {
+
+            var user = _employeeService.GetEmployeeByName(User.Identity.Name);
+            if(user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
+            {
+                List<Team> teams = _employeeService.GetAllTeams().ToList();
+
+                var model = new AllTeams
+                {
+                    Teams = teams
+                };
+                return View(model);
+            }
+            else if(user.Position.AccessLevel== Constants.DepartmentManagerAccessLevel)
+            {
+                return RedirectToAction(nameof(ManageTeams));
+            }
+            return NotFound();
+        }
+
+        [HttpGet]
         [Route("{id}")]
         public IActionResult TeamInfo(int? id)
         {
@@ -58,13 +80,43 @@ namespace IdentityServer
             var team = _employeeService.GetTeam(idTeam);
             var teamLeader = _employeeService.GetTeamLeader(team);
             // if User = DEV/QA
-            if (user.Position.AccessLevel > 3)
+            if (user.Position.AccessLevel > Constants.TeamLeaderAccessLevel)
             {
                 return NotFound();
             }
-            if ((user.Position.AccessLevel == 3 && user.Team == _employeeService.GetTeam(idTeam))
-                || user.Position.AccessLevel < 2
-                || user.Position.AccessLevel == 2 && user.Department.Teams.Contains(team) )
+            if ((user.Position.AccessLevel == Constants.TeamLeaderAccessLevel && user.Team == _employeeService.GetTeam(idTeam))
+                || user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel
+                || user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel && user.Department.Teams.Contains(team) )
+            {
+
+                var model = new SingleTeam
+                {
+                    Team = team,
+                    TeamLeader = teamLeader
+                };
+
+                return View(model);
+            }
+            return NotFound();
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult TeamInfoAdvanced(int? id)
+        {
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            int idTeam = id ?? default(int);
+
+            var team = _employeeService.GetTeam(idTeam);
+            var teamLeader = _employeeService.GetTeamLeader(team);
+            // if User = DEV/QA
+            if (user.Position.AccessLevel == Constants.TeamLeaderAccessLevel)
+            {
+                return RedirectToAction(nameof(TeamInfo));
+            }
+            if ( user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel
+                || user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel && user.Department.Teams.Contains(team))
             {
 
                 var model = new SingleTeam
@@ -84,7 +136,7 @@ namespace IdentityServer
             var user = _employeeService.GetEmployeeByName(username);
             if (user != null)
             {
-                if(user.Position.AccessLevel == 3)
+                if(user.Position.AccessLevel == Constants.TeamLeaderAccessLevel)
                 return RedirectToAction("TeamInfo", new { id = user.Team.Id });
             }
             return NotFound();
@@ -98,10 +150,10 @@ namespace IdentityServer
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
 
-            if (user.Position.AccessLevel < 3)
+            if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {
                 // if User = Department Manager
-                if (user.Position.AccessLevel == 2)
+                if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
                 {
                     var model = new AddTeam()
                     {
@@ -168,7 +220,7 @@ namespace IdentityServer
             var user = _employeeService.GetEmployeeByName(username);
 
             // If User = Deparment Manager/General Manager
-            if (user.Position.AccessLevel < 3)
+            if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {
                 int idTeam = id ?? default(int);
 
@@ -203,7 +255,7 @@ namespace IdentityServer
             var user = _employeeService.GetEmployeeByName(username);
 
             // If User = Deparment Manager/General Manager
-            if (user.Position.AccessLevel < 3)
+            if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {
                 if (ModelState.IsValid)
                 {
@@ -230,11 +282,11 @@ namespace IdentityServer
             var user = _employeeService.GetEmployeeByName(username);
             Team team = _employeeService.GetTeam(idTeam);
 
-            if (user.Position.AccessLevel < 3)
+            if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {
                 // If User = Deparment Manager
-                if (user.Position.AccessLevel == 2 && user.Department == team.Department
-                    || user.Position.AccessLevel < 2)
+                if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel && user.Department == team.Department
+                    || user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel)
                 {
                     var employees = _employeeService.GetAllUnassignedEmployees().ToList();
                     employees.AddRange(team.Employees);
@@ -242,7 +294,7 @@ namespace IdentityServer
 
                     foreach (var employee in employees)
                     {
-                        if (employee.Position.AccessLevel > 2)
+                        if (employee.Position.AccessLevel > Constants.DepartmentManagerAccessLevel)
                             candidatesEmployees.Add(employee);
                     }
 
@@ -294,7 +346,7 @@ namespace IdentityServer
             var team = _employeeService.GetTeam(idTeam);
 
             // If User = Deparment Manager/General Manager
-            if (user.Position.AccessLevel < 3)
+            if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {
                 if (user.Department == team.Department)
                 {

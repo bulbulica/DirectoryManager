@@ -17,5 +17,17 @@ namespace IdentityServer.Domain
         public static string QARole = "QA";
 
         public static string OfficeManagerRole = "OfficeManager";
+
+        public static int OfficeManagerAccessLevel = 255;
+
+        public static int GeneralManagerAccessLevel = 1;
+
+        public static int DepartmentManagerAccessLevel = 2;
+
+        public static int TeamLeaderAccessLevel = 3;
+
+        public static int DeveloperAccessLevel = 4;
+
+        public static int QAAccessLevel = 4;
     }
 }

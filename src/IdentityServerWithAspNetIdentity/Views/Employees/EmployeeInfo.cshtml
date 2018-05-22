@@ -1,11 +1,12 @@
 ﻿@model SingleEmployee
+
 @{
     Layout = "/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = Model.Employee.Name;
 }
 @if (Model.Employee.Position != null)
 {
-<h1>@ViewData["Title"] - @Model.Employee.Position.RoleName</h1>
+    <h1>@ViewData["Title"] - @Model.Employee.Position.RoleName</h1>
 }
 <div>
     <hr />
@@ -55,7 +56,7 @@
 
             <a asp-action="EmployeeEditName" asp-route-id="@Model.Employee.Id"><h4>Edit name</h4></a>
             <!--
-                
+
             De modificat !!!
                 <a asp-action="EmployeeEdit" asp-route-id="@Model.Employee.Id"><h3>Edit his data</h3></a>
                 <a asp-action="ManageEmployees">Back to all Employees</a>

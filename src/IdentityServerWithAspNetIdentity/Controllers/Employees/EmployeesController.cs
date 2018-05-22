@@ -124,6 +124,162 @@ namespace IdentityServer
             }
         }
 
+        // GET: Employees/EmployeeInfoFromTeamLeader/{id}
+        [HttpGet("{id}")]
+        public IActionResult EmployeeInfoFromTeamLeader(int? id)
+        {
+            int idEmployee = id ?? default(int);
+            var employee = _employeeService.GetEmployee(idEmployee);
+            var user = _employeeService.GetEmployeeByName(User.Identity.Name);
+
+            if(user.Position.RoleName != Constants.TeamLeaderRole)
+            {
+                return RedirectToAction("EmployeeInfo", idEmployee);
+            }
+
+            if (user.Position.AccessLevel < employee.Position.AccessLevel
+                || user.Id == employee.Id)
+            {
+                var model = new SingleEmployee
+                {
+                    Employee = employee
+                };
+
+                return View(model);
+            }
+
+            else if (user.Name == employee.Username)
+            {
+                var model = new SingleEmployee
+                {
+                    Employee = employee
+                };
+
+                return View(model);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        // GET: Employees/EmployeeInfoFromDepartmentManager/{id}
+        [HttpGet("{id}")]
+        public IActionResult EmployeeInfoFromDepartmentManager(int? id)
+        {
+            int idEmployee = id ?? default(int);
+            var employee = _employeeService.GetEmployee(idEmployee);
+            var user = _employeeService.GetEmployeeByName(User.Identity.Name);
+
+            if (user.Position.RoleName != Constants.TeamLeaderRole)
+            {
+                return RedirectToAction("EmployeeInfo", idEmployee);
+            }
+
+            if (user.Position.AccessLevel < employee.Position.AccessLevel
+                || user.Id == employee.Id)
+            {
+                var model = new SingleEmployee
+                {
+                    Employee = employee
+                };
+
+                return View(model);
+            }
+
+            else if (user.Name == employee.Username)
+            {
+                var model = new SingleEmployee
+                {
+                    Employee = employee
+                };
+
+                return View(model);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        // GET: Employees/EmployeeInfoFromGeneralManager/{id}
+        [HttpGet("{id}")]
+        public IActionResult EmployeeInfoFromGeneralManager(int? id)
+        {
+            int idEmployee = id ?? default(int);
+            var employee = _employeeService.GetEmployee(idEmployee);
+            var user = _employeeService.GetEmployeeByName(User.Identity.Name);
+
+            if (user.Position.RoleName != Constants.TeamLeaderRole)
+            {
+                return RedirectToAction("EmployeeInfo", idEmployee);
+            }
+
+            if (user.Position.AccessLevel < employee.Position.AccessLevel
+                || user.Id == employee.Id)
+            {
+                var model = new SingleEmployee
+                {
+                    Employee = employee
+                };
+
+                return View(model);
+            }
+
+            else if (user.Name == employee.Username)
+            {
+                var model = new SingleEmployee
+                {
+                    Employee = employee
+                };
+
+                return View(model);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        // GET: Employees/EmployeeInfoFromOfficeManager/{id}
+        [HttpGet("{id}")]
+        public IActionResult EmployeeInfoFromOfficeManager(int? id)
+        {
+            int idEmployee = id ?? default(int);
+            var employee = _employeeService.GetEmployee(idEmployee);
+            var user = _employeeService.GetEmployeeByName(User.Identity.Name);
+
+            if (user.Position.RoleName != Constants.TeamLeaderRole)
+            {
+                return RedirectToAction("EmployeeInfo", idEmployee);
+            }
+
+            if (user.Position.AccessLevel < employee.Position.AccessLevel
+                || user.Id == employee.Id)
+            {
+                var model = new SingleEmployee
+                {
+                    Employee = employee
+                };
+
+                return View(model);
+            }
+
+            else if (user.Name == employee.Username)
+            {
+                var model = new SingleEmployee
+                {
+                    Employee = employee
+                };
+
+                return View(model);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         // GET: Employees/EmployeeAddCV/{id}
         [HttpGet("{id}")]
         public IActionResult EmployeeAddCV(int? id)
@@ -280,6 +436,7 @@ namespace IdentityServer
             {
                 _employeeService.UpdateTeamLeader(employee.Team,employee);
             }
+            _employeeService.UpdateEmployeePosition(position, employee);
                 return RedirectToAction("EmployeeInfoFromTeamLeader", idEmployee);
             //Adaugare warnings/errors in caz ca nu se updateaza
         }
