@@ -332,7 +332,7 @@ namespace IdentityServer
                 {
                     if (ExTeamLeader != null)
                     {
-                       await _auth.UpdatePositionAsync(TeamLeader, Constants.DeveloperRole);
+                       await _auth.UpdatePositionAsync(ExTeamLeader, Constants.DeveloperRole);
                     }
                     _employeeService.UpdateTeamLeader(team, TeamLeader);
                     return RedirectToAction(nameof(ManageTeams));
