@@ -140,6 +140,13 @@ namespace IdentityServer.Authentication
                 result.Wait();
             }
 
+            if (!_roleManager.RoleExistsAsync(Constants.OfficeManagerRole).Result)
+            {
+                var role = new IdentityRole(Constants.OfficeManagerRole);
+                var result = _roleManager.CreateAsync(role);
+                result.Wait();
+            }
+
 
         }
 

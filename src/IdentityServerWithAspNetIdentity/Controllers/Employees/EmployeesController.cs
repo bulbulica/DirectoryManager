@@ -542,7 +542,8 @@ namespace IdentityServer
                 var model = new AddEmployee()
                 {
                     Active = true,
-                    AllPositions = _employeeService.GetRegisterPositionsByAccessLevel(username.ToString()),
+                    //AllPositions = _employeeService.GetRegisterPositionsByAccessLevel(username.ToString()),
+                    AllPositions = _employeeService.GetAllPositions(),
                     AllDepartments = _employeeService.GetAllDepartments()
                 };
 
@@ -571,6 +572,11 @@ namespace IdentityServer
                 {
                     var position = _employeeService.GetPositionByName(model.Position);
                     var department = _employeeService.GetDepartmentByName(model.Department);
+                    if (position.AccessLevel <= Constants.GeneralManagerAccessLevel)
+                    {
+                        department = null;
+                    }
+
                     var exDepartmentManager = _employeeService.GetDepartmentManager(department);
 
                     if (position != null && department != null)
