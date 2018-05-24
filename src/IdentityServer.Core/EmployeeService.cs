@@ -186,8 +186,12 @@ namespace IdentityServer.Core
             var team = PersistenceContext.EmployeeRepository.GetTeamById(idTeam);
             if (team != null)
             {
-                //var teamManager = GetTeamLeader(team);
-                //teamManager.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
+                var teamLeader = GetTeamLeader(team);
+
+                if (teamLeader != null)
+                {
+                    teamLeader.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
+                }
                 foreach (var employee in team.Employees)
                 {
                     employee.Team = null;

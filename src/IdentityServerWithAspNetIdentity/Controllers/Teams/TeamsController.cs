@@ -374,11 +374,12 @@ namespace IdentityServer
             // If User = Deparment Manager/General Manager
             if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {
-                if (user.Department == team.Department)
+                if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel && user.Department != team.Department)
                 {
+                    return NotFound();
+                }
                     _employeeService.DeleteTeam(idTeam);
                     return RedirectToAction(nameof(ManageTeams));
-                }
             }
             return NotFound();
         }
