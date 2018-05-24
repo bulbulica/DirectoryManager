@@ -98,30 +98,40 @@ namespace IdentityServer
             int idEmployee = id ?? default(int);
             var employee = _employeeService.GetEmployee(idEmployee);
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
-
-            if (user.Position.AccessLevel < employee.Position.AccessLevel
-                ||user.Id ==employee.Id)
+            if (user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
             {
                 var model = new SingleEmployee
                 {
                     Employee = employee
                 };
 
-                return View(model);
-            }
-            
-            else if(user.Name == employee.Username)
-            { 
-                var model = new SingleEmployee
-                {
-                    Employee = employee
-                };
-
-                return View(model);
+                return View("EmployeeInfoHimself", model);
             }
             else
             {
-                return NotFound();
+                if (user.Position.AccessLevel < employee.Position.AccessLevel
+                    && employee.Position.AccessLevel != Constants.OfficeManagerAccessLevel)
+                {
+                    var model = new SingleEmployee
+                    {
+                        Employee = employee
+                    };
+
+                    return View(model);
+                }
+                else if (user.Username == employee.Username)
+                {
+                    var model = new SingleEmployee
+                    {
+                        Employee = employee
+                    };
+
+                    return View("EmployeeInfoHimself", model);
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
         }
 
