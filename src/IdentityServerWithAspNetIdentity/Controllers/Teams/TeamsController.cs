@@ -404,7 +404,6 @@ namespace IdentityServer
                         return RedirectToAction(nameof(ManageTeams));
                     }
                 }
-            }
             return NotFound();
         }
     }

@@ -280,7 +280,9 @@ namespace IdentityServer.Core
             List<Position> positionsToBeReturned = new List<Position>();
             foreach(var position in allPositions)
             {
-                if (position.AccessLevel > accessLevel)
+                if (position.AccessLevel > accessLevel 
+                    && position.AccessLevel != Constants.OfficeManagerAccessLevel)
+
                     positionsToBeReturned.Add(position);
             }
             return positionsToBeReturned;
