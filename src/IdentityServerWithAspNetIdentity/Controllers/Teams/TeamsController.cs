@@ -362,6 +362,8 @@ namespace IdentityServer
                        await _auth.UpdatePositionAsync(ExTeamLeader, Constants.DeveloperRole);
                     }
                     _employeeService.UpdateTeamLeader(team, TeamLeader);
+                    await _auth.UpdatePositionAsync(TeamLeader, Constants.TeamLeaderRole);
+
                     if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
                     {
                         return RedirectToAction(nameof(ManageTeamsForDepartmentManager), new { username });
