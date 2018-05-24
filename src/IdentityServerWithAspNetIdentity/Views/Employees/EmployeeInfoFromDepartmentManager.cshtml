@@ -16,6 +16,10 @@
             {
                 <img src="../../img/@Model.Employee.Picture" class="rounded float-left" alt="@Model.Employee.Name" height="300" width="300">
             }
+            else
+            {
+                <img src="../../img/avatarNotFound.png" class="rounded float-left" alt="@Model.Employee.Name" height="300" width="300">
+            }
         </div>
         <div class="col-md-6">
             @if (Model.Employee.Department != null && Model.Employee.Department.Name.Length > 0)
@@ -42,7 +46,7 @@
             {
                 <a href="../../docs/@Model.Employee.CV">View CV</a>
             }
-            @if (this.User.IsInRole(Constants.TeamLeaderRole))
+            @if (this.User.IsInRole(Constants.DepartmentManagerRole))
             {
                 <a asp-action="EmployeeChangePosition" asp-route-id="@Model.Employee.Id"><h4>Change employee position</h4></a>
             }
