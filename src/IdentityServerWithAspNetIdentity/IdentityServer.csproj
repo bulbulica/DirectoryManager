@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Domain\IdentityServer.Domain.csproj" />
     <ProjectReference Include="..\IdentityServer.Authentication\IdentityServer.Authentication.csproj" />
     <ProjectReference Include="..\IdentityServer.Core.Shared\IdentityServer.Core.Shared.csproj" />
     <ProjectReference Include="..\IdentityServer.Core\IdentityServer.Core.csproj" />

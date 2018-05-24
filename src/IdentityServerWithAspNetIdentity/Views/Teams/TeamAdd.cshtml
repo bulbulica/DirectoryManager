@@ -25,9 +25,9 @@
                         if (Model.Departments.Count() != 0)
                         {
                             var departmentsList = Model.Departments.ToList();
-                            foreach (var dep in departmentsList)
+                            foreach (var department in departmentsList)
                             {
-                                <option value="@dep">@dep.Name</option>
+                                <option value="@department">@department.Name</option>
                             }
                         }
                     }

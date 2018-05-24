@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ClassLibrary1\IdentityServer.Domain.csproj" />
     <ProjectReference Include="..\Abstractions\Shared.Abstractions.csproj" />
+    <ProjectReference Include="..\Domain\IdentityServer.Domain.csproj" />
   </ItemGroup>
 
 </Project>

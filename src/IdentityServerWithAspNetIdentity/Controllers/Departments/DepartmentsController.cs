@@ -85,7 +85,6 @@ namespace IdentityServer.Controllers.Departments
             return RedirectToAction(nameof(ManageDepartments));
         }
 
-
         [HttpGet]
         [Route("{id}")]
         public IActionResult DepartmentInfo(int? id)
@@ -96,34 +95,12 @@ namespace IdentityServer.Controllers.Departments
             var department = _employeeService.GetDepartment(idDepartment);
             var departmentManager = _employeeService.GetDepartmentManager(department);
 
-            if (user.Id == departmentManager.Id)
+            if (departmentManager != null)
             {
-                var model = new SingleDepartment
+                if (user.Id == departmentManager.Id)
                 {
-                    Department = department,
-                    DepartmentManager = departmentManager
-                };
-                return View(model);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
-        [HttpGet]
-        [Route("{id}")]
-        public IActionResult DepartmentInfoAdvanced(int? id)
-        {
-            var username = User.Identity.Name;
-            var user = _employeeService.GetEmployeeByName(username);
-            int idDepartment = id ?? default(int);
-            var department = _employeeService.GetDepartment(idDepartment);
-            var departmentManager = _employeeService.GetDepartmentManager(department);
-
-            if (user.Id == departmentManager.Id)
-            {
-                return RedirectToAction("DepartmentInfo", idDepartment);
+                    return RedirectToAction("DepartmentInfo", idDepartment);
+                }
             }
             if (user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel)
             {

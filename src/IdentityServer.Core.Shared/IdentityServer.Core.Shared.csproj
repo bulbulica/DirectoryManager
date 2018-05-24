@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ClassLibrary1\IdentityServer.Domain.csproj" />
     <ProjectReference Include="..\Abstractions\Shared.Abstractions.csproj" />
+    <ProjectReference Include="..\Domain\IdentityServer.Domain.csproj" />
     <ProjectReference Include="..\StudentsManagement.Persistance\IdentityServer.Persistence.csproj" />
   </ItemGroup>
 

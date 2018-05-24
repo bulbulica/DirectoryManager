@@ -47,22 +47,21 @@ namespace IdentityServer
             }
         }
 
-        [HttpGet]
-        public IActionResult ManageTeamsForDepartmentManager()
+        [HttpGet("{username}")]
+        public IActionResult ManageTeamsForDepartmentManager(string username)
         {
-
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
             if (user == null || user.Position.AccessLevel != Constants.DepartmentManagerAccessLevel)
             {
                 return NotFound();
             }
-                List<Team> teams = _employeeService.GetAllTeamsFromDepartment(user.Department);
+            List<Team> teams = _employeeService.GetAllTeamsFromDepartment(user.Department);
 
-                var model = new AllTeams
-                {
-                    Teams = teams
-                };
-                return View(model);
+            var model = new AllTeams
+            {
+                Teams = teams
+            };
+            return View(model);
         }
 
         [HttpGet]
@@ -138,7 +137,9 @@ namespace IdentityServer
             if (user != null)
             {
                 if (user.Position.AccessLevel == Constants.TeamLeaderAccessLevel)
+                {
                     return RedirectToAction("TeamInfo", new { id = user.Team.Id });
+                }
             }
             return NotFound();
         }
@@ -209,8 +210,14 @@ namespace IdentityServer
                     return View();
                 }
             }
-            // If we got this far, something failed, redisplay form
-            return RedirectToAction(nameof(ManageTeams));
+            if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
+            {
+                return RedirectToAction(nameof(ManageTeamsForDepartmentManager), new { username });
+            }
+            else
+            {
+                return RedirectToAction(nameof(ManageTeams));
+            }
         }
 
         [HttpGet]
@@ -262,13 +269,19 @@ namespace IdentityServer
                 {
                     var team = new Team { Id = editTeam.Id, Name = editTeam.Name, Description = editTeam.Description };
                     _employeeService.UpdateTeam(team);
-
                 }
                 else
                 {
                     return View(editTeam);
                 }
-                return RedirectToAction(nameof(ManageTeams));
+                if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
+                {
+                    return RedirectToAction(nameof(ManageTeamsForDepartmentManager), new { username });
+                }
+                else
+                {
+                    return RedirectToAction(nameof(ManageTeams));
+                }
             }
             return NotFound();
         }
@@ -317,6 +330,8 @@ namespace IdentityServer
         public async Task<IActionResult> AssignTeamLeaderToTeam(Team ModelTeam, int IdTeamLeader)
         {
             int idTeam = ModelTeam.Id;
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
             var team = _employeeService.GetTeam(idTeam);
             var TeamLeader = _employeeService.GetEmployee(IdTeamLeader);
             var ExTeamLeader = _employeeService.GetTeamLeader(team);
@@ -335,7 +350,14 @@ namespace IdentityServer
                        await _auth.UpdatePositionAsync(ExTeamLeader, Constants.DeveloperRole);
                     }
                     _employeeService.UpdateTeamLeader(team, TeamLeader);
-                    return RedirectToAction(nameof(ManageTeams));
+                    if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
+                    {
+                        return RedirectToAction(nameof(ManageTeamsForDepartmentManager), new { username });
+                    }
+                    else
+                    {
+                        return RedirectToAction(nameof(ManageTeams));
+                    }
                 }
                 return View();
             }
