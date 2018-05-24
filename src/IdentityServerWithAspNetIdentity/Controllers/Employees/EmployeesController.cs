@@ -679,7 +679,7 @@ namespace IdentityServer
                     }
                 }
 
-                return ManageEmployees();
+                return GetManageEmployees(User.Identity.Name);
             }
             else
             {
