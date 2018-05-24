@@ -58,8 +58,49 @@ namespace IdentityServer
         [HttpGet("{departmentId}")]
         public IActionResult ManageEmployeesForDepartmentManager(int departmentId)
         {
+            var user = _employeeService.GetEmployeeByName(User.Identity.Name);
+
+            if(user.Position.AccessLevel != Constants.DepartmentManagerAccessLevel)
+            {
+                return NotFound();
+            }
+
             var department = _employeeService.GetDepartment(departmentId);
             List<Employee> employees = _employeeService.GetAllEmployeesFromDepartment(department);
+
+            var model = new AllEmployees
+            {
+                Employees = employees
+            };
+            return View(model);
+        }
+
+        public IActionResult ManageEmployeesForGeneralManager()
+        {
+            var user = _employeeService.GetEmployeeByName(User.Identity.Name);
+            if (user.Position.AccessLevel != Constants.GeneralManagerAccessLevel)
+            {
+                return NotFound();
+            }
+
+            List<Employee> employees = _employeeService.GetAllEmployees();
+
+            var model = new AllEmployees
+            {
+                Employees = employees
+            };
+            return View(model);
+        }
+
+        public IActionResult ManageEmployeesForOfficeManager()
+        {
+            var user = _employeeService.GetEmployeeByName(User.Identity.Name);
+            if (user.Position.AccessLevel != Constants.OfficeManagerAccessLevel)
+            {
+                return NotFound();
+            }
+
+                List<Employee> employees = _employeeService.GetAllEmployees();
 
             var model = new AllEmployees
             {
@@ -77,16 +118,19 @@ namespace IdentityServer
             }
 
             var user = _employeeService.GetEmployeeByName(username);
-            if (user.Position.AccessLevel == 2)
+            if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
             {
                 return RedirectToAction("ManageEmployeesForDepartmentManager", new { departmentId = user.Department.Id });
             }
-            else if (user.Position.AccessLevel == 1)
+            else if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
             {
-                return RedirectToAction(nameof(ManageEmployees));
+                return RedirectToAction(nameof(ManageEmployeesForGeneralManager));
             }
-            else
+            else if (user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
             {
+                return RedirectToAction(nameof(ManageEmployeesForOfficeManager));
+            }
+            else { 
                 return NotFound();
             }
         }
@@ -100,7 +144,7 @@ namespace IdentityServer
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
 
             if (user.Position.AccessLevel < employee.Position.AccessLevel
-                ||user.Id ==employee.Id)
+                ||user.Id ==employee.Id || user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
             {
                 var model = new SingleEmployee
                 {
@@ -389,7 +433,8 @@ namespace IdentityServer
             var employee = _employeeService.GetEmployee(idEmployee);
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
 
-            if (user.Position.AccessLevel < _employeeService.GetDeveloperPosition().AccessLevel)
+            if (user.Position.AccessLevel < _employeeService.GetDeveloperPosition().AccessLevel
+                || user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
             {
                 var positions = _employeeService.GetRegisterPositionsByAccessLevel(user.Username);
                 var model = new EditEmployee
@@ -605,6 +650,7 @@ namespace IdentityServer
                         }
                         else
                         {
+                            
                             var ErrorMessage = $"the password does not meet the password policy requirements.";
                             var policyRequirements = $"* At least an uppercase and a special character";
 
@@ -723,7 +769,7 @@ namespace IdentityServer
                 }
                 else
                 {
-                    string ErrorMessage = $"the password does not meet the password policy requirements.";
+                    string ErrorMessage = $"the password does not meet the password policy requirements, rr there is already a user with this name in Database";
                     var policyRequirements = $"* At least an uppercase and a special character";
 
                     ViewBag.Error = ErrorMessage;
@@ -796,9 +842,9 @@ namespace IdentityServer
         [Route("{id}")]
         public IActionResult EmployeeDelete(int? id)
         {
-            //TODO 
-            //check accessLevel before 
-            if (true)
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            if (user.Position.AccessLevel == Constants.OfficeManagerAccessLevel) 
             {
                 int idEmployee = id ?? default(int);
                 _employeeService.DeleteEmployee(idEmployee);
