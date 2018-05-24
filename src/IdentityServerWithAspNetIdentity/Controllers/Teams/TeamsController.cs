@@ -189,32 +189,46 @@ namespace IdentityServer
         {
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
-
-            if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
+            var department = _employeeService.GetDepartment(model.DepartmentId);
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                if (department != null)
+                {
+                    if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel &&
+                    user.Department.Id == department.Id)
+                    {
+                        var team = new Team
+                        {
+                            Name = model.Name,
+                            Department = department,
+                            Description = model.Description,
+                            Employees = new List<Employee>()
+                        };
+                        _employeeService.AddTeam(team);
+                        return RedirectToAction(nameof(ManageTeamsForDepartmentManager), new { username });
+                    }
+                }
+
+                if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
                 {
                     var team = new Team
                     {
                         Name = model.Name,
-                        Department = model.Department,
+                        Department = department,
                         Description = model.Description,
                         Employees = new List<Employee>()
                     };
                     _employeeService.AddTeam(team);
+                    return RedirectToAction(nameof(ManageTeams));
                 }
                 else
                 {
                     return View();
                 }
             }
-            if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
-            {
-                return RedirectToAction(nameof(ManageTeamsForDepartmentManager), new { username });
-            }
             else
             {
-                return RedirectToAction(nameof(ManageTeams));
+                return NotFound();
             }
         }
 
