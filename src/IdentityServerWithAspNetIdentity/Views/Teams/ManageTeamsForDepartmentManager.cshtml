@@ -35,9 +35,7 @@
                                     <td scope="row">
                                         @if (team.Department != null)
                                         {
-                                            <a asp-action="DepartmentInfo" asp-controller="Departments" asp-route-id="@team.Id">
-                                                @team.Department.Name
-                                            </a>
+                                            @team.Department.Name
                                         }
                                     </td>
                                     <td>

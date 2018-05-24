@@ -26,37 +26,6 @@ namespace IdentityServer.Controllers.Departments
             _employeeService = _businessLogic.GetEmployeeService();
         }
 
-        [HttpGet]
-        [Route("{id}")]
-        public IActionResult DepartmentEdit(int? id)
-        {
-            var username = User.Identity.Name;
-            var user = _employeeService.GetEmployeeByName(username);
-            if(user.Position.AccessLevel<Constants.DepartmentManagerAccessLevel)
-            {
-                int idDepartment = id ?? default(int);
-
-                var department = _employeeService.GetDepartment(idDepartment);
-
-                if (department.Description == null)
-                    department.Description = "";
-
-                var model = new EditDepartment
-                {
-                    Id = department.Id,
-                    Name = department.Name,
-                    Description = department.Description,
-                    
-                };
-
-                return View(model);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult DepartmentAdd(AddDepartment model)
@@ -81,8 +50,51 @@ namespace IdentityServer.Controllers.Departments
                     return View();
                 }
             }
-            // If we got this far, something failed, redisplay form
             return RedirectToAction(nameof(ManageDepartments));
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult AssignDepartmentManager(int? id)
+        {
+            /*
+             * AICI TREBUIE SA ASIGNAM DEPARTMENT MANAGER DE CATRE GENERAL MANAGER
+             * modifici si tu codul cat sa mearga, incearca doar cei din interiorul 
+             * departamentului sa poata sa devina department manageri, ca daca sunt
+             * externi apar din add employee ca department manager
+             * /
+            int idTeam = id ?? default(int);
+
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            var team = _employeeService.GetTeam(idTeam);
+
+            if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
+            {
+                // If User = Deparment Manager
+                if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel && user.Department == team.Department
+                    || user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel)
+                {
+                    var employees = _employeeService.GetAllUnassignedEmployees().ToList();
+                    employees.AddRange(team.Employees);
+                    List<Employee> candidatesEmployees = new List<Employee>();
+
+                    foreach (var employee in employees)
+                    {
+                        if (employee.Position.AccessLevel > Constants.DepartmentManagerAccessLevel)
+                            candidatesEmployees.Add(employee);
+                    }
+
+                    var model = new AssignTeamLeader
+                    {
+                        Team = team,
+                        Employees = candidatesEmployees
+                    };
+                    return View(model);
+                }
+            }
+            */
+            return NotFound();
         }
 
         [HttpGet]
@@ -127,6 +139,37 @@ namespace IdentityServer.Controllers.Departments
                 return RedirectToAction("DepartmentInfo", new { id = user.Department.Id });
             }
             return NotFound();
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult DepartmentEdit(int? id)
+        {
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            if (user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel)
+            {
+                int idDepartment = id ?? default(int);
+
+                var department = _employeeService.GetDepartment(idDepartment);
+
+                if (department.Description == null)
+                    department.Description = "";
+
+                var model = new EditDepartment
+                {
+                    Id = department.Id,
+                    Name = department.Name,
+                    Description = department.Description,
+
+                };
+
+                return View(model);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         [HttpPost]

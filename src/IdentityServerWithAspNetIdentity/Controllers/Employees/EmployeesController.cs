@@ -285,8 +285,7 @@ namespace IdentityServer
         [HttpGet("{id}")]
         public IActionResult EmployeeAddCV(int? id)
         {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
+            if (_auth.IsUserSignedIn(User))
             {
                 int idEmployee = id ?? default(int);
 
@@ -310,8 +309,7 @@ namespace IdentityServer
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EmployeeAddCV(int? id, IFormFile file)
         {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
+            if (_auth.IsUserSignedIn(User))
             {
                 int idEmployee = id ?? default(int);
                 var employee = _employeeService.GetEmployee(idEmployee);
@@ -598,8 +596,6 @@ namespace IdentityServer
                                 }
                                 _employeeService.UpdateDepartmentManager(employee.Department, employee);
                             }
-                            
-
                         }
                         else
                         {

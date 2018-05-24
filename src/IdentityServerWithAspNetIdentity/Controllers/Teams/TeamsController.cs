@@ -181,7 +181,6 @@ namespace IdentityServer
             {
                 return NotFound();
             }
-            return NotFound();
         }
 
         [HttpPost]
@@ -191,7 +190,6 @@ namespace IdentityServer
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
 
-            // if User = DEV/QA
             if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {
                 if (ModelState.IsValid)
