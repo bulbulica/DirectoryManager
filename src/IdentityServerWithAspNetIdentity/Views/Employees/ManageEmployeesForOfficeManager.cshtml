@@ -1,0 +1,93 @@
+﻿@model AllEmployees
+@using IdentityServer.Domain
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Manage Employees";
+}
+<div>
+    <h3>Manage all the employees</h3>
+    <hr />
+    <div class="row">
+        <div class="col-md-8">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Department</th>
+                        <th scope="col">Team</th>
+                        <th scope="col">Position</th>
+                        <th scope="col">Active</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var employeesList = Model.Employees.ToList();
+                        int count = 1;
+                        if (employeesList.Count != 0)
+                        {
+                            foreach (var employee in employeesList)
+                            {
+                                <tr>
+                                    <td scope="row">
+                                        @if (this.User.IsInRole(Constants.TeamLeaderRole))
+                                        {
+                                            <a asp-action="EmployeeInfoFromTeamLeader" asp-route-id="@employee.Id">@employee.Name</a>
+                                        }
+                                        else if (this.User.IsInRole(Constants.DepartmentManagerRole))
+                                        {
+                                            <a asp-action="EmployeeInfoFromDepartmentManager" asp-route-id="@employee.Id">@employee.Name</a>
+                                        }
+                                        else if (this.User.IsInRole(Constants.GeneralManagerRole))
+                                        {
+                                            <a asp-action="EmployeeInfoFromGeneralManager" asp-route-id="@employee.Id">@employee.Name</a>
+                                        }
+                                        else if (this.User.IsInRole(Constants.OfficeManagerRole))
+                                        {
+                                            <a asp-action="EmployeeInfoFromOfficeManager" asp-route-id="@employee.Id">@employee.Name</a>
+                                        }
+                                    </td>
+                                    <td scope="row">
+                                        @if (employee.Department != null)
+                                        {
+                                            @employee.Department.Name
+                                        }
+                                    </td>
+                                    <td scope="row">
+                                        @if (employee.Team != null)
+                                        {
+                                            @employee.Team.Name
+                                        }
+                                    </td>
+                                    <td scope="row">@employee.Position.RoleName</td>
+                                    <td scope="row">@employee.Active</td>
+                                    <td>
+                                        @{ 
+                                            var simpleName = "delete" + count++;
+                                            var complexName = "#" + simpleName;
+                                        }
+                                        <a asp-action="EmployeeEdit" asp-route-id="@employee.Id"><span class="glyphicon glyphicon-edit">Edit</span></a> |
+                                        <a href="@complexName" id="@complexName" class="trigger-btn" data-toggle="modal"><span class="glyphicon glyphicon-remove-circle">Delete</span></a>
+                                        <div id="@simpleName" class="modal fade">
+                                            <div class="modal-dialog modal-confirm">
+                                                <div class="modal-content">
+                                                    <div class="modal-body">
+                                                        <h4>Do you really want to delete this record? It cannot be undone.</h4>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <a asp-action="EmployeeDelete" asp-route-id="@employee.Id"><button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-ok"></span> Delete</button></a>
+                                                        <button type="button" class="btn btn-info" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                }
+                            }
+                        }
+                </tbody>
+            </table>
+            <a asp-action="EmployeeAdd">Add new Employee</a>
+        </div>
+    </div>
+</div>
