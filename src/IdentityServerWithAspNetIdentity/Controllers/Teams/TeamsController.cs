@@ -110,7 +110,7 @@ namespace IdentityServer
 
             var team = _employeeService.GetTeam(idTeam);
             var teamLeader = _employeeService.GetTeamLeader(team);
-            // if User = DEV/QA
+
             if (user.Position.AccessLevel == Constants.TeamLeaderAccessLevel)
             {
                 return RedirectToAction(nameof(TeamInfo));
@@ -377,7 +377,14 @@ namespace IdentityServer
                 if (user.Department == team.Department)
                 {
                     _employeeService.DeleteTeam(idTeam);
-                    return RedirectToAction(nameof(ManageTeams));
+                    if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
+                    {
+                        return RedirectToAction(nameof(ManageTeamsForDepartmentManager), new { username });
+                    }
+                    else
+                    {
+                        return RedirectToAction(nameof(ManageTeams));
+                    }
                 }
             }
             return NotFound();
