@@ -304,7 +304,7 @@ namespace IdentityServer
             var employee = _employeeService.GetEmployee(idEmployee);
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
 
-            if (user.Position.RoleName != Constants.OfficeManagerRole)
+            if (user.Position.RoleName == Constants.OfficeManagerRole)
             {
                 return RedirectToAction("EmployeeInfo", idEmployee);
             }
