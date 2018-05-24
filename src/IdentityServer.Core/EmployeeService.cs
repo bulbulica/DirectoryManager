@@ -165,7 +165,11 @@ namespace IdentityServer.Core
             if (department != null)
             {
                 var departmentManager = GetDepartmentManager(department);
-                departmentManager.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
+                if (departmentManager != null)
+                {
+                    departmentManager.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
+                }
+
                 foreach(var team in department.Teams)
                 {
                     team.Department = null;
@@ -186,8 +190,12 @@ namespace IdentityServer.Core
             var team = PersistenceContext.EmployeeRepository.GetTeamById(idTeam);
             if (team != null)
             {
-                //var teamManager = GetTeamLeader(team);
-                //teamManager.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
+                var teamLeader = GetTeamLeader(team);
+
+                if (teamLeader != null)
+                {
+                    teamLeader.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
+                }
                 foreach (var employee in team.Employees)
                 {
                     employee.Team = null;
