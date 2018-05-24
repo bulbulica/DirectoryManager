@@ -394,15 +394,14 @@ namespace IdentityServer
                 {
                     return NotFound();
                 }
-                    _employeeService.DeleteTeam(idTeam);
-                    if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
-                    {
-                        return RedirectToAction(nameof(ManageTeamsForDepartmentManager), new { username });
-                    }
-                    else
-                    {
-                        return RedirectToAction(nameof(ManageTeams));
-                    }
+                _employeeService.DeleteTeam(idTeam);
+                if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
+                {
+                    return RedirectToAction(nameof(ManageTeamsForDepartmentManager), new { username });
+                }
+                else
+                {
+                    return RedirectToAction(nameof(ManageTeams));
                 }
             return NotFound();
         }

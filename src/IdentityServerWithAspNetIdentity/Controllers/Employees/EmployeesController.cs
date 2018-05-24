@@ -226,7 +226,7 @@ namespace IdentityServer
             var employee = _employeeService.GetEmployee(idEmployee);
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
 
-            if (user.Position.RoleName != Constants.TeamLeaderRole)
+            if (user.Position.RoleName != Constants.DepartmentManagerRole)
             {
                 return RedirectToAction("EmployeeInfo", idEmployee);
             }
@@ -265,7 +265,7 @@ namespace IdentityServer
             var employee = _employeeService.GetEmployee(idEmployee);
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
 
-            if (user.Position.RoleName != Constants.TeamLeaderRole)
+            if (user.Position.RoleName != Constants.GeneralManagerRole)
             {
                 return RedirectToAction("EmployeeInfo", idEmployee);
             }
@@ -304,7 +304,7 @@ namespace IdentityServer
             var employee = _employeeService.GetEmployee(idEmployee);
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
 
-            if (user.Position.RoleName != Constants.TeamLeaderRole)
+            if (user.Position.RoleName != Constants.OfficeManagerRole)
             {
                 return RedirectToAction("EmployeeInfo", idEmployee);
             }
@@ -490,7 +490,23 @@ namespace IdentityServer
                 _employeeService.UpdateTeamLeader(employee.Team,employee);
             }
             _employeeService.UpdateEmployeePosition(position, employee);
+
+            if (user.Position.AccessLevel == Constants.TeamLeaderAccessLevel)
+            {
                 return RedirectToAction("EmployeeInfoFromTeamLeader", idEmployee);
+            }
+            else if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
+            {
+                return RedirectToAction("EmployeeInfoFromDepartmentManager", idEmployee);
+            }
+            else if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
+            {
+                return RedirectToAction("EmployeeInfoFromGeneralManager", idEmployee);
+            }
+            else
+            {
+                return NotFound();
+            }
             //Adaugare warnings/errors in caz ca nu se updateaza
         }
 
