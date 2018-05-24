@@ -165,7 +165,11 @@ namespace IdentityServer.Core
             if (department != null)
             {
                 var departmentManager = GetDepartmentManager(department);
-                departmentManager.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
+                if (departmentManager != null)
+                {
+                    departmentManager.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
+                }
+
                 foreach(var team in department.Teams)
                 {
                     team.Department = null;
