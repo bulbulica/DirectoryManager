@@ -189,25 +189,29 @@ namespace IdentityServer
         {
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
+            
             var department = _employeeService.GetDepartment(model.DepartmentId);
-            if (ModelState.IsValid)
+            if (model.DepartmentId == -1)
             {
-                if (department != null)
+                department = null;
+            }
+
+                if (ModelState.IsValid)
+            {
+                if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel &&
+                user.Department.Id == department.Id)
                 {
-                    if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel &&
-                    user.Department.Id == department.Id)
+                    var team = new Team
                     {
-                        var team = new Team
-                        {
-                            Name = model.Name,
-                            Department = department,
-                            Description = model.Description,
-                            Employees = new List<Employee>()
-                        };
-                        _employeeService.AddTeam(team);
-                        return RedirectToAction(nameof(ManageTeamsForDepartmentManager), new { username });
-                    }
+                        Name = model.Name,
+                        Department = department,
+                        Description = model.Description,
+                        Employees = new List<Employee>()
+                    };
+                    _employeeService.AddTeam(team);
+                    return RedirectToAction(nameof(ManageTeamsForDepartmentManager), new { username });
                 }
+
 
                 if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
                 {
