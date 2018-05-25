@@ -1,0 +1,46 @@
+﻿@model AddTeamToDepartment
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Add team to " + Model.Department.Name;
+}
+
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddTeamToDepartment"  method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="Department.Id" value="@Model.Department.Id" class="form-control" />
+            <div class="form-group">
+                <label asp-for="TeamId" class="control-label">Select Team</label>
+                <br /><br />
+                      <select asp-for="TeamId" id="mainselection">
+                          @{
+                              if (Model.Teams.ToList().Count != 0)
+                              {
+                                  var teams = Model.Teams.ToList();
+                                  foreach (var team in teams)
+                                  {
+                                      if (team.Department != null)
+                                      {
+                                          <option value="@team.Id">@team.Name : @team.Department.Name</option>
+                                      }
+                                      else
+                                      {
+                                          <option value="@team.Id">@team.Name : No Department</option>
+                                      }
+                                  }
+                              }
+                          }
+                      </select>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+            </div>
+        </form>
+        </div>
+</div>
+<div>
+    <br />
+    <a asp-action="DepartmentInfo" asp-route-id ="@Model.Department.Id">Back to Department Info</a>
+</div>

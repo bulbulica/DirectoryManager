@@ -275,7 +275,7 @@ namespace IdentityServer
             var oldTeam = _employeeService.GetTeam(editTeam.Id);
             // If User = Deparment Manager/General Manager
             if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel
-                ||user.Department == oldTeam.Department)
+                || user.Department == oldTeam.Department)
             {
                 if (ModelState.IsValid)
                 {
@@ -359,7 +359,7 @@ namespace IdentityServer
                 {
                     if (ExTeamLeader != null)
                     {
-                       await _auth.UpdatePositionAsync(ExTeamLeader, Constants.DeveloperRole);
+                        await _auth.UpdatePositionAsync(ExTeamLeader, Constants.DeveloperRole);
                     }
                     _employeeService.UpdateTeamLeader(team, TeamLeader);
                     await _auth.UpdatePositionAsync(TeamLeader, Constants.TeamLeaderRole);
@@ -403,6 +403,7 @@ namespace IdentityServer
                 {
                     return RedirectToAction(nameof(ManageTeams));
                 }
+            }
             return NotFound();
         }
     }

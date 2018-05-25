@@ -308,32 +308,13 @@ namespace IdentityServer
             {
                 return RedirectToAction("EmployeeInfo", idEmployee);
             }
-
-            if (user.Position.AccessLevel < employee.Position.AccessLevel
-                || user.Id == employee.Id)
+            var model = new SingleEmployee
             {
-                var model = new SingleEmployee
-                {
-                    Employee = employee
-                };
-
-                return View(model);
-            }
-
-            else if (user.Name == employee.Username)
-            {
-                var model = new SingleEmployee
-                {
-                    Employee = employee
-                };
-
-                return View(model);
-            }
-            else
-            {
-                return NotFound();
-            }
+                Employee = employee
+            };
+            return View(model);
         }
+        
 
         // GET: Employees/EmployeeAddCV/{id}
         [HttpGet("{id}")]
@@ -605,16 +586,26 @@ namespace IdentityServer
         [HttpGet]
         public IActionResult EmployeeAdd()
         {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
+            var user = _employeeService.GetEmployeeByName(User.Identity.Name);
+
+            var allPositions = _employeeService.GetAllPositions();
+            List<Position> displayedPositions = new List<Position>();
+            foreach (var position in allPositions)
+            {
+                if (position.RoleName != Constants.TeamLeaderRole)
+                {
+                    displayedPositions.Add(position);
+                }
+            }
+
+            if (user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
             {
                 var username = User.Identity.Name;
 
                 var model = new AddEmployee()
                 {
                     Active = true,
-                    //AllPositions = _employeeService.GetRegisterPositionsByAccessLevel(username.ToString()),
-                    AllPositions = _employeeService.GetAllPositions(),
+                    AllPositions = displayedPositions,
                     AllDepartments = _employeeService.GetAllDepartments()
                 };
 
@@ -631,13 +622,10 @@ namespace IdentityServer
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EmployeeAdd(AddEmployee model)
         {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
-            {
-                // Add roles required !!! - delete this when you add 
-                // the function to populate the model with roles,
-                // in case not all inputs are added
-                model.AllPositions = _employeeService.GetAllPositions();
+            var user = _employeeService.GetEmployeeByName(User.Identity.Name);
+
+            if (user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
+            { 
 
                 if (ModelState.IsValid)
                 {
@@ -647,13 +635,10 @@ namespace IdentityServer
                     {
                         department = null;
                     }
-
-                    var exDepartmentManager = _employeeService.GetDepartmentManager(department);
-
-                    if (position != null && department != null)
+                    if (position != null)
                     {
-                        var user = new ApplicationUser { UserName = model.Username, FullName = model.Name, Email = model.Username };
-                        var result = await _auth.RegisterProcess(user, model.Password, position);
+                        var User = new ApplicationUser { UserName = model.Username, FullName = model.Name, Email = model.Username };
+                        var result = await _auth.RegisterProcess(User, model.Password, position);
                         if (result)
                         {
                             var employee = new Employee
@@ -665,8 +650,10 @@ namespace IdentityServer
                                 Department = department,
                             };
                             _employeeService.AddEmployee(employee);
-                            if (employee.Position == _employeeService.GetDepartmentManagerPosition())
+                            if (employee.Position == _employeeService.GetDepartmentManagerPosition() || department != null)
                             {
+                                var exDepartmentManager = _employeeService.GetDepartmentManager(department);
+
                                 if (exDepartmentManager != null)
                                 {
                                     await _auth.UpdatePositionAsync(exDepartmentManager, Constants.DeveloperRole);
@@ -686,7 +673,7 @@ namespace IdentityServer
                             var returnModel = new AddEmployee()
                             {
                                 Active = true,
-                                AllPositions = _employeeService.GetRegisterPositionsByAccessLevel(User.Identity.Name),
+                                AllPositions = model.AllPositions,
                                 AllDepartments = _employeeService.GetAllDepartments()
                             };
 

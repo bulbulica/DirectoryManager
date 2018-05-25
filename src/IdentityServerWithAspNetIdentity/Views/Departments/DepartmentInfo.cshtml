@@ -20,6 +20,7 @@
                 <thead>
                     <tr>
                         <th scope="col">Name</th>
+                        <th scope="col">Team</th>
                         <th scope="col">Position</th>
                     </tr>
                 </thead>
@@ -31,24 +32,37 @@
                             {
                                 if (employee != Model.DepartmentManager)
                                 {
-                                <tr>
-                                    <td scope="row">
-                                        <a asp-action="EmployeeInfo" asp-controller="Employees" asp-route-id="@employee.Id">@employee.Name</a>
-                                    </td>
-                                    <td>
-                                        @employee.Position.RoleName
-                                    </td>
-                                </tr>
-                                 }
-
-                             }
-                         }
+                    <tr>
+                        <td scope="row">
+                            <a asp-action="EmployeeInfo" asp-controller="Employees" asp-route-id="@employee.Id">@employee.Name</a>
+                        </td>
+                        @if (employee.Team != null)
+                        {
+                        <td>
+                            <a asp-action="TeamInfoAdvanced" asp-controller="Teams" asp-route-id="@employee.Team.Id">@employee.Team.Name</a>
+                        </td>
                         }
+                        else
+                        {
+                            <td>No Team</td>
+                        }
+                        <td>
+                            @employee.Position.RoleName
+                        </td>
+                    </tr>
+                                }
+
+                            }
+                        }
+                    }
                 </tbody>
             </table>
             <a asp-action="DepartmentEdit" asp-route-id="@Model.Department.Id">Edit this Department</a>
             <br />
             <a asp-action="ManageDepartments">Back to all Departments</a>
+            <br />
+            <a asp-action="AddTeamToDepartment">Add a team to this department</a>
+
         </div>
     </div>
 </div>

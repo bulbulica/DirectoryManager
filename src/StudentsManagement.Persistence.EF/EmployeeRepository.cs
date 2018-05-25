@@ -137,6 +137,20 @@ namespace IdentityServer.Persistence.EF
             return EmployeeDbContext.Teams.Where(e => e.Department == department).ToList();
         }
 
+        public IEnumerable<Team> GetAllUnassignedTeams()
+        {
+            var teams = EmployeeDbContext.Teams.ToList();
+
+            List<Team> unassignedTeams = new List<Team>();
+
+            foreach (var team in teams)
+            {
+                if (team.Department == null)
+                    unassignedTeams.Add(team);
+            }
+            return unassignedTeams;
+        }
+
         public EmployeeDbContext EmployeeDbContext
         {
             get

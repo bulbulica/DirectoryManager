@@ -28,5 +28,6 @@ namespace IdentityServer.Persistence
         List<Employee> GetAllEmployeesFromDepartment(Department department);
         List<Employee> GetAllEmployeesFromTeam(Team team);
         List<Team> GetAllTeamsFromDepartment(Department department);
+        IEnumerable<Team> GetAllUnassignedTeams();
     }
 }

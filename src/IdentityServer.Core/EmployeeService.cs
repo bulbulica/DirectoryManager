@@ -366,5 +366,23 @@ namespace IdentityServer.Core
         {
             return PersistenceContext.EmployeeRepository.GetAllTeamsFromDepartment(department);
         }
+
+        public IEnumerable<Team> GetAllUnassignedTeams()
+        {
+            return PersistenceContext.EmployeeRepository.GetAllUnassignedTeams();
+        }
+
+        public void AddTeamToDepartment(Department department, Team team)
+        {
+            var exDepartment = team.Department;
+            exDepartment.Teams.Remove(team);
+            department.Teams.Add(team);
+            team.Department = department;
+            foreach (var employee in team.Employees)
+            {
+                employee.Department = department;
+            }
+            PersistenceContext.Complete();
+        }
     }
 }

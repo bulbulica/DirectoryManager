@@ -57,26 +57,17 @@ namespace IdentityServer.Controllers.Departments
         [Route("{id}")]
         public IActionResult AssignDepartmentManager(int? id)
         {
-            /*
-             * AICI TREBUIE SA ASIGNAM DEPARTMENT MANAGER DE CATRE GENERAL MANAGER
-             * modifici si tu codul cat sa mearga, incearca doar cei din interiorul 
-             * departamentului sa poata sa devina department manageri, ca daca sunt
-             * externi apar din add employee ca department manager
-             * /
-            int idTeam = id ?? default(int);
+            int idDepartment = id ?? default(int);
 
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
-            var team = _employeeService.GetTeam(idTeam);
+            var department = _employeeService.GetDepartment(idDepartment);
 
-            if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
+            if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
             {
-                // If User = Deparment Manager
-                if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel && user.Department == team.Department
-                    || user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel)
-                {
+
                     var employees = _employeeService.GetAllUnassignedEmployees().ToList();
-                    employees.AddRange(team.Employees);
+                    employees.AddRange(department.Employees);
                     List<Employee> candidatesEmployees = new List<Employee>();
 
                     foreach (var employee in employees)
@@ -85,15 +76,49 @@ namespace IdentityServer.Controllers.Departments
                             candidatesEmployees.Add(employee);
                     }
 
-                    var model = new AssignTeamLeader
+                    var model = new AssignDepartmentManager
                     {
-                        Team = team,
+                        Department = department,
                         Employees = candidatesEmployees
                     };
                     return View(model);
-                }
+                
             }
-            */
+            return NotFound();
+        }
+
+        [HttpPost]
+        [Route("{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignDepartmentManager(Department departmentModel, int IdDepartmentManager)
+        {
+            int departmentId = departmentModel.Id;
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            var department = _employeeService.GetDepartment(departmentId);
+            var departmentManager = _employeeService.GetEmployee(IdDepartmentManager);
+            var exDepartmentManager = _employeeService.GetDepartmentManager(department);
+
+            if (department == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                if (departmentManager != null)
+                {
+                    if (exDepartmentManager != null)
+                    {
+                        await _auth.UpdatePositionAsync(exDepartmentManager, Constants.DeveloperRole);
+                    }
+                    _employeeService.UpdateDepartmentManager(department, departmentManager);
+                    await _auth.UpdatePositionAsync(departmentManager, Constants.DepartmentManagerRole);
+
+                    return RedirectToAction(nameof(ManageDepartments));
+                }
+                return View();
+            }
             return NotFound();
         }
 
@@ -170,6 +195,84 @@ namespace IdentityServer.Controllers.Departments
             {
                 return NotFound();
             }
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult AddTeamToDepartment(int? id)
+        {
+            int idDepartment = id ?? default(int);
+
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            var department = _employeeService.GetDepartment(idDepartment);
+
+            if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
+            {
+
+                var teams = _employeeService.GetAllTeams();
+                List<Team> availableTeams = new List<Team>();
+
+                foreach(var team in teams)
+                {
+                    if(team.Department != department)
+                    {
+                        availableTeams.Add(team);
+                    }
+                }
+
+                var model = new AddTeamToDepartment
+                {
+                    Teams = availableTeams,
+                    Department = department
+                };
+                return View(model);
+            }
+            else if(user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel
+                    && user.Department.Id == department.Id)
+            {
+                var teams = _employeeService.GetAllUnassignedTeams();
+                var model = new AddTeamToDepartment
+                {
+                    Teams = teams,
+                    Department = department
+                };
+                return View(model);
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        [Route("{id}")]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddTeamToDepartment(Department departmentModel, int TeamId)
+        {
+            int departmentId = departmentModel.Id;
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            var team = _employeeService.GetTeam(TeamId);
+            var department = _employeeService.GetDepartment(departmentId);
+            var departmentManager = _employeeService.GetDepartmentManager(department);
+
+
+            if (department == null || team == null)
+            {
+                return NotFound();
+            }
+
+            if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel
+                || (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel
+                    && user.Department.Id == department.Id)
+                )
+            {
+                if (ModelState.IsValid)
+                {
+                    _employeeService.AddTeamToDepartment(department, team);
+                    return RedirectToAction("DepartmentInfo", department.Id);
+                }
+                return View();
+            }
+            return NotFound();
         }
 
         [HttpPost]
