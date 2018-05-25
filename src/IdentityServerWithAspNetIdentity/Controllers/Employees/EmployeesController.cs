@@ -33,13 +33,13 @@ namespace IdentityServer
             _employeeService = _businessLogic.GetEmployeeService();
         }
 
-        // GET: Employees/ManageEmployees
         [HttpGet]
         public IActionResult ManageEmployees()
         {
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
-            if (user.Position.AccessLevel < 3)
+
+            if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {
                 List<Employee> employees = _employeeService.GetAllEmployees();
 
@@ -100,7 +100,7 @@ namespace IdentityServer
                 return NotFound();
             }
 
-                List<Employee> employees = _employeeService.GetAllEmployees();
+            List<Employee> employees = _employeeService.GetAllEmployees();
 
             var model = new AllEmployees
             {
@@ -130,18 +130,19 @@ namespace IdentityServer
             {
                 return RedirectToAction(nameof(ManageEmployeesForOfficeManager));
             }
-            else { 
+            else
+            { 
                 return NotFound();
             }
         }
 
-        // GET: Employees/EmployeeInfo/{id}
         [HttpGet("{id}")]
         public IActionResult EmployeeInfo(int? id)
         {
             int idEmployee = id ?? default(int);
             var employee = _employeeService.GetEmployee(idEmployee);
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
+
             if (user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
             {
                 var model = new SingleEmployee
@@ -179,7 +180,6 @@ namespace IdentityServer
             }
         }
 
-        // GET: Employees/EmployeeInfoFromTeamLeader/{id}
         [HttpGet("{id}")]
         public IActionResult EmployeeInfoFromTeamLeader(int? id)
         {
@@ -203,7 +203,7 @@ namespace IdentityServer
                 return View(model);
             }
 
-            else if (user.Name == employee.Username)
+            else if (user.Username == employee.Username)
             {
                 var model = new SingleEmployee
                 {
@@ -218,7 +218,6 @@ namespace IdentityServer
             }
         }
 
-        // GET: Employees/EmployeeInfoFromDepartmentManager/{id}
         [HttpGet("{id}")]
         public IActionResult EmployeeInfoFromDepartmentManager(int? id)
         {
@@ -242,7 +241,7 @@ namespace IdentityServer
                 return View(model);
             }
 
-            else if (user.Name == employee.Username)
+            else if (user.Username == employee.Username)
             {
                 var model = new SingleEmployee
                 {
@@ -257,7 +256,6 @@ namespace IdentityServer
             }
         }
 
-        // GET: Employees/EmployeeInfoFromGeneralManager/{id}
         [HttpGet("{id}")]
         public IActionResult EmployeeInfoFromGeneralManager(int? id)
         {
@@ -280,8 +278,7 @@ namespace IdentityServer
 
                 return View(model);
             }
-
-            else if (user.Name == employee.Username)
+            else if (user.Username == employee.Username)
             {
                 var model = new SingleEmployee
                 {
@@ -296,7 +293,6 @@ namespace IdentityServer
             }
         }
 
-        // GET: Employees/EmployeeInfoFromOfficeManager/{id}
         [HttpGet("{id}")]
         public IActionResult EmployeeInfoFromOfficeManager(int? id)
         {
@@ -316,15 +312,21 @@ namespace IdentityServer
         }
         
 
-        // GET: Employees/EmployeeAddCV/{id}
         [HttpGet("{id}")]
         public IActionResult EmployeeAddCV(int? id)
         {
-            if (_auth.IsUserSignedIn(User))
-            {
-                int idEmployee = id ?? default(int);
+            int idEmployee = id ?? default(int);
+            var employee = _employeeService.GetEmployee(idEmployee);
 
-                var employee = _employeeService.GetEmployee(idEmployee);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
+            var user = _employeeService.GetEmployeeByName(User.Identity.Name);
+
+            if (user.Username == employee.Username)
+            {
                 var model = new AddCVEmployee
                 {
                     Id = employee.Id,
@@ -339,7 +341,6 @@ namespace IdentityServer
             }
         }
 
-        // POST: Employees/EmployeeAddCV/{id}
         [HttpPost("{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EmployeeAddCV(int? id, IFormFile file)
@@ -364,7 +365,6 @@ namespace IdentityServer
 
                     return View(model);
                 }
-
                 if (file.Length > 10000000)
                 {
                     var error = "File exceeded size limit";
@@ -403,7 +403,6 @@ namespace IdentityServer
             }
         }
 
-        // GET: Employees/GetEmployeeInfo/{username}
         [HttpGet("{username}")]
         public IActionResult GetEmployeeInfo(string username)
         {
@@ -415,8 +414,6 @@ namespace IdentityServer
             return NotFound();
         }
 
-
-        // GET: Employees/EmployeeChangePosition/{id}
         [HttpGet("{id}")]
         public IActionResult EmployeeChangePosition(int? id)
         {
@@ -453,6 +450,7 @@ namespace IdentityServer
             var employee = _employeeService.GetEmployee(idEmployee);
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
             var position = _employeeService.GetPositionByName(model.Position);
+
             if (user.Position.AccessLevel > employee.Position.AccessLevel
                || user.Position.AccessLevel > position.AccessLevel)
             {
@@ -471,7 +469,6 @@ namespace IdentityServer
                 _employeeService.UpdateDepartmentManager(employee.Department, employee);
                 await _auth.UpdatePositionAsync(employee, Constants.DepartmentManagerRole);
             }
-
             else if (position == _employeeService.GetTeamLeaderPosition()
                 && employee.Team != null)
             {
@@ -483,14 +480,12 @@ namespace IdentityServer
                 }
                 _employeeService.UpdateTeamLeader(employee.Team, employee);
                 await _auth.UpdatePositionAsync(employee, Constants.TeamLeaderRole);
-
             }
             else
             {
                 _employeeService.UpdateEmployeePosition(position, employee);
                 await _auth.UpdatePositionAsync(employee, position.RoleName);
             }
-
             if (user.Position.AccessLevel == Constants.TeamLeaderAccessLevel)
             {
                 return RedirectToAction("EmployeeInfoFromTeamLeader", idEmployee);
@@ -507,20 +502,23 @@ namespace IdentityServer
             {
                 return NotFound();
             }
-            //Adaugare warnings/errors in caz ca nu se updateaza
         }
 
-
-        // GET: Employees/EmployeeAddImage/{id}
         [HttpGet("{id}")]
         public IActionResult EmployeeAddImage(int? id)
         {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
-            {
-                int idEmployee = id ?? default(int);
+            int idEmployee = id ?? default(int);
+            var employee = _employeeService.GetEmployee(idEmployee);
 
-                var employee = _employeeService.GetEmployee(idEmployee);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
+            var user = _employeeService.GetEmployeeByName(User.Identity.Name);
+
+            if (user.Username == employee.Username)
+            {
                 var model = new AddImageEmployee
                 {
                     Id = employee.Id,
@@ -535,14 +533,12 @@ namespace IdentityServer
             }
         }
 
-        // POST: Employees/EmployeeAddImage/{id}
         [HttpPost]
         [Route("{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EmployeeAddImage(int? id, IFormFile file)
         {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
+            if (_auth.IsUserSignedIn(User))
             {
                 int idEmployee = id ?? default(int);
                 var employee = _employeeService.GetEmployee(idEmployee);
@@ -562,7 +558,6 @@ namespace IdentityServer
 
                     return View(model);
                 }
-
                 if (file.Length > 5000000)
                 {
                     var error = "File exceeded size limit";
@@ -601,7 +596,6 @@ namespace IdentityServer
             }
         }
 
-        // GET: Employees/EmployeeAdd
         [HttpGet]
         public IActionResult EmployeeAdd()
         {
@@ -609,6 +603,7 @@ namespace IdentityServer
 
             var allPositions = _employeeService.GetAllPositions();
             List<Position> displayedPositions = new List<Position>();
+
             foreach (var position in allPositions)
             {
                 if (position.RoleName != Constants.TeamLeaderRole)
@@ -616,7 +611,6 @@ namespace IdentityServer
                     displayedPositions.Add(position);
                 }
             }
-
             if (user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
             {
                 var username = User.Identity.Name;
@@ -636,7 +630,6 @@ namespace IdentityServer
             }
         }
 
-        // POST: Employees/EmployeeAdd
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EmployeeAdd(AddEmployee model)
@@ -645,11 +638,11 @@ namespace IdentityServer
 
             if (user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
             { 
-
                 if (ModelState.IsValid)
                 {
                     var position = _employeeService.GetPositionByName(model.Position);
                     var department = _employeeService.GetDepartmentByName(model.Department);
+
                     if (position.AccessLevel <= Constants.GeneralManagerAccessLevel)
                     {
                         department = null;
@@ -658,6 +651,7 @@ namespace IdentityServer
                     {
                         var User = new ApplicationUser { UserName = model.Username, FullName = model.Name, Email = model.Username };
                         var result = await _auth.RegisterProcess(User, model.Password, position);
+
                         if (result)
                         {
                             var employee = new Employee
@@ -669,6 +663,7 @@ namespace IdentityServer
                                 Department = department,
                             };
                             _employeeService.AddEmployee(employee);
+
                             if (employee.Position == _employeeService.GetDepartmentManagerPosition() || department != null)
                             {
                                 var exDepartmentManager = _employeeService.GetDepartmentManager(department);
@@ -682,7 +677,6 @@ namespace IdentityServer
                         }
                         else
                         {
-                            
                             var ErrorMessage = $"the password does not meet the password policy requirements.";
                             var policyRequirements = $"* At least an uppercase and a special character";
 
@@ -709,12 +703,10 @@ namespace IdentityServer
             }
         }
 
-        // GET: Employees/EmployeeEdit/{id}
         [HttpGet]
         [Route("{id}")]
         public IActionResult EmployeeEdit(int? id)
         {
-            //if (_auth.IsUserSignedIn(User))
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
             int idEmployee = id ?? default(int);
@@ -723,6 +715,7 @@ namespace IdentityServer
                 var employee = _employeeService.GetEmployee(idEmployee);
                 var positions = _employeeService.GetRegisterPositionsByAccessLevel(User.Identity.Name);
                 var departments = _employeeService.GetAllDepartments();
+
                 var model = new EditEmployee
                 {
                     Id = idEmployee,
@@ -739,6 +732,7 @@ namespace IdentityServer
                 var employee = _employeeService.GetEmployee(idEmployee);
                 var localUser = _employeeService.GetEmployeeByName(User.Identity.Name);
                 var positions = _employeeService.GetRegisterPositionsByAccessLevel(User.Identity.Name);
+
                 if (localUser.Id == employee.Id)
                 {
                     var model = new 
@@ -750,21 +744,18 @@ namespace IdentityServer
             return NotFound();
         }
 
-        // POST: Employees/EmployeeEdit/{id}
         [HttpPost]
         [Route("{id}")]
         [ValidateAntiForgeryToken]
         public IActionResult EmployeeEdit(EditEmployee model, int? id)
         {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
+            if (_auth.IsUserSignedIn(User))
             {
                 if (model.CV == null)
                     model.CV = "";
                 if (model.Picture == null)
                     model.Picture = "";
                 int idEmployee = id ?? default(int);
-
 
                 if (ModelState.IsValid)
                 {
@@ -787,7 +778,6 @@ namespace IdentityServer
                     {
                         _employeeService.UpdateDepartmentManager(employee.Department, employee);
                     }
-
                     else if (employee.Position == _employeeService.GetTeamLeaderPosition())
                     {
                         if (employee.Team != null)
@@ -818,13 +808,14 @@ namespace IdentityServer
         }
 
 
-        // GET: Employees/EmployeeEditName/{id}
         [HttpGet]
         [Route("{id}")]
         public IActionResult EmployeeEditName(int? id)
         {
-            //if (_auth.IsUserSignedIn(User))
-            if (true)
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+
+            if (user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel)
             {
                 int idEmployee = id ?? default(int);
 
@@ -844,7 +835,6 @@ namespace IdentityServer
             }
         }
 
-        // POST: Employees/EmployeeEditName/{id}
         [HttpPost]
         [Route("{id}")]
         [ValidateAntiForgeryToken]
@@ -859,7 +849,6 @@ namespace IdentityServer
                 {
                     _employeeService.UpdateEmployeeName(employee, model.Name);
                 }
-                //Add Error 
 
             return RedirectToAction("EmployeeInfo", idEmployee);
             }
@@ -869,17 +858,18 @@ namespace IdentityServer
             }
         }
 
-        // GET: Employees/EmployeeDelete/{id}
         [HttpGet]
         [Route("{id}")]
         public IActionResult EmployeeDelete(int? id)
         {
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
+
             if (user.Position.AccessLevel == Constants.OfficeManagerAccessLevel) 
             {
                 int idEmployee = id ?? default(int);
                 _employeeService.DeleteEmployee(idEmployee);
+
                 return RedirectToAction(nameof(ManageEmployees));
             }
             else

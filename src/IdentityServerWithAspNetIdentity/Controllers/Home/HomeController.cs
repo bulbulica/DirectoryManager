@@ -15,20 +15,19 @@ namespace IdentityServer
     public class Home : Controller
     {
         private readonly IIdentityServerInteractionService _interaction;
-        //private readonly IAuthentication _auth;
+        private readonly IAuthentication _auth;
 
-        public Home(IIdentityServerInteractionService interaction)
-            //,IAuthentication auth)
+        public Home(IIdentityServerInteractionService interaction
+            ,IAuthentication auth)
         {
             _interaction = interaction;
-            //_auth = auth;
+            _auth = auth;
         }
 
         public IActionResult Index()
         {
             IActionResult retView = null;
-            //if (_auth.IsUserSignedIn(User))
-            if (1==1)
+            if (_auth.IsUserSignedIn(User))
             {
                 retView = View("Index");
             }
