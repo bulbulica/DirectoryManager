@@ -304,7 +304,7 @@ namespace IdentityServer
             var employee = _employeeService.GetEmployee(idEmployee);
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
 
-            if (user.Position.RoleName == Constants.OfficeManagerRole)
+            if (user.Position.RoleName != Constants.OfficeManagerRole)
             {
                 return RedirectToAction("EmployeeInfo", idEmployee);
             }
@@ -447,7 +447,7 @@ namespace IdentityServer
 
         [HttpPost("{id}")]
         [ValidateAntiForgeryToken]
-        public IActionResult EmployeeChangePosition(int? id, EditEmployee model)
+        public async Task<IActionResult> EmployeeChangePosition(int? id, EditEmployee model)
         {
             int idEmployee = id ?? default(int);
             var employee = _employeeService.GetEmployee(idEmployee);
@@ -462,15 +462,34 @@ namespace IdentityServer
             if (position == _employeeService.GetDepartmentManagerPosition()
                 && employee.Department != null)
             {
+                var exDepartmentManager = _employeeService.GetDepartmentManager(employee.Department);
+
+                if (exDepartmentManager != null)
+                {
+                    await _auth.UpdatePositionAsync(exDepartmentManager, Constants.DeveloperRole);
+                }
                 _employeeService.UpdateDepartmentManager(employee.Department, employee);
+                await _auth.UpdatePositionAsync(employee, Constants.DepartmentManagerRole);
             }
 
             else if (position == _employeeService.GetTeamLeaderPosition()
                 && employee.Team != null)
             {
-                _employeeService.UpdateTeamLeader(employee.Team,employee);
+                var exTeamLeader = _employeeService.GetDepartmentManager(employee.Department);
+
+                if (exTeamLeader != null)
+                {
+                    await _auth.UpdatePositionAsync(exTeamLeader, Constants.DeveloperRole);
+                }
+                _employeeService.UpdateTeamLeader(employee.Team, employee);
+                await _auth.UpdatePositionAsync(employee, Constants.TeamLeaderRole);
+
             }
-            _employeeService.UpdateEmployeePosition(position, employee);
+            else
+            {
+                _employeeService.UpdateEmployeePosition(position, employee);
+                await _auth.UpdatePositionAsync(employee, position.RoleName);
+            }
 
             if (user.Position.AccessLevel == Constants.TeamLeaderAccessLevel)
             {
