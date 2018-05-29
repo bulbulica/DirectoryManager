@@ -424,8 +424,7 @@ namespace IdentityServer
             var employee = _employeeService.GetEmployee(idEmployee);
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
 
-            if (user.Position.AccessLevel < _employeeService.GetDeveloperPosition().AccessLevel
-                || user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
+            if (user.Position.AccessLevel < _employeeService.GetDeveloperPosition().AccessLevel)
             {
                 var positions = _employeeService.GetRegisterPositionsByAccessLevel(user.Username);
                 var model = new EditEmployee
