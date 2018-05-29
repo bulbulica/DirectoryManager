@@ -433,7 +433,15 @@ namespace IdentityServer
 
             if (user.Position.AccessLevel < _employeeService.GetDeveloperPosition().AccessLevel)
             {
-                var positions = _employeeService.GetRegisterPositionsByAccessLevel(user.Username);
+                var positions = _employeeService.GetRegisterPositionsByAccessLevel(user.Username).ToList();
+                if(employee.Team == null)
+                {
+                    positions.Remove(_employeeService.GetTeamLeaderPosition());
+                }
+                if (employee.Department == null)
+                {
+                    positions.Remove(_employeeService.GetDepartmentManagerPosition());
+                }
                 var model = new EditEmployee
                 {
                     Id = employee.Id,
@@ -889,6 +897,57 @@ namespace IdentityServer
                 _employeeService.DeleteEmployee(idEmployee);
 
                 return RedirectToAction(nameof(ManageEmployeesForOfficeManager));
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult RemoveEmployeeFromDepartment(int? id)
+        {
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            int idEmployee = id ?? default(int);
+            var employee = _employeeService.GetEmployee(idEmployee);
+
+            if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
+            {
+                if(employee.Position.RoleName == Constants.TeamLeaderRole
+                    || employee.Position.RoleName == Constants.DepartmentManagerRole) {
+                    _auth.UpdateRoleAsync(employee.Name, Constants.DeveloperRole);
+                    }
+                _employeeService.RemoveEmployeeFromDepartment(idEmployee);
+
+                return RedirectToAction(nameof(ManageEmployeesForGeneralManager));
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult RemoveEmployeeFromTeam(int? id)
+        {
+            var username = User.Identity.Name;
+            int idEmployee = id ?? default(int);
+            var employee = _employeeService.GetEmployee(idEmployee);
+
+            var user = _employeeService.GetEmployeeByName(username);
+
+            if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
+            {
+                if (employee.Position.RoleName == Constants.TeamLeaderRole){
+                    _auth.UpdateRoleAsync(employee.Name, Constants.DeveloperRole);
+                }
+
+                _employeeService.RemoveEmployeeFromTeam(idEmployee);
+
+                return RedirectToAction(nameof(ManageEmployeesForGeneralManager));
             }
             else
             {

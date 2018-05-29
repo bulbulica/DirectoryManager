@@ -440,5 +440,28 @@ namespace IdentityServer.Core
                 team.Department = null;
             }
         }
+
+        public void RemoveEmployeeFromDepartment(int idEmployee)
+        {
+            var user = PersistenceContext.EmployeeRepository.GetEmployeeById(idEmployee);
+            var userTeam = user.Team;
+            var userDepartment = user.Department;
+            if (userTeam != null)
+            {
+                user.Team = null;
+                userTeam.Employees.Remove(user);
+            }
+
+            user.Department = null;
+            userDepartment.Employees.Remove(user);
+            PersistenceContext.Complete();
+        }
+
+        public void RemoveEmployeeFromTeam(int idEmployee)
+        {
+            var user = PersistenceContext.EmployeeRepository.GetEmployeeById(idEmployee);
+            user.Team = null;
+            PersistenceContext.Complete();
+        }
     }
 }

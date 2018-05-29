@@ -42,13 +42,19 @@
                                     <td scope="row">
                                         @if (employee.Department != null)
                                         {
-                                        <a asp-controller="Departments" asp-action="DepartmentInfo" asp-route-id="@employee.Department.Id">@employee.Department.Name</a>
+                                            <a asp-controller="Departments" asp-action="DepartmentInfo" asp-route-id="@employee.Department.Id">@employee.Department.Name</a>
+                                            <a asp-action="RemoveEmployeeFromDepartment" asp-controller="Employees" asp-route-id="@employee.Id">
+                                                <span class="glyphicon glyphicon-remove-sign"> </span>
+                                            </a>
                                         }
                                     </td>
                                     <td scope="row">
                                         @if (employee.Team != null)
                                         {
                                             <a asp-controller="Teams" asp-action="TeamInfoAdvanced" asp-route-id="@employee.Team.Id">@employee.Team.Name</a>
+                                            <a asp-action="RemoveEmployeeFromTeam" asp-controller="Employees" asp-route-id="@employee.Id">
+                                                <span class="glyphicon glyphicon-remove-sign"> </span>
+                                            </a>
                                         }
                                     </td>
                                     <td scope="row">@employee.Position.RoleName</td>
