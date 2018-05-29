@@ -125,6 +125,65 @@ namespace IdentityServer.Controllers.Departments
 
         [HttpGet]
         [Route("{id}")]
+        public IActionResult DepartmentAddEmployee(int? id)
+        {
+            int idDepartment = id ?? default(int);
+
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            var department = _employeeService.GetDepartment(idDepartment);
+
+            if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
+            {
+                var employees = _employeeService.GetAllEmployees().ToList();
+                employees.AddRange(department.Employees);
+                List<Employee> candidatesEmployees = new List<Employee>();
+
+                foreach (var employee in employees)
+                {
+                    if (employee.Position.AccessLevel > Constants.DepartmentManagerAccessLevel
+                    && employee.Active 
+                    && employee.Department != department
+                    && employee.Position.AccessLevel != Constants.OfficeManagerAccessLevel
+                    && employee.Position.AccessLevel != Constants.GeneralManagerAccessLevel)
+                        candidatesEmployees.Add(employee);
+                }
+
+                var model = new DepartmentAddEmployee
+                {
+                    Department = department,
+                    Employees = candidatesEmployees
+                };
+                return View(model);
+
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        [Route("{id}")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DepartmentAddEmployee(Department ModelDepartment, int EmployeeId)
+        {
+            int idDepartment = ModelDepartment.Id;
+            var employee = _employeeService.GetEmployee(EmployeeId);
+            var department = _employeeService.GetDepartment(idDepartment);
+
+            if (department == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                _employeeService.AddEmployeeToDepartment(employee, department);
+                return RedirectToAction(nameof(ManageDepartments));
+            }
+            return NotFound();
+        }
+
+        [HttpGet]
+        [Route("{id}")]
         public IActionResult DepartmentInfo(int? id)
         {
             var username = User.Identity.Name;

@@ -412,5 +412,14 @@ namespace IdentityServer.Core
             employee.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
             PersistenceContext.Complete();
         }
+
+        public void AddEmployeeToDepartment(Employee employee, Department department)
+        {
+            employee.Department = department;
+            department.Employees.Add(employee);
+            employee.Team = null;
+            employee.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
+            PersistenceContext.Complete();
+        }
     }
 }
