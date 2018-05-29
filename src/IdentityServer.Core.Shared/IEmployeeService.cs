@@ -20,6 +20,7 @@ namespace IdentityServer.Core.Shared
         void UpdateEmployee(Employee employee);
         IEnumerable<Team> GetAllTeams();
         void DeleteEmployee(int idEmployee);
+        void ActivateEmployee(int idEmployee);
         Department GetDepartment(int idDepartment);
         Team GetTeam(int idTeam);
         void UpdateDepartment(Department department);

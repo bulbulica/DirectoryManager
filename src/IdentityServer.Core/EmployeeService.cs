@@ -117,7 +117,7 @@ namespace IdentityServer.Core
             var employee = PersistenceContext.EmployeeRepository.GetEmployeeById(idEmployee);
             if (employee != null)
             {
-                if (employee.Position.AccessLevel > 3)
+                if (employee.Position.AccessLevel > Constants.GeneralManagerAccessLevel)
                 {
                     employee.Active = false;
                     employee.Department = null;
@@ -125,6 +125,21 @@ namespace IdentityServer.Core
                     employee.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
                     PersistenceContext.Complete();
                 }
+                else
+                {
+                    employee.Active = false;
+                    employee.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
+                    PersistenceContext.Complete();
+                }
+            }
+        }
+
+        void IEmployeeService.ActivateEmployee(int idEmployee)
+        {
+            var employee = PersistenceContext.EmployeeRepository.GetEmployeeById(idEmployee);
+            if (employee != null)
+            {
+                employee.Active = true;
             }
         }
 

@@ -15,41 +15,46 @@
             @if (Model.Employee.Picture != null && Model.Employee.Picture.Length > 0)
             {
                 <img src="../../img/@Model.Employee.Picture" class="rounded float-left" alt="@Model.Employee.Name" height="300" width="300">
+                <a asp-action="EmployeeAddImage" asp-route-id="@Model.Employee.Id"><h5>Upload new image</h5></a>
             }
             else
             {
                 <img src="../../img/avatarNotFound.png" class="rounded float-left" alt="@Model.Employee.Name" height="300" width="300">
+                <a asp-action="EmployeeAddImage" asp-route-id="@Model.Employee.Id"><h5>Upload image</h5></a>
             }
         </div>
         <div class="col-md-6">
             @if (Model.Employee.Department != null && Model.Employee.Department.Name.Length > 0)
             {
-                <h2>Department - @Model.Employee.Department.Name</h2>
+                <h2>Department: @Model.Employee.Department.Name</h2>
             }
             else
             {
-                <h2>Department - Not in a Department</h2>
+                <h2>Department: Not in a Department</h2>
             }
 
             <h3>Position: @Model.Employee.Position.RoleName</h3>
 
             @if (Model.Employee.Team != null && Model.Employee.Team.Name.Length > 0)
             {
-                <h3>Team - @Model.Employee.Team.Name</h3>
+                <h3>Team: @Model.Employee.Team.Name</h3>
             }
             else
             {
-                <h3>Team - Not in a team</h3>
+                <h3>Team: Not in a team</h3>
             }
-            <h4>Active - @Model.Employee.Active</h4>
+            <h4>Active: @Model.Employee.Active</h4>
             @if (Model.Employee.CV != null && Model.Employee.CV.Length > 0)
             {
                 <a href="../../docs/@Model.Employee.CV">View CV</a>
+                <a asp-action="EmployeeAddCV" asp-route-id="@Model.Employee.Id"><h5>Upload new CV</h5></a>
             }
-            @if (this.User.IsInRole(Constants.TeamLeaderRole))
+            else
             {
-                <a asp-action="EmployeeChangePosition" asp-route-id="@Model.Employee.Id"><h4>Change employee position</h4></a>
+                <a asp-action="EmployeeAddCV" asp-route-id="@Model.Employee.Id"><h4>Upload CV</h4></a>
             }
+
+            <a asp-action="EmployeeEditName" asp-route-id="@Model.Employee.Id"><h4>Edit name</h4></a>
         </div>
     </div>
 </div>
