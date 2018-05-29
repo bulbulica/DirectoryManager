@@ -7,7 +7,7 @@
     <h3>Manage all the departments</h3>
     <hr />
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -38,8 +38,8 @@
                                 var simpleName = "delete" + count++;
                                 var complexName = "#" + simpleName;
                             }
-                            <a asp-action="DepartmentEdit" asp-route-id="@department.Id">Edit</a> |
-                            <a href="@complexName" id="@complexName" class="trigger-btn" data-toggle="modal">Delete</a>
+                            <a asp-action="DepartmentEdit" asp-route-id="@department.Id"><span class="glyphicon glyphicon-edit">Edit</span></a> |
+                            <a href="@complexName" id="@complexName" class="trigger-btn" data-toggle="modal"><span class="glyphicon glyphicon-ban-circle">Delete</span></a>
                             <div id="@simpleName" class="modal fade">
                                 <div class="modal-dialog modal-confirm">
                                     <div class="modal-content">

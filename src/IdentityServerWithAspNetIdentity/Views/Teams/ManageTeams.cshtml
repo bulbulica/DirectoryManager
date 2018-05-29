@@ -7,7 +7,7 @@
     <h3>Manage all the Teams</h3>
     <hr />
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-10">
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -45,13 +45,13 @@
                                 var simpleName = "delete" + count++;
                                 var complexName = "#" + simpleName;
                             }
-                            <a asp-action="TeamEdit" asp-route-id="@team.Id">Edit</a> |
-                            <a href="@complexName" id="@complexName" class="trigger-btn" data-toggle="modal">Delete</a>
+                            <a asp-action="TeamEdit" asp-route-id="@team.Id"><span class="glyphicon glyphicon-edit">Edit</span></a> |
+                            <a href="@complexName" id="@complexName" class="trigger-btn" data-toggle="modal"><span class="glyphicon glyphicon-ban-circle">Delete</span></a>
                             <div id="@simpleName" class="modal fade">
                                 <div class="modal-dialog modal-confirm">
                                     <div class="modal-content">
                                         <div class="modal-body">
-                                            <h4>Do you really want to delete this record? It cannot be undone.</h4>
+                                            <h4>Do you really want to delete this team? It cannot be undone.</h4>
                                         </div>
                                         <div class="modal-footer">
                                             <a asp-action="TeamDelete" asp-route-id="@team.Id"><button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-ok"></span> Delete</button></a>
