@@ -47,5 +47,6 @@ namespace IdentityServer.Core.Shared
         void UpdateEmployeePosition(Position position, Employee employee);
         IEnumerable<Team> GetAllUnassignedTeams();
         void AddTeamToDepartment(Department department, Team team);
+        void AddEmployeeToTeam(Employee employee, Team team);
     }
 }

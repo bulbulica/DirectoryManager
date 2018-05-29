@@ -84,10 +84,17 @@ namespace IdentityServer
             }
 
             List<Employee> employees = _employeeService.GetAllEmployees();
+            List<Employee> availableEmployees = new List<Employee>();
+            foreach(var employee in employees)
+            {
+                if (employee.Position.AccessLevel != Constants.OfficeManagerAccessLevel)
+                    availableEmployees.Add(employee);
+            }
+
 
             var model = new AllEmployees
             {
-                Employees = employees
+                Employees = availableEmployees
             };
             return View(model);
         }

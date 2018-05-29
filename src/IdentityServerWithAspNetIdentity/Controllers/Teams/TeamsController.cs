@@ -325,7 +325,7 @@ namespace IdentityServer
                     foreach (var employee in employees)
                     {
                         if (employee.Position.AccessLevel > Constants.DepartmentManagerAccessLevel
-                            && employee.Active)
+                            && employee.Active && employee.Position.AccessLevel != Constants.OfficeManagerAccessLevel)
                             candidatesEmployees.Add(employee);
                     }
 
@@ -382,6 +382,79 @@ namespace IdentityServer
             }
             return NotFound();
         }
+
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult TeamAddEmployee(int? id)
+        {
+            int idTeam = id ?? default(int);
+
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            var team = _employeeService.GetTeam(idTeam);
+
+            if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
+            {
+                // If User = Deparment Manager
+                if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel
+                    && user.Department == team.Department
+                    || user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel)
+                {
+                    List<Employee> employees = new List<Employee>();
+                    if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
+                    {
+                        employees = _employeeService.GetAllUnassignedEmployees().ToList();
+                    }
+                    else
+                    {
+                        employees = _employeeService.GetAllEmployees().ToList();
+                    }
+
+                    List<Employee> availableEmployees = new List<Employee>();
+
+                    foreach (var employee in employees)
+                    {
+                        if (employee.Position.AccessLevel > Constants.DepartmentManagerAccessLevel
+                            && employee.Active 
+                            && employee.Team != team
+                            && employee.Position.AccessLevel != Constants.OfficeManagerAccessLevel)
+                            availableEmployees.Add(employee);
+                    }
+
+                    var model = new AddEmployeeToTeam
+                    {
+                        Team = team,
+                        Employees = availableEmployees
+                    };
+                    return View(model);
+                }
+            }
+
+            return NotFound();
+        }
+
+        [HttpPost]
+        [Route("{id}")]
+        [ValidateAntiForgeryToken]
+        public IActionResult TeamAddEmployee(Team ModelTeam, int EmployeeId)
+        {
+            int idTeam = ModelTeam.Id;
+            var employee = _employeeService.GetEmployee(EmployeeId);
+            var team = _employeeService.GetTeam(idTeam);
+
+            if (team == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                _employeeService.AddEmployeeToTeam(employee, team);
+                return RedirectToAction("TeamInfoAdvanced", idTeam);
+            }
+            return NotFound();
+        }
+
 
         [HttpGet]
         [Route("{id}")]

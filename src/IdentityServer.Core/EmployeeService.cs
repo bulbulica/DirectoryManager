@@ -399,5 +399,18 @@ namespace IdentityServer.Core
             }
             PersistenceContext.Complete();
         }
+
+        public void AddEmployeeToTeam(Employee employee, Team team)
+        {
+            employee.Team = team;
+            team.Employees.Add(employee);
+            if(team.Department!= null)
+            {
+                employee.Department = team.Department;
+                team.Department.Employees.Add(employee);
+            }
+            employee.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
+            PersistenceContext.Complete();
+        }
     }
 }

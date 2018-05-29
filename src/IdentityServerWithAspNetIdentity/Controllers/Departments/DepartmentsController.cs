@@ -73,7 +73,7 @@ namespace IdentityServer.Controllers.Departments
                     foreach (var employee in employees)
                     {
                         if (employee.Position.AccessLevel > Constants.DepartmentManagerAccessLevel
-                        && employee.Active)
+                        && employee.Active && employee.Position.AccessLevel != Constants.OfficeManagerAccessLevel) 
                             candidatesEmployees.Add(employee);
                     }
 
