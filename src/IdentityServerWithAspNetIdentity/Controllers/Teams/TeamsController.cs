@@ -387,7 +387,6 @@ namespace IdentityServer
 
             if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {
-                // If User = Deparment Manager
                 if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel
                     && user.Department == team.Department
                     || user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel)
