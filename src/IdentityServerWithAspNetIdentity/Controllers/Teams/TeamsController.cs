@@ -324,7 +324,8 @@ namespace IdentityServer
 
                     foreach (var employee in employees)
                     {
-                        if (employee.Position.AccessLevel > Constants.DepartmentManagerAccessLevel)
+                        if (employee.Position.AccessLevel > Constants.DepartmentManagerAccessLevel
+                            && employee.Active)
                             candidatesEmployees.Add(employee);
                     }
 
@@ -363,10 +364,10 @@ namespace IdentityServer
                 {
                     if (ExTeamLeader != null)
                     {
-                        await _auth.UpdatePositionAsync(ExTeamLeader, Constants.DeveloperRole);
+                        await _auth.UpdateRoleAsync(ExTeamLeader.Username, Constants.DeveloperRole);
                     }
                     _employeeService.UpdateTeamLeader(team, TeamLeader);
-                    await _auth.UpdatePositionAsync(TeamLeader, Constants.TeamLeaderRole);
+                    await _auth.UpdateRoleAsync(TeamLeader.Username, Constants.TeamLeaderRole);
 
                     if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
                     {

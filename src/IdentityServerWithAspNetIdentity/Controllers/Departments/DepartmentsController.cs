@@ -72,7 +72,8 @@ namespace IdentityServer.Controllers.Departments
 
                     foreach (var employee in employees)
                     {
-                        if (employee.Position.AccessLevel > Constants.DepartmentManagerAccessLevel)
+                        if (employee.Position.AccessLevel > Constants.DepartmentManagerAccessLevel
+                        && employee.Active)
                             candidatesEmployees.Add(employee);
                     }
 
@@ -110,10 +111,10 @@ namespace IdentityServer.Controllers.Departments
                 {
                     if (exDepartmentManager != null)
                     {
-                        await _auth.UpdatePositionAsync(exDepartmentManager, Constants.DeveloperRole);
+                        await _auth.UpdateRoleAsync(exDepartmentManager.Username, Constants.DeveloperRole);
                     }
                     _employeeService.UpdateDepartmentManager(department, departmentManager);
-                    await _auth.UpdatePositionAsync(departmentManager, Constants.DepartmentManagerRole);
+                    await _auth.UpdateRoleAsync(departmentManager.Username, Constants.DepartmentManagerRole);
 
                     return RedirectToAction(nameof(ManageDepartments));
                 }

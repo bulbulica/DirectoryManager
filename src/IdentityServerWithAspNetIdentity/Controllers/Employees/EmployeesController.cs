@@ -467,10 +467,10 @@ namespace IdentityServer
 
                 if (exDepartmentManager != null)
                 {
-                    await _auth.UpdatePositionAsync(exDepartmentManager, Constants.DeveloperRole);
+                    await _auth.UpdateRoleAsync(exDepartmentManager.Username, Constants.DeveloperRole);
                 }
                 _employeeService.UpdateDepartmentManager(employee.Department, employee);
-                await _auth.UpdatePositionAsync(employee, Constants.DepartmentManagerRole);
+                await _auth.UpdateRoleAsync(employee.Username, Constants.DepartmentManagerRole);
             }
             else if (position == _employeeService.GetTeamLeaderPosition()
                 && employee.Team != null)
@@ -479,15 +479,15 @@ namespace IdentityServer
 
                 if (exTeamLeader != null)
                 {
-                    await _auth.UpdatePositionAsync(exTeamLeader, Constants.DeveloperRole);
+                    await _auth.UpdateRoleAsync(exTeamLeader.Username, Constants.DeveloperRole);
                 }
                 _employeeService.UpdateTeamLeader(employee.Team, employee);
-                await _auth.UpdatePositionAsync(employee, Constants.TeamLeaderRole);
+                await _auth.UpdateRoleAsync(employee.Username, Constants.TeamLeaderRole);
             }
             else
             {
                 _employeeService.UpdateEmployeePosition(position, employee);
-                await _auth.UpdatePositionAsync(employee, position.RoleName);
+                await _auth.UpdateRoleAsync(employee.Username, position.RoleName);
             }
             if (user.Position.AccessLevel == Constants.TeamLeaderAccessLevel)
             {
@@ -649,7 +649,8 @@ namespace IdentityServer
                     var position = _employeeService.GetPositionByName(model.Position);
                     var department = _employeeService.GetDepartmentByName(model.Department);
 
-                    if (position.AccessLevel <= Constants.GeneralManagerAccessLevel)
+                    if (position.AccessLevel <= Constants.GeneralManagerAccessLevel 
+                        || position.AccessLevel == Constants.OfficeManagerAccessLevel)
                     {
                         department = null;
                     }
@@ -670,13 +671,13 @@ namespace IdentityServer
                             };
                             _employeeService.AddEmployee(employee);
 
-                            if (employee.Position == _employeeService.GetDepartmentManagerPosition() || department != null)
+                            if (employee.Position == _employeeService.GetDepartmentManagerPosition() && department != null)
                             {
                                 var exDepartmentManager = _employeeService.GetDepartmentManager(department);
 
                                 if (exDepartmentManager != null)
                                 {
-                                    await _auth.UpdatePositionAsync(exDepartmentManager, Constants.DeveloperRole);
+                                    await _auth.UpdateRoleAsync(exDepartmentManager.Username, Constants.DeveloperRole);
                                 }
                                 _employeeService.UpdateDepartmentManager(employee.Department, employee);
                             }
