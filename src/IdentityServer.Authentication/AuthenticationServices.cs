@@ -304,8 +304,9 @@ namespace IdentityServer.Authentication
         public async Task ChangeUserPassword(string username, string password)
         {
             var user = await _userManager.FindByEmailAsync(username);
-            await _userManager.RemovePasswordAsync(user);
-            await _userManager.AddPasswordAsync(user, password);
+            string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            IdentityResult passwordChangeResult = await _userManager.ResetPasswordAsync(user, resetToken, password);
+            Console.Write(passwordChangeResult.Succeeded);
         }
     }
 }
