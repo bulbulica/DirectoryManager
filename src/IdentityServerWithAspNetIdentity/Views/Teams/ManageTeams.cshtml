@@ -34,11 +34,14 @@
                         </td>
                         <td scope="row">
                             @if (team.Department != null)
-                                 {
-                            <a asp-action="DepartmentInfo" asp-controller="Departments" asp-route-id="@team.Id">
-                                @team.Department.Name
-                            </a>
-                                 }
+                            {
+                                <a asp-action="DepartmentInfo" asp-controller="Departments" asp-route-id="@team.Id">
+                                    @team.Department.Name
+                                </a>
+                                <a asp-action="RemoveTeamFromDepartment" asp-controller="Teams" asp-route-id="@team.Id">
+                                    <span class="glyphicon glyphicon-remove-sign"> </span>
+                                </a>
+                            }
                         </td>
                         <td>
                             @{ 
@@ -55,7 +58,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <a asp-action="TeamDelete" asp-route-id="@team.Id"><button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-ok"></span> Delete</button></a>
-                                            <button type="button" class="btn btn-info" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+                                            <button type="button" class="btn btn-info" data-dismiss="modal"><span class="glyphicon glyphicon-remove" style="color:red"></span> Cancel</button>
                                         </div>
                                     </div>
                                 </div>

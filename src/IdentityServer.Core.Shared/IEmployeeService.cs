@@ -49,5 +49,6 @@ namespace IdentityServer.Core.Shared
         void AddTeamToDepartment(Department department, Team team);
         void AddEmployeeToTeam(Employee employee, Team team);
         void AddEmployeeToDepartment(Employee employee, Department department);
+        void RemoveTeamFromDepartment(int idTeam);
     }
 }

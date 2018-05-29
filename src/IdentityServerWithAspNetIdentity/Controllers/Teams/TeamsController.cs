@@ -184,14 +184,14 @@ namespace IdentityServer
         {
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
-            
+
             var department = _employeeService.GetDepartment(model.DepartmentId);
             if (model.DepartmentId == -1)
             {
                 department = null;
             }
 
-                if (ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel &&
                 user.Department.Id == department.Id)
@@ -407,7 +407,7 @@ namespace IdentityServer
                     foreach (var employee in employees)
                     {
                         if (employee.Position.AccessLevel > Constants.DepartmentManagerAccessLevel
-                            && employee.Active 
+                            && employee.Active
                             && employee.Team != team
                             && employee.Position.AccessLevel != Constants.OfficeManagerAccessLevel)
                             availableEmployees.Add(employee);
@@ -477,6 +477,23 @@ namespace IdentityServer
                 {
                     return RedirectToAction(nameof(ManageTeams));
                 }
+            }
+            return NotFound();
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult RemoveTeamFromDepartment(int? id)
+        {
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            int idTeam = id ?? default(int);
+            var team = _employeeService.GetTeam(idTeam);
+
+            if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
+            { 
+                _employeeService.RemoveTeamFromDepartment(idTeam);
+                return RedirectToAction("ManageTeams");
             }
             return NotFound();
         }

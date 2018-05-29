@@ -424,5 +424,21 @@ namespace IdentityServer.Core
             employee.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
             PersistenceContext.Complete();
         }
+
+        public void RemoveTeamFromDepartment(int idTeam)
+        {
+            var team = PersistenceContext.EmployeeRepository.GetTeamById(idTeam);
+            var department = team.Department;
+            if (department != null)
+            {
+                foreach (var employee in team.Employees)
+                {
+                    employee.Department = null;
+                    department.Employees.Remove(employee);
+                }
+                department.Teams.Remove(team);
+                team.Department = null;
+            }
+        }
     }
 }
