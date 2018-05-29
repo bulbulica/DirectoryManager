@@ -716,10 +716,6 @@ namespace IdentityServer
             }
         }
 
-        /*
-         * NEVER USED, BECAUSE OFFICE MANAGER CAN'T MODIFY USERS ROLE/DEPARTMENT
-         * IF DELELETE ALSO DELETE EDIT EMPLOYEE MODEL AND VIEW !!!
-         * */
         [HttpGet]
         [Route("{id}")]
         public IActionResult EmployeeEdit(int? id)
@@ -730,16 +726,12 @@ namespace IdentityServer
 
             if (user.Position.AccessLevel == Constants.OfficeManagerAccessLevel) {
                 var employee = _employeeService.GetEmployee(idEmployee);
-                var positions = _employeeService.GetRegisterPositionsByAccessLevel(User.Identity.Name);
-                var departments = _employeeService.GetAllDepartments();
 
-                var model = new EditEmployee
+                var model = new EditEmployeePassword
                 {
                     Id = idEmployee,
                     Name = employee.Name,
-                    AllPositions = positions,
-                    AllDepartments = departments
-                    
+                    Username = employee.Username
                 };
 
                 return View(model);

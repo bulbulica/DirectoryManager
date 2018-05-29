@@ -1,67 +1,28 @@
-﻿@model EditEmployee
+﻿@model EditEmployeePassword
 @{
     Layout = "/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Edit Employee";
+    ViewData["Title"] = "Change password";
 }
-<h1>@ViewData["Title"] @Model.Name</h1>
+<h1>@ViewData["Title"] for @Model.Name</h1>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="EmployeeEdit" method="post">
-            <div asp-validation-summary="All" class="text-danger"></div>
+            <div asp-validation-summary="All" class="text-danger hidden"></div>
             <input type="hidden" asp-for="Id" value="@Model.Id" class="form-control" />
+            <input type="hidden" asp-for="Username" value="@Model.Username" class="form-control" />
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <input type="hidden" asp-for="Active" value="true" class="form-control" />
-            <div class="form-group">
-                <label asp-for="Position" class="control-label"></label>
-                <br />
-                <select asp-for="Position" id="mainselection">
-                    @{
-                        if (Model.AllPositions.ToList().Count != 0)
-                        {
-                            var rolesList = Model.AllPositions.ToList();
-                            foreach (var role in rolesList)
-                            {
-                                <option>@role.RoleName</option>
-                            }
-                        }
-                    }
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Department" class="control-label"></label>
-                <br />
-                <select asp-for="Department" id="mainselection">
-                    @{
-                        if (Model.AllDepartments.ToList().Count != 0)
-                        {
-                            var departmentsList = Model.AllDepartments.ToList();
-                            foreach (var department in departmentsList)
-                            {
-                                <option>@department.Name</option>
-                            }
-                        }
-                    }
-                </select>
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Edit" class="btn btn-primary" />
+                <label asp-for="ConfirmPassword" class="control-label"></label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Change Password" class="btn btn-primary" />
             </div>
         </form>
-    </div>
-    <div class="col-md-3">
-        @if (Model.Picture != null && Model.Picture.Length > 0)
-        {
-        <img src="../../img/@Model.Picture" class="rounded float-left" alt="@Model.Name" height="300" width="300">
-        }
-        @if (Model.CV != null && Model.CV.Length > 0)
-        {
-        <br /><br />
-        <a href="../../docs/@Model.CV">View CV</a>
-        }
     </div>
 </div>
