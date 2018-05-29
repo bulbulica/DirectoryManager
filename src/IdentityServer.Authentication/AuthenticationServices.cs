@@ -301,5 +301,11 @@ namespace IdentityServer.Authentication
             }
         }
 
+        public async Task ChangeUserPassword(string username, string password)
+        {
+            var user = await _userManager.FindByEmailAsync(username);
+            await _userManager.RemovePasswordAsync(user);
+            await _userManager.AddPasswordAsync(user, password);
+        }
     }
 }

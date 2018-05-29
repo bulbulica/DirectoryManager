@@ -24,6 +24,7 @@ namespace IdentityServer.Core.Shared
         Task<bool> RegisterProcess(ApplicationUser user, string password, Position position);
         void UpdateEmployeeName(string name1, string name2);
         Task UpdateRoleAsync(string username, string position);
+        Task ChangeUserPassword(string username, string password);
 
         //Task<string> GetUserNameAsync(ClaimsPrincipal User);
         //Task<string> GetUserIdAsync(ClaimsPrincipal User);

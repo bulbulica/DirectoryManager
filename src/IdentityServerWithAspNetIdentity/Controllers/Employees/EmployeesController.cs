@@ -824,6 +824,27 @@ namespace IdentityServer
             }
         }
 
+        [HttpPost]
+        [Route("{id}")]
+        [ValidateAntiForgeryToken]
+        public IActionResult EmployeeChangePassword(EditEmployeePassword model, int? id)
+        {
+            var username = User.Identity.Name;
+            var user = _employeeService.GetEmployeeByName(username);
+            int idEmployee = id ?? default(int);
+            var employee = _employeeService.GetEmployee(idEmployee);
+
+            if (user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
+            {
+                if(model.Password == model.ConfirmPassword)
+                {
+                    _auth.ChangeUserPassword(employee.Username, model.Password);
+                    return RedirectToAction("ManageEmployeesForOfficeManager");
+                }
+            }
+            return NotFound();
+        }
+
         [HttpGet]
         [Route("{id}")]
         public IActionResult EmployeeEditName(int? id)
