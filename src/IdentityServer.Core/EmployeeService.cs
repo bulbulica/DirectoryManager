@@ -390,7 +390,10 @@ namespace IdentityServer.Core
         public void AddTeamToDepartment(Department department, Team team)
         {
             var exDepartment = team.Department;
-            exDepartment.Teams.Remove(team);
+            if (exDepartment != null)
+            {
+                exDepartment.Teams.Remove(team);
+            }
             department.Teams.Add(team);
             team.Department = department;
             foreach (var employee in team.Employees)

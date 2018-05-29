@@ -456,12 +456,17 @@ namespace IdentityServer
             var user = _employeeService.GetEmployeeByName(username);
             int idTeam = id ?? default(int);
             var team = _employeeService.GetTeam(idTeam);
+            var teamLeader = _employeeService.GetTeamLeader(team);
 
             if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {
                 if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel && user.Department != team.Department)
                 {
                     return NotFound();
+                }
+                if (teamLeader != null)
+                {
+                    _auth.UpdateRoleAsync(teamLeader.Username, Constants.DeveloperRole);
                 }
                 _employeeService.DeleteTeam(idTeam);
                 if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)

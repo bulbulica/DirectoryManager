@@ -400,11 +400,17 @@ namespace IdentityServer.Controllers.Departments
         [Route("{id}")]
         public IActionResult DepartmentDelete(int? id)
         {
+            int idDepartment = id ?? default(int);
             var username = User.Identity.Name;
+            var department = _employeeService.GetDepartment(idDepartment);
             var user = _employeeService.GetEmployeeByName(username);
+            var departmentManager = _employeeService.GetDepartmentManager(department);
             if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
             {
-                int idDepartment = id ?? default(int);
+                if (departmentManager != null)
+                {
+                    _auth.UpdateRoleAsync(departmentManager.Username, Constants.DeveloperRole);
+                }
                 _employeeService.DeleteDepartment(idDepartment);
                 return RedirectToAction(nameof(ManageDepartments));
             }
