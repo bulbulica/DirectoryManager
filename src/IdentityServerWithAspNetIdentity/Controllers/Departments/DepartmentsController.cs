@@ -300,7 +300,6 @@ namespace IdentityServer.Controllers.Departments
             return NotFound();
         }
 
-        // GET: Departments/ManageDepartments
         [HttpGet]
         public IActionResult ManageDepartments()
         {
@@ -322,8 +321,6 @@ namespace IdentityServer.Controllers.Departments
             }
         }
 
-
-        // GET: Departments/DepartmentAdd
         [HttpGet]
         public IActionResult DepartmentAdd()
         {
@@ -340,7 +337,6 @@ namespace IdentityServer.Controllers.Departments
             }
         }
 
-        // GET: Departments/DepartmentDellete/{id}
         [HttpGet]
         [Route("{id}")]
         public IActionResult DepartmentDelete(int? id)

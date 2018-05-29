@@ -26,7 +26,6 @@ namespace IdentityServer
             _employeeService = _businessLogic.GetEmployeeService();
         }
 
-        // GET: Teams/ManageTeams
         [HttpGet]
         public IActionResult ManageTeams()
         {
@@ -75,7 +74,7 @@ namespace IdentityServer
 
             var team = _employeeService.GetTeam(idTeam);
             var teamLeader = _employeeService.GetTeamLeader(team);
-            // if User = DEV/QA
+
             if (user.Position.AccessLevel > Constants.TeamLeaderAccessLevel)
             {
                 return NotFound();
@@ -144,8 +143,6 @@ namespace IdentityServer
             return NotFound();
         }
 
-
-        // GET: Teams/TeamAdd
         [HttpGet]
         public IActionResult TeamAdd()
         {
@@ -154,7 +151,6 @@ namespace IdentityServer
 
             if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {
-                // if User = Department Manager
                 if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
                 {
                     var model = new AddTeam()
@@ -166,7 +162,6 @@ namespace IdentityServer
                     };
                     return View(model);
                 }
-                // Else User = General Manager
                 else
                 {
                     var model = new AddTeam()
@@ -245,7 +240,6 @@ namespace IdentityServer
             int idTeam = id ?? default(int);
             var team = _employeeService.GetTeam(idTeam);
 
-            // If User = Deparment Manager/General Manager
             if (user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel
                 || user.Department == team.Department)
             {
@@ -277,7 +271,6 @@ namespace IdentityServer
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
             var oldTeam = _employeeService.GetTeam(editTeam.Id);
-            // If User = Deparment Manager/General Manager
             if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel
                 || user.Department == oldTeam.Department)
             {
@@ -314,7 +307,6 @@ namespace IdentityServer
 
             if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {
-                // If User = Deparment Manager
                 if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel && user.Department == team.Department
                     || user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel)
                 {
@@ -465,7 +457,6 @@ namespace IdentityServer
             int idTeam = id ?? default(int);
             var team = _employeeService.GetTeam(idTeam);
 
-            // If User = Deparment Manager/General Manager
             if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {
                 if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel && user.Department != team.Department)
