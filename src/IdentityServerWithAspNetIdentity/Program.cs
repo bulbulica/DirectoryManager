@@ -22,10 +22,6 @@ namespace IdentityServerWithAspNetIdentity
         {
             Console.Title = "Identity Server";
 
-            //var seed = args.Any(x => x == "/seed");
-            ////seed = true;
-            //if (seed) args = args.Except(new[] { "/seed" }).ToArray();
-
             var host = BuildWebHost(args);
 
             using (var scope = host.Services.CreateScope())
@@ -42,13 +38,6 @@ namespace IdentityServerWithAspNetIdentity
                    authService.InitializeData(scope.ServiceProvider);
                 }
             }
-
-            //if (seed)
-            //{
-            //    SeedData.EnsureSeedData(host.Services);
-            //    return;
-            //}
-
             host.Run();
         }
 

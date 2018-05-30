@@ -42,6 +42,16 @@ namespace IdentityServerWithAspNetIdentity
 
             services.AddMvc();
 
+            services.AddAuthentication("Bearer")
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = "http://localhost:5000";
+                    options.RequireHttpsMetadata = false;
+
+                    options.ApiName = "evaluationFormsManager";
+                });
+
+
             //services.Configure<IISOptions>(iis =>
             //{
             //    iis.AuthenticationDisplayName = "Windows";
@@ -67,6 +77,8 @@ namespace IdentityServerWithAspNetIdentity
 
             app.UseIdentityServer();
             app.UseMvcWithDefaultRoute();
+
+
         }
     }
 }

@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using IdentityServer.Shared.Abstractions;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
 
 namespace IdentityServer.Authentication
 {
@@ -99,13 +101,10 @@ namespace IdentityServer.Authentication
             return result;
         }
 
-
-
-
         public void InitializeData(IServiceProvider serviceProvider)
         {
-            
-            
+
+
             if (!_roleManager.RoleExistsAsync(Constants.GeneralManagerRole).Result)
             {
                 var role = new IdentityRole(Constants.GeneralManagerRole);
@@ -147,7 +146,37 @@ namespace IdentityServer.Authentication
                 result.Wait();
             }
 
+            var context = serviceProvider.GetRequiredService<ConfigurationDbContext>();
+            if (context != null)
+            {
+                if (!context.Clients.Any())
+                {
+                    foreach (var client in Config.GetClients())
+                    {
+                        context.Clients.Add(client.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
 
+                if (!context.IdentityResources.Any())
+                {
+                    foreach (var indentityScope in Config.GetIdentityResources())
+                    {
+                        context.IdentityResources.Add(indentityScope.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+
+                if (!context.ApiResources.Any())
+                {
+
+                    foreach (var apiScope in Config.GetApiResources())
+                    {
+                        context.ApiResources.Add(apiScope.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+            }
         }
 
         public void InitializeContext(IServiceCollection services, IConfiguration Configuration)
@@ -162,7 +191,7 @@ namespace IdentityServer.Authentication
                     .AddEntityFrameworkStores<ApplicationDbContext>()
                     .AddDefaultTokenProviders();
 
-            services.AddIdentityServer()
+            services.AddIdentityServer()                 
                  .AddConfigurationStore(options =>
                  {
                      options.ConfigureDbContext = builder =>
@@ -178,8 +207,9 @@ namespace IdentityServer.Authentication
                      // this enables automatic token cleanup. this is optional.
                      options.EnableTokenCleanup = true;
                      options.TokenCleanupInterval = 30; // interval in seconds
-                 })
-                 .AddAspNetIdentity<ApplicationUser>();
+                 })                 
+                 .AddAspNetIdentity<ApplicationUser>()
+                 .AddDeveloperSigningCredential();
 
             InitializeManagers(services.BuildServiceProvider());
         }
