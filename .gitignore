@@ -12,7 +12,6 @@
 project.assets.json
 *.Authentication.*.json
 *.deps.json
-*.json
 *.dll
 *.pdb
 *.xml
@@ -41,3 +40,11 @@ project.assets.json
 /src/IdentityServerWithAspNetIdentity/bower_components
 /src/StudentsManagement.Persistence.EF/Migrations/20180514092353_newMigration.cs
 /src/StudentsManagement.Persistence.EF/Migrations/20180514092353_newMigration.Designer.cs
+/src/Api/bin/Debug/netcoreapp2.0
+/src/Api
+/src/Client/bin/Debug/netcoreapp2.0
+/src/IdentityServerWithAspNetIdentity
+/src/MvcClient/bin/Debug/netcoreapp2.0
+/src/MvcClient/wwwroot/lib
+/src/ResourceOwnerClient/bin/Debug/netcoreapp2.0
+/src/StudentsManagement.Persistence.EF/bin/Debug/netcoreapp2.0
