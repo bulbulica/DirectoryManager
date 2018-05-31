@@ -64,7 +64,7 @@ namespace IdentityServer
         {
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
 
-            if(user.Position.AccessLevel != Constants.DepartmentManagerAccessLevel)
+            if (user.Position.AccessLevel != Constants.DepartmentManagerAccessLevel)
             {
                 return NotFound();
             }
@@ -89,7 +89,7 @@ namespace IdentityServer
 
             List<Employee> employees = _employeeService.GetAllEmployees();
             List<Employee> availableEmployees = new List<Employee>();
-            foreach(var employee in employees)
+            foreach (var employee in employees)
             {
                 if (employee.Position.AccessLevel != Constants.OfficeManagerAccessLevel)
                     availableEmployees.Add(employee);
@@ -123,7 +123,7 @@ namespace IdentityServer
         [HttpGet("{username}")]
         public IActionResult GetManageEmployees(string username)
         {
-            if(username != User.Identity.Name)
+            if (username != User.Identity.Name)
             {
                 return NotFound();
             }
@@ -142,7 +142,7 @@ namespace IdentityServer
                 return RedirectToAction(nameof(ManageEmployeesForOfficeManager));
             }
             else
-            { 
+            {
                 return NotFound();
             }
         }
@@ -198,7 +198,7 @@ namespace IdentityServer
             var employee = _employeeService.GetEmployee(idEmployee);
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
 
-            if(user.Position.RoleName != Constants.TeamLeaderRole)
+            if (user.Position.RoleName != Constants.TeamLeaderRole)
             {
                 return RedirectToAction("EmployeeInfo", idEmployee);
             }
@@ -321,7 +321,7 @@ namespace IdentityServer
             };
             return View(model);
         }
-        
+
 
         [HttpGet("{id}")]
         public IActionResult EmployeeAddCV(int? id)
@@ -365,7 +365,7 @@ namespace IdentityServer
                 || user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
             {
 
-                if(file == null)
+                if (file == null)
                 {
                     var error = "CV file cannot be empty";
                     var model = new AddCVEmployee
@@ -405,7 +405,7 @@ namespace IdentityServer
 
                     return View(model);
                 }
-               
+
                 var fileName = employee.Username;
                 var directoryPath = Path.Combine("wwwroot", "docs");
                 var filePath = Path.Combine(directoryPath, fileName);
@@ -451,7 +451,7 @@ namespace IdentityServer
             if (user.Position.AccessLevel < _employeeService.GetDeveloperPosition().AccessLevel)
             {
                 var positions = _employeeService.GetRegisterPositionsByAccessLevel(user.Username).ToList();
-                if(employee.Team == null)
+                if (employee.Team == null)
                 {
                     positions.Remove(_teamService.GetTeamLeaderPosition());
                 }
@@ -465,7 +465,7 @@ namespace IdentityServer
                     Name = employee.Name,
                     AllPositions = positions,
                     Position = employee.Position.RoleName
-                    
+
                 };
 
                 return View(model);
@@ -557,7 +557,7 @@ namespace IdentityServer
                 error = ViewBag.Error;
             }
 
-            if (user.Username == employee.Username 
+            if (user.Username == employee.Username
                 || user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
             {
                 var model = new AddImageEmployee
@@ -693,13 +693,13 @@ namespace IdentityServer
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
 
             if (user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
-            { 
+            {
                 if (ModelState.IsValid)
                 {
                     var position = _employeeService.GetPositionByName(model.Position);
                     var department = _departmentService.GetDepartmentByName(model.Department);
 
-                    if (position.AccessLevel <= Constants.GeneralManagerAccessLevel 
+                    if (position.AccessLevel <= Constants.GeneralManagerAccessLevel
                         || position.AccessLevel == Constants.OfficeManagerAccessLevel)
                     {
                         department = null;
@@ -788,12 +788,12 @@ namespace IdentityServer
 
                 if (localUser.Id == employee.Id)
                 {
-                    var model = new 
+                    var model = new
                     {
                     };
                     return View("EmployeeEditHimself", model);
                 }
-            }   
+            }
             return NotFound();
         }
 
@@ -872,7 +872,7 @@ namespace IdentityServer
 
             if (user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
             {
-                if(model.Password == model.ConfirmPassword)
+                if (model.Password == model.ConfirmPassword)
                 {
                     _auth.ChangeUserPassword(employee.Username, model.Password);
                     return RedirectToAction("ManageEmployeesForOfficeManager");
@@ -888,11 +888,12 @@ namespace IdentityServer
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
 
-            if (user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
-            {
-                int idEmployee = id ?? default(int);
+            int idEmployee = id ?? default(int);
+            var employee = _employeeService.GetEmployee(idEmployee);
 
-                var employee = _employeeService.GetEmployee(idEmployee);
+            if (user.Position.AccessLevel == Constants.OfficeManagerAccessLevel
+                || user.Id == employee.Id)
+            {
 
                 var model = new EditEmployeeName
                 {
@@ -916,10 +917,12 @@ namespace IdentityServer
             int idEmployee = id ?? default(int);
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
+            var employee = _employeeService.GetEmployee(idEmployee);
 
-            if (ModelState.IsValid && user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
+
+            if (ModelState.IsValid 
+                && (user.Position.AccessLevel == Constants.OfficeManagerAccessLevel || user.Id == employee.Id))
             {
-                var employee = _employeeService.GetEmployee(idEmployee);
                 if (model.Name.Length > 6)
                 {
                     _employeeService.UpdateEmployeeName(employee, model.Name);
