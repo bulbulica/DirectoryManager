@@ -983,6 +983,7 @@ namespace IdentityServer
                 if(employee.Position.RoleName == Constants.TeamLeaderRole
                     || employee.Position.RoleName == Constants.DepartmentManagerRole) {
                     _auth.UpdateRoleAsync(employee.Name, Constants.DeveloperRole);
+                    _employeeService.UpdateEmployeePosition(_employeeService.GetDeveloperPosition(), employee);
                     }
                 _departmentService.RemoveEmployeeFromDepartment(idEmployee);
 
@@ -1008,6 +1009,7 @@ namespace IdentityServer
             {
                 if (employee.Position.RoleName == Constants.TeamLeaderRole){
                     _auth.UpdateRoleAsync(employee.Name, Constants.DeveloperRole);
+                    _employeeService.UpdateEmployeePosition(_employeeService.GetDeveloperPosition(), employee);
                 }
 
                 _teamService.RemoveEmployeeFromTeam(idEmployee);
