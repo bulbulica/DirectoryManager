@@ -196,5 +196,33 @@ namespace IdentityServer.Core
             }
             return new List<Employee>();
         }
+
+        public IEnumerable<Employee> GetAllEmployeesWithSameAccessLevel(Employee employee)
+        {
+            var allEmployees = GetAllEmployees();
+
+            List<Employee> availableEmployees = new List<Employee>();
+
+            foreach(var emp in allEmployees)
+            {
+                if (employee.Position.AccessLevel == emp.Position.AccessLevel)
+                    availableEmployees.Add(emp);
+            }
+            return availableEmployees;
+        }
+
+        public IEnumerable<Position> GetAllRegisterPositions()
+        {
+            var allPositions = GetAllPositions();
+
+            List<Position> availablePositions = new List<Position>();
+
+            foreach (var position in allPositions)
+            {
+                if (position.RoleName != Constants.TeamLeaderRole)
+                    availablePositions.Add(position);
+            }
+            return availablePositions;
+        }
     }
 }

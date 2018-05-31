@@ -8,7 +8,6 @@
 {
     <label>Error:</label> @ViewBag.Error
     <br />
-    <label>The requirments are:</label> @ViewBag.policyRequirements
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -58,6 +57,7 @@
                 <br />
                 <select asp-for="Department" id="mainselection">
                     @{
+                        <option value="null">No Department</option>
                         if (Model.AllDepartments.Count() != 0)
                         {
                             var departmentList = Model.AllDepartments.ToList();

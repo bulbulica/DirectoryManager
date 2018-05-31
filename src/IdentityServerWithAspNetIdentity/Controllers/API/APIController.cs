@@ -49,5 +49,18 @@ namespace IdentityServer.Controllers.API
 
             return employees;
         }
+
+        [HttpGet("GetEmployeesToEvaluate/{username}")]
+        public ICollection<Employee> GetAllEqualRankEmployees(string username)
+        {
+            var employee = _employeeService.GetEmployeeByName(username);
+            if (employee == null)
+            {
+                return null;
+            }
+            List<Employee> employees = _employeeService.GetAllEmployeesWithSameAccessLevel(employee).ToList();
+
+            return employees;
+        }
     }
 }

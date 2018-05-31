@@ -59,6 +59,7 @@
                 <br />
                 <select asp-for="Department" id="mainselection">
                     @{
+                        <option value="null">No Department</option>
                         if (Model.AllDepartments.Count() != 0)
                         {
                             var departmentList = Model.AllDepartments.ToList();

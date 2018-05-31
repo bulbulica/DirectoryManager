@@ -657,16 +657,8 @@ namespace IdentityServer
         {
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
 
-            var allPositions = _employeeService.GetAllPositions();
-            List<Position> displayedPositions = new List<Position>();
+            var allPositions = _employeeService.GetAllRegisterPositions();
 
-            foreach (var position in allPositions)
-            {
-                if (position.RoleName != Constants.TeamLeaderRole)
-                {
-                    displayedPositions.Add(position);
-                }
-            }
             if (user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
             {
                 var username = User.Identity.Name;
@@ -674,7 +666,7 @@ namespace IdentityServer
                 var model = new AddEmployee()
                 {
                     Active = true,
-                    AllPositions = displayedPositions,
+                    AllPositions = allPositions,
                     AllDepartments = _departmentService.GetAllDepartments()
                 };
 
@@ -697,13 +689,37 @@ namespace IdentityServer
                 if (ModelState.IsValid)
                 {
                     var position = _employeeService.GetPositionByName(model.Position);
-                    var department = _departmentService.GetDepartmentByName(model.Department);
+
+                    Department department;
+                    if (model.Department == "null")
+                    {
+                        department = null;
+                    }
+                    else
+                    {
+                        department = _departmentService.GetDepartmentByName(model.Department);
+                    }
 
                     if (position.AccessLevel <= Constants.GeneralManagerAccessLevel
                         || position.AccessLevel == Constants.OfficeManagerAccessLevel)
                     {
                         department = null;
                     }
+
+                    if(position.AccessLevel == Constants.DepartmentManagerAccessLevel && department == null)
+                    {
+                        var ErrorMessage = $"You can't create a Department Manager without a department!.";
+                        ViewBag.Error = ErrorMessage;
+
+                        var returnModel = new AddEmployee()
+                        {
+                            Active = true,
+                            AllPositions = _employeeService.GetAllRegisterPositions(),
+                            AllDepartments = _departmentService.GetAllDepartments()
+                        };
+                        return View(returnModel);
+                    }
+
                     if (position != null)
                     {
                         var User = new ApplicationUser { UserName = model.Username, FullName = model.Name, Email = model.Username };
@@ -735,15 +751,12 @@ namespace IdentityServer
                         else
                         {
                             var ErrorMessage = $"the password does not meet the password policy requirements.";
-                            var policyRequirements = $"* At least an uppercase and a special character";
-
                             ViewBag.Error = ErrorMessage;
-                            ViewBag.policyRequirments = policyRequirements;
 
                             var returnModel = new AddEmployee()
                             {
                                 Active = true,
-                                AllPositions = model.AllPositions,
+                                AllPositions = _employeeService.GetAllRegisterPositions(),
                                 AllDepartments = _departmentService.GetAllDepartments()
                             };
 

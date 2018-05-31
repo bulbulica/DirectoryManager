@@ -26,5 +26,7 @@ namespace IdentityServer.Core.Shared
         void UpdateEmployeeName(Employee employee, string name);
         void UpdateEmployeePosition(Position position, Employee employee);
         IEnumerable<Employee> GetAllEmployeesWithLowerAccessLevel(Employee employee);
+        IEnumerable<Employee> GetAllEmployeesWithSameAccessLevel(Employee employee);
+        IEnumerable<Position> GetAllRegisterPositions();
     }
 }

@@ -39,22 +39,12 @@ namespace IdentityServer
         {
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
 
-            var allPositions = _employeeService.GetAllPositions();
-            List<Position> displayedPositions = new List<Position>();
-
-            foreach (var position in allPositions)
-            {
-                if (position.RoleName != Constants.TeamLeaderRole)
-                {
-                    displayedPositions.Add(position);
-                }
-            }
             var username = User.Identity.Name;
 
             var model = new AddEmployee()
             {
                 Active = true,
-                AllPositions = displayedPositions,
+                AllPositions = _employeeService.GetAllRegisterPositions(),
                 AllDepartments = _departmentService.GetAllDepartments()
             };
 
@@ -70,12 +60,35 @@ namespace IdentityServer
             if (ModelState.IsValid)
             {
                 var position = _employeeService.GetPositionByName(model.Position);
-                var department = _departmentService.GetDepartmentByName(model.Department);
+
+                Department department;
+                if (model.Department == "null")
+                {
+                    department = null;
+                }
+                else
+                {
+                    department = _departmentService.GetDepartmentByName(model.Department);
+                }
 
                 if (position.AccessLevel <= Constants.GeneralManagerAccessLevel
                     || position.AccessLevel == Constants.OfficeManagerAccessLevel)
                 {
                     department = null;
+                }
+
+                if (position.AccessLevel == Constants.DepartmentManagerAccessLevel && department == null)
+                {
+                    var ErrorMessage = $"You can't create a Department Manager without a department!.";
+                    ViewBag.Error = ErrorMessage;
+
+                    var returnModel = new AddEmployee()
+                    {
+                        Active = true,
+                        AllPositions = _employeeService.GetAllRegisterPositions(),
+                        AllDepartments = _departmentService.GetAllDepartments()
+                    };
+                    return View(returnModel);
                 }
                 if (position != null)
                 {
@@ -111,23 +124,12 @@ namespace IdentityServer
 
                         ViewBag.Error = ErrorMessage;
 
-                        var allPositions = _employeeService.GetAllPositions();
-                        List<Position> displayedPositions = new List<Position>();
-
-                        foreach (var pos in allPositions)
-                        {
-                            if (pos.RoleName != Constants.TeamLeaderRole)
-                            {
-                                displayedPositions.Add(pos);
-                            }
-                        }
-
                         var returnModel = new AddEmployee()
                         {
                             Name = model.Name,
                             Username = model.Username,
                             Active = true,
-                            AllPositions = displayedPositions,
+                            AllPositions = _employeeService.GetAllRegisterPositions(),
                             AllDepartments = _departmentService.GetAllDepartments()
                         };
 
@@ -142,23 +144,12 @@ namespace IdentityServer
 
                 ViewBag.Error = ErrorMessage;
 
-                var allPositions = _employeeService.GetAllPositions();
-                List<Position> displayedPositions = new List<Position>();
-
-                foreach (var position in allPositions)
-                {
-                    if (position.RoleName != Constants.TeamLeaderRole)
-                    {
-                        displayedPositions.Add(position);
-                    }
-                }
-
                 var returnModel = new AddEmployee()
                 {
                     Name = model.Name,
                     Username = model.Username,
                     Active = true,
-                    AllPositions = displayedPositions,
+                    AllPositions = _employeeService.GetAllRegisterPositions(),
                     AllDepartments = _departmentService.GetAllDepartments()
                 };
 
