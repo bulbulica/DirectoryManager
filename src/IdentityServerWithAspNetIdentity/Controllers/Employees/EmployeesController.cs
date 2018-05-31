@@ -538,13 +538,20 @@ namespace IdentityServer
 
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
 
+            string error = null;
+
+            if (ViewBag.Error != null) {
+                error = ViewBag.Error;
+            }
+
             if (user.Username == employee.Username 
                 || user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
             {
                 var model = new AddImageEmployee
                 {
                     Id = employee.Id,
-                    Name = employee.Name
+                    Name = employee.Name,
+                    Error = error
                 };
 
                 return View(model);
@@ -567,6 +574,18 @@ namespace IdentityServer
             if (user.Username == employee.Username
                 || user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
             {
+                if (file == null)
+                {
+                    var error = "You must select an image!";
+                    var model = new AddImageEmployee
+                    {
+                        Id = employee.Id,
+                        Name = employee.Name,
+                        Error = error
+                    };
+                    return View(model);
+                }
+
                 if (Path.GetExtension(file.FileName).ToLower() != ".jpeg"
                     && Path.GetExtension(file.FileName).ToLower() != ".jpg"
                     && Path.GetExtension(file.FileName).ToLower() != ".png")

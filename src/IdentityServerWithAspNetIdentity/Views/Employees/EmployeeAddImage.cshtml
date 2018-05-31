@@ -4,12 +4,12 @@
     ViewData["Title"] = "Add Image to " + Model.Name;
 }
 <h1>@ViewData["Title"]</h1>
+@if (Model.Error != null)
+{
+    <span class="col-form-label text-danger">@Model.Error</span>
+}
 <div class="row">
     <div class="col-md-4">
-        @if (Model.Error != null)
-        {
-        <h3>@Model.Error</h3>
-        }
         <form asp-action="EmployeeAddImage" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="All" class="text-danger hidden"></div>
             <input type="hidden" asp-for="Id" value="@Model.Id" class="form-control" />
