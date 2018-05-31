@@ -40,7 +40,7 @@ namespace IdentityServer.Authentication
                     ClientName = "Evaluation Manager Client",
                     AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
 
-                    RequireConsent = true,
+                    RequireConsent = false,
 
                     ClientSecrets =
                     {
@@ -63,7 +63,7 @@ namespace IdentityServer.Authentication
                     ClientId = "mvc",
                     ClientName = "MVC Client",
                     AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,                    
-                    RequireConsent = true,
+                    RequireConsent = false,
                     ClientSecrets =
                     {
                         new Secret("Pass123$".Sha256())
@@ -85,7 +85,7 @@ namespace IdentityServer.Authentication
                     ClientId = "EvaluationApp",
                     ClientName = "Evaluation Application",
                     AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
-                    RequireConsent = true,
+                    RequireConsent = false,
                     ClientSecrets =
                     {
                         new Secret("Pass123$".Sha256())
