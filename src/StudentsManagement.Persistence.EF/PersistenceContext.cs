@@ -54,7 +54,7 @@ namespace IdentityServer.Persistence.EF
             services.AddDbContext<EmployeeDbContext>(options =>
             options.UseLazyLoadingProxies()
             .UseSqlServer(Configuration.GetConnectionString("DirectoryEmployeesDb"),
-                b => b.MigrationsAssembly("Identity.Persistence.EF")));
+                b => b.MigrationsAssembly("IdentityServer.Persistence.EF")));
 
             InitializeDbContext(services.BuildServiceProvider());
         }
@@ -67,6 +67,7 @@ namespace IdentityServer.Persistence.EF
         public void InitializeData(IServiceProvider serviceProvider)
         {
             InitializeDbContext(serviceProvider);
+            _context?.Database.Migrate();
 
             var qaPosition = new Position
             {

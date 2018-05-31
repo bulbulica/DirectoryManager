@@ -103,12 +103,15 @@ namespace IdentityServer.Authentication
 
         public void InitializeData(IServiceProvider serviceProvider)
         {
-
+            //make sure that the identity database is created automatically if it does not exists 
+            var identityDb = serviceProvider?.GetService<ApplicationDbContext>();
+            identityDb?.Database.Migrate();
 
             if (!_roleManager.RoleExistsAsync(Constants.GeneralManagerRole).Result)
             {
                 var role = new IdentityRole(Constants.GeneralManagerRole);
                 var result = _roleManager.CreateAsync(role);
+                result.Wait();
             }
 
             if (!_roleManager.RoleExistsAsync(Constants.DepartmentManagerRole).Result)
@@ -145,38 +148,45 @@ namespace IdentityServer.Authentication
                 var result = _roleManager.CreateAsync(role);
                 result.Wait();
             }
+            
+            //initialize identity server configuration db
+            var identityConfigDbContext = serviceProvider.GetRequiredService<ConfigurationDbContext>();
 
-            var context = serviceProvider.GetRequiredService<ConfigurationDbContext>();
-            if (context != null)
+            if (identityConfigDbContext != null)
             {
-                if (!context.Clients.Any())
+                identityConfigDbContext.Database.Migrate();
+                
+                if (!identityConfigDbContext.Clients.Any())
                 {
                     foreach (var client in Config.GetClients())
                     {
-                        context.Clients.Add(client.ToEntity());
+                        identityConfigDbContext.Clients.Add(client.ToEntity());
                     }
-                    context.SaveChanges();
+                    identityConfigDbContext.SaveChanges();
                 }
 
-                if (!context.IdentityResources.Any())
+                if (!identityConfigDbContext.IdentityResources.Any())
                 {
                     foreach (var indentityScope in Config.GetIdentityResources())
                     {
-                        context.IdentityResources.Add(indentityScope.ToEntity());
+                        identityConfigDbContext.IdentityResources.Add(indentityScope.ToEntity());
                     }
-                    context.SaveChanges();
+                    identityConfigDbContext.SaveChanges();
                 }
 
-                if (!context.ApiResources.Any())
+                if (!identityConfigDbContext.ApiResources.Any())
                 {
-
                     foreach (var apiScope in Config.GetApiResources())
                     {
-                        context.ApiResources.Add(apiScope.ToEntity());
+                        identityConfigDbContext.ApiResources.Add(apiScope.ToEntity());
                     }
-                    context.SaveChanges();
+                    identityConfigDbContext.SaveChanges();
                 }
             }
+
+            //initialize identity server 4, persisted grants db
+            var persistedGrantsDbContext = serviceProvider?.GetService<PersistedGrantDbContext>();
+            persistedGrantsDbContext?.Database.Migrate();
         }
 
         public void InitializeContext(IServiceCollection services, IConfiguration Configuration)
