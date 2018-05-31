@@ -50,7 +50,7 @@ namespace IdentityServer.Controllers.API
             return employees;
         }
 
-        [HttpGet("GetEmployeesToEvaluate/{username}")]
+        [HttpGet("GetAllEqualRankEmployees/{username}")]
         public ICollection<Employee> GetAllEqualRankEmployees(string username)
         {
             var employee = _employeeService.GetEmployeeByName(username);
