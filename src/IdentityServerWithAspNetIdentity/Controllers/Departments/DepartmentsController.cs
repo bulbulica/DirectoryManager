@@ -16,7 +16,9 @@ namespace IdentityServer.Controllers.Departments
     {
         private readonly IAuthentication _auth;
         private readonly IBusinessLayer _businessLogic;
+        private readonly IDepartmentService _departmentService;
         private readonly IEmployeeService _employeeService;
+        private readonly ITeamService _teamService;
 
         public DepartmentsController(IAuthentication auth,
             IBusinessLayer businessLayer)
@@ -24,6 +26,8 @@ namespace IdentityServer.Controllers.Departments
             _auth = auth;
             _businessLogic = businessLayer;
             _employeeService = _businessLogic.GetEmployeeService();
+            _departmentService = _businessLogic.GetDepartmentService();
+            _teamService = _businessLogic.GetTeamService();
         }
 
         [HttpPost]
@@ -43,7 +47,7 @@ namespace IdentityServer.Controllers.Departments
                         Employees = new List<Employee>()
 
                     };
-                    _employeeService.AddDepartment(department);
+                    _departmentService.AddDepartment(department);
                 }
                 else
                 {
@@ -61,7 +65,7 @@ namespace IdentityServer.Controllers.Departments
 
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
-            var department = _employeeService.GetDepartment(idDepartment);
+            var department = _departmentService.GetDepartment(idDepartment);
 
             if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
             {
@@ -96,9 +100,9 @@ namespace IdentityServer.Controllers.Departments
             int departmentId = departmentModel.Id;
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
-            var department = _employeeService.GetDepartment(departmentId);
+            var department = _departmentService.GetDepartment(departmentId);
             var departmentManager = _employeeService.GetEmployee(IdDepartmentManager);
-            var exDepartmentManager = _employeeService.GetDepartmentManager(department);
+            var exDepartmentManager = _departmentService.GetDepartmentManager(department);
 
             if (department == null)
             {
@@ -113,7 +117,7 @@ namespace IdentityServer.Controllers.Departments
                     {
                         await _auth.UpdateRoleAsync(exDepartmentManager.Username, Constants.DeveloperRole);
                     }
-                    _employeeService.UpdateDepartmentManager(department, departmentManager);
+                    _departmentService.UpdateDepartmentManager(department, departmentManager);
                     await _auth.UpdateRoleAsync(departmentManager.Username, Constants.DepartmentManagerRole);
 
                     return RedirectToAction(nameof(ManageDepartments));
@@ -131,7 +135,7 @@ namespace IdentityServer.Controllers.Departments
 
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
-            var department = _employeeService.GetDepartment(idDepartment);
+            var department = _departmentService.GetDepartment(idDepartment);
 
             if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
             {
@@ -167,7 +171,7 @@ namespace IdentityServer.Controllers.Departments
         {
             int idDepartment = ModelDepartment.Id;
             var employee = _employeeService.GetEmployee(EmployeeId);
-            var department = _employeeService.GetDepartment(idDepartment);
+            var department = _departmentService.GetDepartment(idDepartment);
 
             if (department == null)
             {
@@ -176,7 +180,7 @@ namespace IdentityServer.Controllers.Departments
 
             if (ModelState.IsValid)
             {
-                _employeeService.AddEmployeeToDepartment(employee, department);
+                _departmentService.AddEmployeeToDepartment(employee, department);
                 return RedirectToAction(nameof(ManageDepartments));
             }
             return NotFound();
@@ -189,8 +193,8 @@ namespace IdentityServer.Controllers.Departments
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
             int idDepartment = id ?? default(int);
-            var department = _employeeService.GetDepartment(idDepartment);
-            var departmentManager = _employeeService.GetDepartmentManager(department);
+            var department = _departmentService.GetDepartment(idDepartment);
+            var departmentManager = _departmentService.GetDepartmentManager(department);
 
             if (departmentManager != null)
             {
@@ -236,7 +240,7 @@ namespace IdentityServer.Controllers.Departments
             {
                 int idDepartment = id ?? default(int);
 
-                var department = _employeeService.GetDepartment(idDepartment);
+                var department = _departmentService.GetDepartment(idDepartment);
 
                 if (department.Description == null)
                     department.Description = "";
@@ -265,12 +269,12 @@ namespace IdentityServer.Controllers.Departments
 
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
-            var department = _employeeService.GetDepartment(idDepartment);
+            var department = _departmentService.GetDepartment(idDepartment);
 
             if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
             {
 
-                var teams = _employeeService.GetAllTeams();
+                var teams = _teamService.GetAllTeams();
                 List<Team> availableTeams = new List<Team>();
 
                 foreach(var team in teams)
@@ -291,7 +295,7 @@ namespace IdentityServer.Controllers.Departments
             else if(user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel
                     && user.Department.Id == department.Id)
             {
-                var teams = _employeeService.GetAllUnassignedTeams();
+                var teams = _teamService.GetAllUnassignedTeams();
                 var model = new AddTeamToDepartment
                 {
                     Teams = teams,
@@ -310,9 +314,9 @@ namespace IdentityServer.Controllers.Departments
             int departmentId = departmentModel.Id;
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
-            var team = _employeeService.GetTeam(TeamId);
-            var department = _employeeService.GetDepartment(departmentId);
-            var departmentManager = _employeeService.GetDepartmentManager(department);
+            var team = _teamService.GetTeam(TeamId);
+            var department = _departmentService.GetDepartment(departmentId);
+            var departmentManager = _departmentService.GetDepartmentManager(department);
 
 
             if (department == null || team == null)
@@ -327,7 +331,7 @@ namespace IdentityServer.Controllers.Departments
             {
                 if (ModelState.IsValid)
                 {
-                    _employeeService.AddTeamToDepartment(department, team);
+                    _departmentService.AddTeamToDepartment(department, team);
                     return RedirectToAction("DepartmentInfo", department.Id);
                 }
                 return View();
@@ -348,7 +352,7 @@ namespace IdentityServer.Controllers.Departments
                 if (ModelState.IsValid)
                 {
                     var department = new Department { Id = newDepartment.Id, Name = newDepartment.Name, Description = newDepartment.Description };
-                    _employeeService.UpdateDepartment(department);
+                    _departmentService.UpdateDepartment(department);
                 }
                 else
                 {
@@ -364,7 +368,7 @@ namespace IdentityServer.Controllers.Departments
         {
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
-            var departments = _employeeService.GetAllDepartments();
+            var departments = _departmentService.GetAllDepartments();
 
             if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
             {
@@ -402,16 +406,16 @@ namespace IdentityServer.Controllers.Departments
         {
             int idDepartment = id ?? default(int);
             var username = User.Identity.Name;
-            var department = _employeeService.GetDepartment(idDepartment);
+            var department = _departmentService.GetDepartment(idDepartment);
             var user = _employeeService.GetEmployeeByName(username);
-            var departmentManager = _employeeService.GetDepartmentManager(department);
+            var departmentManager = _departmentService.GetDepartmentManager(department);
             if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
             {
                 if (departmentManager != null)
                 {
                     _auth.UpdateRoleAsync(departmentManager.Username, Constants.DeveloperRole);
                 }
-                _employeeService.DeleteDepartment(idDepartment);
+                _departmentService.DeleteDepartment(idDepartment);
                 return RedirectToAction(nameof(ManageDepartments));
             }
             else

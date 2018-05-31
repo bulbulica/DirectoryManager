@@ -24,6 +24,8 @@ namespace IdentityServer
         private readonly IAuthentication _auth;
         private readonly IBusinessLayer _businessLogic;
         private readonly IEmployeeService _employeeService;
+        private readonly IDepartmentService _departmentService;
+        private readonly ITeamService _teamService;
 
         public EmployeesController(IAuthentication auth,
             IBusinessLayer businessLayer)
@@ -31,6 +33,8 @@ namespace IdentityServer
             _auth = auth;
             _businessLogic = businessLayer;
             _employeeService = _businessLogic.GetEmployeeService();
+            _departmentService = _businessLogic.GetDepartmentService();
+            _teamService = _businessLogic.GetTeamService();
         }
 
         [HttpGet]
@@ -65,8 +69,8 @@ namespace IdentityServer
                 return NotFound();
             }
 
-            var department = _employeeService.GetDepartment(departmentId);
-            List<Employee> employees = _employeeService.GetAllEmployeesFromDepartment(department);
+            var department = _departmentService.GetDepartment(departmentId);
+            List<Employee> employees = _departmentService.GetAllEmployeesFromDepartment(department);
 
             var model = new AllEmployees
             {
@@ -436,11 +440,11 @@ namespace IdentityServer
                 var positions = _employeeService.GetRegisterPositionsByAccessLevel(user.Username).ToList();
                 if(employee.Team == null)
                 {
-                    positions.Remove(_employeeService.GetTeamLeaderPosition());
+                    positions.Remove(_teamService.GetTeamLeaderPosition());
                 }
                 if (employee.Department == null)
                 {
-                    positions.Remove(_employeeService.GetDepartmentManagerPosition());
+                    positions.Remove(_departmentService.GetDepartmentManagerPosition());
                 }
                 var model = new EditEmployee
                 {
@@ -474,28 +478,28 @@ namespace IdentityServer
                 return NotFound();
             }
 
-            if (position == _employeeService.GetDepartmentManagerPosition()
+            if (position == _departmentService.GetDepartmentManagerPosition()
                 && employee.Department != null)
             {
-                var exDepartmentManager = _employeeService.GetDepartmentManager(employee.Department);
+                var exDepartmentManager = _departmentService.GetDepartmentManager(employee.Department);
 
                 if (exDepartmentManager != null)
                 {
                     await _auth.UpdateRoleAsync(exDepartmentManager.Username, Constants.DeveloperRole);
                 }
-                _employeeService.UpdateDepartmentManager(employee.Department, employee);
+                _departmentService.UpdateDepartmentManager(employee.Department, employee);
                 await _auth.UpdateRoleAsync(employee.Username, Constants.DepartmentManagerRole);
             }
-            else if (position == _employeeService.GetTeamLeaderPosition()
+            else if (position == _teamService.GetTeamLeaderPosition()
                 && employee.Team != null)
             {
-                var exTeamLeader = _employeeService.GetDepartmentManager(employee.Department);
+                var exTeamLeader = _departmentService.GetDepartmentManager(employee.Department);
 
                 if (exTeamLeader != null)
                 {
                     await _auth.UpdateRoleAsync(exTeamLeader.Username, Constants.DeveloperRole);
                 }
-                _employeeService.UpdateTeamLeader(employee.Team, employee);
+                _teamService.UpdateTeamLeader(employee.Team, employee);
                 await _auth.UpdateRoleAsync(employee.Username, Constants.TeamLeaderRole);
             }
             else
@@ -639,7 +643,7 @@ namespace IdentityServer
                 {
                     Active = true,
                     AllPositions = displayedPositions,
-                    AllDepartments = _employeeService.GetAllDepartments()
+                    AllDepartments = _departmentService.GetAllDepartments()
                 };
 
                 return View(model);
@@ -661,7 +665,7 @@ namespace IdentityServer
                 if (ModelState.IsValid)
                 {
                     var position = _employeeService.GetPositionByName(model.Position);
-                    var department = _employeeService.GetDepartmentByName(model.Department);
+                    var department = _departmentService.GetDepartmentByName(model.Department);
 
                     if (position.AccessLevel <= Constants.GeneralManagerAccessLevel 
                         || position.AccessLevel == Constants.OfficeManagerAccessLevel)
@@ -685,15 +689,15 @@ namespace IdentityServer
                             };
                             _employeeService.AddEmployee(employee);
 
-                            if (employee.Position == _employeeService.GetDepartmentManagerPosition() && department != null)
+                            if (employee.Position == _departmentService.GetDepartmentManagerPosition() && department != null)
                             {
-                                var exDepartmentManager = _employeeService.GetDepartmentManager(department);
+                                var exDepartmentManager = _departmentService.GetDepartmentManager(department);
 
                                 if (exDepartmentManager != null)
                                 {
                                     await _auth.UpdateRoleAsync(exDepartmentManager.Username, Constants.DeveloperRole);
                                 }
-                                _employeeService.UpdateDepartmentManager(employee.Department, employee);
+                                _departmentService.UpdateDepartmentManager(employee.Department, employee);
                             }
                         }
                         else
@@ -708,7 +712,7 @@ namespace IdentityServer
                             {
                                 Active = true,
                                 AllPositions = model.AllPositions,
-                                AllDepartments = _employeeService.GetAllDepartments()
+                                AllDepartments = _departmentService.GetAllDepartments()
                             };
 
                             return View(returnModel);
@@ -777,7 +781,7 @@ namespace IdentityServer
                 if (ModelState.IsValid)
                 {
                     var position = _employeeService.GetPositionByName(model.Position);
-                    var department = _employeeService.GetDepartmentByName(model.Department);
+                    var department = _departmentService.GetDepartmentByName(model.Department);
                     var employee = _employeeService.GetEmployee(idEmployee);
 
                     if (position != null && department != null)
@@ -791,17 +795,17 @@ namespace IdentityServer
 
                     _employeeService.UpdateEmployee(employee);
 
-                    if (employee.Position == _employeeService.GetDepartmentManagerPosition())
+                    if (employee.Position == _departmentService.GetDepartmentManagerPosition())
                     {
-                        _employeeService.UpdateDepartmentManager(employee.Department, employee);
+                        _departmentService.UpdateDepartmentManager(employee.Department, employee);
                     }
-                    else if (employee.Position == _employeeService.GetTeamLeaderPosition())
+                    else if (employee.Position == _teamService.GetTeamLeaderPosition())
                     {
                         if (employee.Team != null)
                         {
-                            if (_employeeService.GetTeamLeader(employee.Team) != employee)
+                            if (_teamService.GetTeamLeader(employee.Team) != employee)
                             {
-                                _employeeService.UpdateTeamLeader(employee.Team, employee);
+                                _teamService.UpdateTeamLeader(employee.Team, employee);
                             }
                         }
                     }
@@ -932,7 +936,7 @@ namespace IdentityServer
                     || employee.Position.RoleName == Constants.DepartmentManagerRole) {
                     _auth.UpdateRoleAsync(employee.Name, Constants.DeveloperRole);
                     }
-                _employeeService.RemoveEmployeeFromDepartment(idEmployee);
+                _departmentService.RemoveEmployeeFromDepartment(idEmployee);
 
                 return RedirectToAction(nameof(ManageEmployeesForGeneralManager));
             }
@@ -958,7 +962,7 @@ namespace IdentityServer
                     _auth.UpdateRoleAsync(employee.Name, Constants.DeveloperRole);
                 }
 
-                _employeeService.RemoveEmployeeFromTeam(idEmployee);
+                _teamService.RemoveEmployeeFromTeam(idEmployee);
 
                 return RedirectToAction(nameof(ManageEmployeesForGeneralManager));
             }
