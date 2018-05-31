@@ -48,7 +48,7 @@ namespace IdentityServer.Authentication
                     },                   
                     RedirectUris = { "http://localhost:51755/signin-oidc" },
                     PostLogoutRedirectUris = { "http://localhost:51755/" },
-                    FrontChannelLogoutUri =  "http://localhost:5002/signout-oidc",
+                    FrontChannelLogoutUri =  "http://localhost:51755/signout-oidc",
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
