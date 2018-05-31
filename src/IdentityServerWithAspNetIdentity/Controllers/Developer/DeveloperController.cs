@@ -92,7 +92,6 @@ namespace IdentityServer
                             Position = position,
                             Department = department,
                         };
-                        _employeeService.AddEmployee(employee);
 
                         if (employee.Position == _departmentService.GetDepartmentManagerPosition() && department != null)
                         {
@@ -102,25 +101,37 @@ namespace IdentityServer
                             {
                                 await _auth.UpdateRoleAsync(exDepartmentManager.Username, Constants.DeveloperRole);
                             }
+                            _employeeService.AddEmployee(employee);
                             _departmentService.UpdateDepartmentManager(employee.Department, employee);
                         }
                     }
                     else
                     {
-                        var ErrorMessage = $"the password does not meet the password policy requirements.";
-                        var policyRequirements = $"* At least an uppercase and a special character";
+                        var ErrorMessage = $"the email already exists, or the password does not meet the password policy requirements";
 
                         ViewBag.Error = ErrorMessage;
-                        ViewBag.policyRequirments = policyRequirements;
+
+                        var allPositions = _employeeService.GetAllPositions();
+                        List<Position> displayedPositions = new List<Position>();
+
+                        foreach (var pos in allPositions)
+                        {
+                            if (pos.RoleName != Constants.TeamLeaderRole)
+                            {
+                                displayedPositions.Add(pos);
+                            }
+                        }
 
                         var returnModel = new AddEmployee()
                         {
+                            Name = model.Name,
+                            Username = model.Username,
                             Active = true,
-                            AllPositions = model.AllPositions,
+                            AllPositions = displayedPositions,
                             AllDepartments = _departmentService.GetAllDepartments()
                         };
 
-                        return View(returnModel);
+                        return View("Add", returnModel);
                     }
                 }
                 return RedirectToAction("Index", "Home");
@@ -128,22 +139,30 @@ namespace IdentityServer
             else
             {
                 var ErrorMessage = $"the password does not meet the password policy requirements.";
-                var policyRequirements = $"* At least an uppercase and a special character";
 
                 ViewBag.Error = ErrorMessage;
-                ViewBag.policyRequirments = policyRequirements;
+
+                var allPositions = _employeeService.GetAllPositions();
+                List<Position> displayedPositions = new List<Position>();
+
+                foreach (var position in allPositions)
+                {
+                    if (position.RoleName != Constants.TeamLeaderRole)
+                    {
+                        displayedPositions.Add(position);
+                    }
+                }
 
                 var returnModel = new AddEmployee()
                 {
                     Name = model.Name,
                     Username = model.Username,
                     Active = true,
-                    AllPositions = model.AllPositions,
+                    AllPositions = displayedPositions,
                     AllDepartments = _departmentService.GetAllDepartments()
                 };
 
-                //return View("Add", returnModel);
-                return RedirectToAction("Add", "Developer", returnModel);
+                return View("Add", returnModel);
             }
         }
     }

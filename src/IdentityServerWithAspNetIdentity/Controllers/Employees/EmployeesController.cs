@@ -719,7 +719,6 @@ namespace IdentityServer
                                 Position = position,
                                 Department = department,
                             };
-                            _employeeService.AddEmployee(employee);
 
                             if (employee.Position == _departmentService.GetDepartmentManagerPosition() && department != null)
                             {
@@ -731,6 +730,7 @@ namespace IdentityServer
                                 }
                                 _departmentService.UpdateDepartmentManager(employee.Department, employee);
                             }
+                            _employeeService.AddEmployee(employee);
                         }
                         else
                         {
