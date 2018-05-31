@@ -25,5 +25,6 @@ namespace IdentityServer.Core.Shared
         void UpdateImage(Employee employee, string filePath);
         void UpdateEmployeeName(Employee employee, string name);
         void UpdateEmployeePosition(Position position, Employee employee);
+        IEnumerable<Employee> GetAllEmployeesWithLowerAccessLevel(Employee employee);
     }
 }

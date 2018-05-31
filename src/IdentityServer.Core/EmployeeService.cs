@@ -179,5 +179,22 @@ namespace IdentityServer.Core
             employee.Position = position;
             PersistenceContext.Complete();
         }
+
+        public IEnumerable<Employee> GetAllEmployeesWithLowerAccessLevel(Employee employee)
+        {
+            if(employee.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
+            {
+                return employee.Department.Employees;
+            }
+            if(employee.Position.AccessLevel == Constants.TeamLeaderAccessLevel)
+            {
+                return employee.Team.Employees;
+            }
+            if(employee.Position.AccessLevel <= Constants.GeneralManagerAccessLevel)
+            {
+                return GetAllEmployees();
+            }
+            return new List<Employee>();
+        }
     }
 }

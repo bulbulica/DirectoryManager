@@ -8,7 +8,7 @@
     <div class="col-md-8">
         @if (Model.Error != null)
         {
-        <h3>@Model.Error</h3>
+            <span class="col-form-label text-danger">@Model.Error</span>
         }
         <br />
         <form asp-action="EmployeeAddCV" method="post" enctype="multipart/form-data">
