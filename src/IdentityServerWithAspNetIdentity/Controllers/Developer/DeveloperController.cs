@@ -114,9 +114,9 @@ namespace IdentityServer
                             {
                                 await _auth.UpdateRoleAsync(exDepartmentManager.Username, Constants.DeveloperRole);
                             }
-                            _employeeService.AddEmployee(employee);
                             _departmentService.UpdateDepartmentManager(employee.Department, employee);
                         }
+                        _employeeService.AddEmployee(employee);
                     }
                     else
                     {
