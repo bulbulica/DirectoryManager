@@ -17,6 +17,8 @@ namespace IdentityServer
         private readonly IAuthentication _auth;
         private readonly IBusinessLayer _businessLogic;
         private readonly IEmployeeService _employeeService;
+        private readonly ITeamService _teamService;
+        private readonly IDepartmentService _departmentService;
 
         public TeamsController(IAuthentication auth,
             IBusinessLayer businessLayer)
@@ -24,6 +26,8 @@ namespace IdentityServer
             _auth = auth;
             _businessLogic = businessLayer;
             _employeeService = _businessLogic.GetEmployeeService();
+            _departmentService = _businessLogic.GetDepartmentService();
+            _teamService = _businessLogic.GetTeamService();
         }
 
         [HttpGet]
@@ -32,7 +36,7 @@ namespace IdentityServer
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
             if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
             {
-                List<Team> teams = _employeeService.GetAllTeams().ToList();
+                List<Team> teams = _teamService.GetAllTeams().ToList();
 
                 var model = new AllTeams
                 {
@@ -54,7 +58,7 @@ namespace IdentityServer
             {
                 return NotFound();
             }
-            List<Team> teams = _employeeService.GetAllTeamsFromDepartment(user.Department);
+            List<Team> teams = _departmentService.GetAllTeamsFromDepartment(user.Department);
 
             var model = new AllTeams
             {
@@ -72,15 +76,15 @@ namespace IdentityServer
             var user = _employeeService.GetEmployeeByName(username);
             int idTeam = id ?? default(int);
 
-            var team = _employeeService.GetTeam(idTeam);
-            var teamLeader = _employeeService.GetTeamLeader(team);
+            var team = _teamService.GetTeam(idTeam);
+            var teamLeader = _teamService.GetTeamLeader(team);
 
             if (user.Position.AccessLevel > Constants.TeamLeaderAccessLevel)
             {
                 return NotFound();
             }
             if ((user.Position.AccessLevel == Constants.TeamLeaderAccessLevel
-                && user.Team == _employeeService.GetTeam(idTeam)))
+                && user.Team == _teamService.GetTeam(idTeam)))
             {
 
                 var model = new SingleTeam
@@ -107,8 +111,8 @@ namespace IdentityServer
             var user = _employeeService.GetEmployeeByName(username);
             int idTeam = id ?? default(int);
 
-            var team = _employeeService.GetTeam(idTeam);
-            var teamLeader = _employeeService.GetTeamLeader(team);
+            var team = _teamService.GetTeam(idTeam);
+            var teamLeader = _teamService.GetTeamLeader(team);
 
             if (user.Position.AccessLevel == Constants.TeamLeaderAccessLevel)
             {
@@ -166,7 +170,7 @@ namespace IdentityServer
                 {
                     var model = new AddTeam()
                     {
-                        Departments = _employeeService.GetAllDepartments().ToList()
+                        Departments = _departmentService.GetAllDepartments().ToList()
                     };
                     return View(model);
                 }
@@ -185,7 +189,7 @@ namespace IdentityServer
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
 
-            var department = _employeeService.GetDepartment(model.DepartmentId);
+            var department = _departmentService.GetDepartment(model.DepartmentId);
             if (model.DepartmentId == -1)
             {
                 department = null;
@@ -203,7 +207,7 @@ namespace IdentityServer
                         Description = model.Description,
                         Employees = new List<Employee>()
                     };
-                    _employeeService.AddTeam(team);
+                    _teamService.AddTeam(team);
                     return RedirectToAction(nameof(ManageTeamsForDepartmentManager), new { username });
                 }
 
@@ -217,7 +221,7 @@ namespace IdentityServer
                         Description = model.Description,
                         Employees = new List<Employee>()
                     };
-                    _employeeService.AddTeam(team);
+                    _teamService.AddTeam(team);
                     return RedirectToAction(nameof(ManageTeams));
                 }
                 else
@@ -238,7 +242,7 @@ namespace IdentityServer
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
             int idTeam = id ?? default(int);
-            var team = _employeeService.GetTeam(idTeam);
+            var team = _teamService.GetTeam(idTeam);
 
             if (user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel
                 || user.Department == team.Department)
@@ -270,14 +274,14 @@ namespace IdentityServer
 
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
-            var oldTeam = _employeeService.GetTeam(editTeam.Id);
+            var oldTeam = _teamService.GetTeam(editTeam.Id);
             if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel
                 || user.Department == oldTeam.Department)
             {
                 if (ModelState.IsValid)
                 {
                     var team = new Team { Id = editTeam.Id, Name = editTeam.Name, Description = editTeam.Description };
-                    _employeeService.UpdateTeam(team);
+                    _teamService.UpdateTeam(team);
                 }
                 else
                 {
@@ -303,7 +307,7 @@ namespace IdentityServer
 
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
-            var team = _employeeService.GetTeam(idTeam);
+            var team = _teamService.GetTeam(idTeam);
 
             if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {
@@ -341,9 +345,9 @@ namespace IdentityServer
             int idTeam = ModelTeam.Id;
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
-            var team = _employeeService.GetTeam(idTeam);
+            var team = _teamService.GetTeam(idTeam);
             var TeamLeader = _employeeService.GetEmployee(IdTeamLeader);
-            var ExTeamLeader = _employeeService.GetTeamLeader(team);
+            var ExTeamLeader = _teamService.GetTeamLeader(team);
 
             if (team == null)
             {
@@ -358,7 +362,7 @@ namespace IdentityServer
                     {
                         await _auth.UpdateRoleAsync(ExTeamLeader.Username, Constants.DeveloperRole);
                     }
-                    _employeeService.UpdateTeamLeader(team, TeamLeader);
+                    _teamService.UpdateTeamLeader(team, TeamLeader);
                     await _auth.UpdateRoleAsync(TeamLeader.Username, Constants.TeamLeaderRole);
 
                     if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
@@ -383,7 +387,7 @@ namespace IdentityServer
 
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
-            var team = _employeeService.GetTeam(idTeam);
+            var team = _teamService.GetTeam(idTeam);
 
             if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {
@@ -431,7 +435,7 @@ namespace IdentityServer
         {
             int idTeam = ModelTeam.Id;
             var employee = _employeeService.GetEmployee(EmployeeId);
-            var team = _employeeService.GetTeam(idTeam);
+            var team = _teamService.GetTeam(idTeam);
 
             if (team == null)
             {
@@ -440,7 +444,7 @@ namespace IdentityServer
 
             if (ModelState.IsValid)
             {
-                _employeeService.AddEmployeeToTeam(employee, team);
+                _teamService.AddEmployeeToTeam(employee, team);
                 return RedirectToAction("TeamInfoAdvanced", idTeam);
             }
             return NotFound();
@@ -454,8 +458,8 @@ namespace IdentityServer
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
             int idTeam = id ?? default(int);
-            var team = _employeeService.GetTeam(idTeam);
-            var teamLeader = _employeeService.GetTeamLeader(team);
+            var team = _teamService.GetTeam(idTeam);
+            var teamLeader = _teamService.GetTeamLeader(team);
 
             if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {
@@ -467,7 +471,7 @@ namespace IdentityServer
                 {
                     _auth.UpdateRoleAsync(teamLeader.Username, Constants.DeveloperRole);
                 }
-                _employeeService.DeleteTeam(idTeam);
+                _teamService.DeleteTeam(idTeam);
                 if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
                 {
                     return RedirectToAction(nameof(ManageTeamsForDepartmentManager), new { username });
@@ -487,11 +491,11 @@ namespace IdentityServer
             var username = User.Identity.Name;
             var user = _employeeService.GetEmployeeByName(username);
             int idTeam = id ?? default(int);
-            var team = _employeeService.GetTeam(idTeam);
+            var team = _teamService.GetTeam(idTeam);
 
             if (user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
             { 
-                _employeeService.RemoveTeamFromDepartment(idTeam);
+                _departmentService.RemoveTeamFromDepartment(idTeam);
                 return RedirectToAction("ManageTeams");
             }
             return NotFound();

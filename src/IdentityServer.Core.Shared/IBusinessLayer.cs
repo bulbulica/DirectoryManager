@@ -7,5 +7,7 @@ namespace IdentityServer.Core.Shared
     public interface IBusinessLayer 
     {
         IEmployeeService GetEmployeeService();
+        ITeamService GetTeamService();
+        IDepartmentService GetDepartmentService();
     }
 }

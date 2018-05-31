@@ -23,6 +23,7 @@ namespace IdentityServer
         private readonly IAuthentication _auth;
         private readonly IBusinessLayer _businessLogic;
         private readonly IEmployeeService _employeeService;
+        private readonly IDepartmentService _departmentService;
 
         public DeveloperController(IAuthentication auth,
             IBusinessLayer businessLayer)
@@ -30,6 +31,7 @@ namespace IdentityServer
             _auth = auth;
             _businessLogic = businessLayer;
             _employeeService = _businessLogic.GetEmployeeService();
+            _departmentService = _businessLogic.GetDepartmentService();
         }
 
         [HttpGet]
@@ -53,7 +55,7 @@ namespace IdentityServer
             {
                 Active = true,
                 AllPositions = displayedPositions,
-                AllDepartments = _employeeService.GetAllDepartments()
+                AllDepartments = _departmentService.GetAllDepartments()
             };
 
             return View(model);
@@ -68,7 +70,7 @@ namespace IdentityServer
             if (ModelState.IsValid)
             {
                 var position = _employeeService.GetPositionByName(model.Position);
-                var department = _employeeService.GetDepartmentByName(model.Department);
+                var department = _departmentService.GetDepartmentByName(model.Department);
 
                 if (position.AccessLevel <= Constants.GeneralManagerAccessLevel 
                     || position.AccessLevel == Constants.OfficeManagerAccessLevel)
@@ -92,15 +94,15 @@ namespace IdentityServer
                         };
                         _employeeService.AddEmployee(employee);
 
-                        if (employee.Position == _employeeService.GetDepartmentManagerPosition() && department != null)
+                        if (employee.Position == _departmentService.GetDepartmentManagerPosition() && department != null)
                         {
-                            var exDepartmentManager = _employeeService.GetDepartmentManager(department);
+                            var exDepartmentManager = _departmentService.GetDepartmentManager(department);
 
                             if (exDepartmentManager != null)
                             {
                                 await _auth.UpdateRoleAsync(exDepartmentManager.Username, Constants.DeveloperRole);
                             }
-                            _employeeService.UpdateDepartmentManager(employee.Department, employee);
+                            _departmentService.UpdateDepartmentManager(employee.Department, employee);
                         }
                     }
                     else
@@ -115,7 +117,7 @@ namespace IdentityServer
                         {
                             Active = true,
                             AllPositions = model.AllPositions,
-                            AllDepartments = _employeeService.GetAllDepartments()
+                            AllDepartments = _departmentService.GetAllDepartments()
                         };
 
                         return View(returnModel);
