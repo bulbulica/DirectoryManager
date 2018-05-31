@@ -14,7 +14,8 @@ namespace IdentityServer.Controllers.API
 
     [Produces("application/json")]
     [Authorize]
-    public class APIController : Controller
+    [Route("/[controller]")]
+    public class APIController: Controller
     {
         private readonly IBusinessLayer _businessLayer;
         private readonly IEmployeeService _employeeService;
@@ -25,7 +26,7 @@ namespace IdentityServer.Controllers.API
             _employeeService = _businessLayer.GetEmployeeService();
         }
 
-        [HttpGet]
+        [HttpGet("GetEmployeeInfo/{username}")]
         public Employee GetEmployeeInfo (string username)
         {
             var employee = _employeeService.GetEmployeeByName(username);
@@ -36,7 +37,7 @@ namespace IdentityServer.Controllers.API
             return employee;
         }
 
-        [HttpGet]
+        [HttpGet("GetEmployeesToEvaluate/{username}")]
         public ICollection<Employee> GetEmployeesToEvaluate(string username)
         {
             var employee = _employeeService.GetEmployeeByName(username);
