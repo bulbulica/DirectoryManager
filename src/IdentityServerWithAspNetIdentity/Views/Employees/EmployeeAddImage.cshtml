@@ -13,7 +13,7 @@
         <form asp-action="EmployeeAddImage" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="All" class="text-danger hidden"></div>
             <input type="hidden" asp-for="Id" value="@Model.Id" class="form-control" />
-            <input type="file" name="file" />
+            <input class="btn btn-lg" type="file" name="file" />
             <br />
             <div class="form-group">
                 <input type="submit" value="Add Image" class="btn btn-primary" />

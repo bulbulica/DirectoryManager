@@ -72,7 +72,7 @@ namespace IdentityServer
                 var position = _employeeService.GetPositionByName(model.Position);
                 var department = _departmentService.GetDepartmentByName(model.Department);
 
-                if (position.AccessLevel <= Constants.GeneralManagerAccessLevel 
+                if (position.AccessLevel <= Constants.GeneralManagerAccessLevel
                     || position.AccessLevel == Constants.OfficeManagerAccessLevel)
                 {
                     department = null;
@@ -123,9 +123,28 @@ namespace IdentityServer
                         return View(returnModel);
                     }
                 }
+                return RedirectToAction("Index", "Home");
             }
+            else
+            {
+                var ErrorMessage = $"the password does not meet the password policy requirements.";
+                var policyRequirements = $"* At least an uppercase and a special character";
 
-            return RedirectToAction("Index", "Home");
+                ViewBag.Error = ErrorMessage;
+                ViewBag.policyRequirments = policyRequirements;
+
+                var returnModel = new AddEmployee()
+                {
+                    Name = model.Name,
+                    Username = model.Username,
+                    Active = true,
+                    AllPositions = model.AllPositions,
+                    AllDepartments = _departmentService.GetAllDepartments()
+                };
+
+                //return View("Add", returnModel);
+                return RedirectToAction("Add", "Developer", returnModel);
+            }
         }
     }
 }
