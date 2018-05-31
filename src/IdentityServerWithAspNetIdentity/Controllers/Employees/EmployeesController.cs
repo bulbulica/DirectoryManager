@@ -364,6 +364,19 @@ namespace IdentityServer
             if (user.Username == employee.Username
                 || user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
             {
+
+                if(file == null)
+                {
+                    var error = "CV file cannot be empty";
+                    var model = new AddCVEmployee
+                    {
+                        Id = employee.Id,
+                        Name = employee.Name,
+                        Error = error
+                    };
+                    return View(model);
+                }
+
                 if (Path.GetExtension(file.FileName).ToLower() != ".pdf"
                     && Path.GetExtension(file.FileName).ToLower() != ".doc"
                     && Path.GetExtension(file.FileName).ToLower() != ".docx")
