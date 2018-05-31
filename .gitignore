@@ -29,9 +29,6 @@ project.assets.json
 *.csslintrc
 *.ps1
 *.nuspec
-*.jpeg
-*.jpg
-*.png
 *.pdf
 *.doc
 *.docx
