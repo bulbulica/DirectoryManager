@@ -750,7 +750,7 @@ namespace IdentityServer
                         }
                         else
                         {
-                            var ErrorMessage = $"the password does not meet the password policy requirements.";
+                            var ErrorMessage = $"the password does not meet the password policy requirements or the email already exists";
                             ViewBag.Error = ErrorMessage;
 
                             var returnModel = new AddEmployee()
