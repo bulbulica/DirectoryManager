@@ -46,8 +46,9 @@ namespace IdentityServer.Authentication
                         new Secret("Pass123$".Sha256())
                     },                   
                     RedirectUris = { "http://localhost:51755/signin-oidc" },
-                    PostLogoutRedirectUris = { "http://localhost:51755/signout-oidc" },
+                    PostLogoutRedirectUris = { "http://localhost:51755/signout-callback-oidc" },
                     FrontChannelLogoutUri =  "http://localhost:51755/signout-oidc",
+                    BackChannelLogoutUri = "",
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
@@ -68,7 +69,7 @@ namespace IdentityServer.Authentication
                         new Secret("Pass123$".Sha256())
                     },                    
                     RedirectUris = { "http://localhost:5002/signin-oidc" },
-                    PostLogoutRedirectUris = { "http://localhost:5002/signout-oidc" },
+                    PostLogoutRedirectUris = { "http://localhost:5002/signout-callback-oidc" },
                     FrontChannelLogoutUri =  "http://localhost:5002/signout-oidc",
 
                     AllowedScopes =
@@ -90,7 +91,7 @@ namespace IdentityServer.Authentication
                         new Secret("Pass123$".Sha256())
                     },
                     RedirectUris = { "http://localhost:51625/signin-oidc" },
-                    PostLogoutRedirectUris = { "http://localhost:51625/signout-oidc" },
+                    PostLogoutRedirectUris = { "http://localhost:51625/signout-callback-oidc" },
                     FrontChannelLogoutUri =  "http://localhost:51625/signout-oidc",
 
                     AllowedScopes =

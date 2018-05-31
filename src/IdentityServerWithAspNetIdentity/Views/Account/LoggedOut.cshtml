@@ -4,7 +4,10 @@
     // set this so the layout rendering sees an anonymous user
     ViewData["signed-out"] = true;
 }
-
+@section scripts
+{
+    <script src="~/js/signout-redirect.js"></script>
+}
 <div class="page-header logged-out">
     <h1>
         Logout
@@ -14,7 +17,7 @@
     @if (Model.PostLogoutRedirectUri != null)
     {
         <div>
-            Click <a class="PostLogoutRedirectUri" href="@Model.PostLogoutRedirectUri">here</a> to return to the
+            Click <a class="PostLogoutRedirectUri" id="PostLogoutUrl" href="@Model.PostLogoutRedirectUri">here</a> to return to the
             <span>@Model.ClientName</span> application.
         </div>
     }
@@ -25,7 +28,3 @@
     }
 </div>
 
-@section scripts
-{
-    <script src="~/js/signout-redirect.js"></script>
-}
