@@ -84,7 +84,7 @@ namespace IdentityServer
                 return NotFound();
             }
             if ((user.Position.AccessLevel == Constants.TeamLeaderAccessLevel
-                && user.Team == _teamService.GetTeam(idTeam)))
+                && user.Team.Id == _teamService.GetTeam(idTeam).Id))
             {
 
                 var model = new SingleTeam
@@ -245,7 +245,7 @@ namespace IdentityServer
             var team = _teamService.GetTeam(idTeam);
 
             if (user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel
-                || user.Department == team.Department)
+                || user.Department.Id == team.Department.Id)
             {
                 if (team.Description == null)
                     team.Description = "";
@@ -276,7 +276,7 @@ namespace IdentityServer
             var user = _employeeService.GetEmployeeByName(username);
             var oldTeam = _teamService.GetTeam(editTeam.Id);
             if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel
-                || user.Department == oldTeam.Department)
+                || user.Department.Id == oldTeam.Department.Id)
             {
                 if (ModelState.IsValid)
                 {
@@ -311,7 +311,7 @@ namespace IdentityServer
 
             if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {
-                if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel && user.Department == team.Department
+                if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel && user.Department.id == team.Department.Id
                     || user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel)
                 {
                     var employees = _employeeService.GetAllUnassignedEmployees().ToList();
@@ -392,7 +392,7 @@ namespace IdentityServer
             if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {
                 if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel
-                    && user.Department == team.Department
+                    && user.Department.Id == team.Department.Id
                     || user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel)
                 {
                     List<Employee> employees = new List<Employee>();

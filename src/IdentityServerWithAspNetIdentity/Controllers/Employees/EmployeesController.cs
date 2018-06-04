@@ -208,6 +208,11 @@ namespace IdentityServer
                 return RedirectToAction("EmployeeInfo", idEmployee);
             }
 
+            if(employee.Team != null)
+            {
+                return NotFound();
+            }
+
             if(user.Team.Id != employee.Team.Id) {
                 return NotFound();
             }
