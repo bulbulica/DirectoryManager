@@ -85,6 +85,11 @@ namespace IdentityServer.Core
         {
             var teamLeadPosition = PersistenceContext.EmployeeRepository.GetTeamLeaderPosition();
 
+            if (team == null)
+            {
+                return null;
+            }
+
             foreach (var employee in team.Employees)
             {
                 if (employee.Position == teamLeadPosition)

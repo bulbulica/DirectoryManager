@@ -165,6 +165,11 @@ namespace IdentityServer
             }
             else
             {
+                if (employee == null)
+                {
+                    return NotFound();
+                }
+
                 if (user.Position.AccessLevel < employee.Position.AccessLevel
                     && employee.Position.AccessLevel != Constants.OfficeManagerAccessLevel)
                 {
@@ -203,6 +208,11 @@ namespace IdentityServer
                 return RedirectToAction("EmployeeInfo", idEmployee);
             }
 
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
             if (user.Position.AccessLevel < employee.Position.AccessLevel
                 || user.Id == employee.Id)
             {
@@ -213,7 +223,6 @@ namespace IdentityServer
 
                 return View(model);
             }
-
             else if (user.Username == employee.Username)
             {
                 var model = new SingleEmployee
@@ -447,6 +456,11 @@ namespace IdentityServer
             int idEmployee = id ?? default(int);
             var employee = _employeeService.GetEmployee(idEmployee);
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
+
+            if (employee == null)
+            {
+                return NotFound();
+            }
 
             if (user.Position.AccessLevel < _employeeService.GetDeveloperPosition().AccessLevel)
             {
@@ -905,6 +919,11 @@ namespace IdentityServer
 
             int idEmployee = id ?? default(int);
             var employee = _employeeService.GetEmployee(idEmployee);
+
+            if (employee == null)
+            {
+                return NotFound();
+            }
 
             if (user.Position.AccessLevel == Constants.OfficeManagerAccessLevel
                 || user.Id == employee.Id)
