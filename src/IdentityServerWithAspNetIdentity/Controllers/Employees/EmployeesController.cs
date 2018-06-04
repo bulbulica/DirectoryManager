@@ -207,8 +207,8 @@ namespace IdentityServer
             {
                 return RedirectToAction("EmployeeInfo", idEmployee);
             }
-
-            if(employee.Team != null)
+            if (employee == null
+                || employee.Team != null)
             {
                 return NotFound();
             }
@@ -217,10 +217,6 @@ namespace IdentityServer
                 return NotFound();
             }
 
-            if (employee == null)
-            {
-                return NotFound();
-            }
 
             if (user.Position.AccessLevel < employee.Position.AccessLevel
                 || user.Id == employee.Id)
@@ -257,6 +253,21 @@ namespace IdentityServer
             if (user.Position.RoleName != Constants.DepartmentManagerRole)
             {
                 return RedirectToAction("EmployeeInfo", idEmployee);
+            }
+
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
+            if (employee.Department != null)
+            {
+                return NotFound();
+            }
+
+            if(employee.Department.Id != user.Department.Id)
+            {
+                return NotFound();
             }
 
             if (user.Position.AccessLevel < employee.Position.AccessLevel

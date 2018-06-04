@@ -311,7 +311,7 @@ namespace IdentityServer
 
             if (user.Position.AccessLevel < Constants.TeamLeaderAccessLevel)
             {
-                if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel && user.Department.id == team.Department.Id
+                if (user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel && user.Department.Id == team.Department.Id
                     || user.Position.AccessLevel < Constants.DepartmentManagerAccessLevel)
                 {
                     var employees = _employeeService.GetAllUnassignedEmployees().ToList();
