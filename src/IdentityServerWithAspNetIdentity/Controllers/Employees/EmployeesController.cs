@@ -250,6 +250,11 @@ namespace IdentityServer
                 return RedirectToAction("EmployeeInfo", idEmployee);
             }
 
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
             if (user.Position.AccessLevel < employee.Position.AccessLevel
                 || user.Id == employee.Id)
             {
