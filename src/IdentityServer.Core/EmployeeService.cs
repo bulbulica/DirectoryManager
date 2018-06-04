@@ -204,7 +204,8 @@ namespace IdentityServer.Core
 
             foreach (var emp in employees)
             {
-                if(emp.Id != employee.Id)
+                if(emp.Id != employee.Id
+                    && emp.Position.RoleName != Constants.OfficeManagerRole)
                 {
                     employeesToBeReturned.Add(emp);
                 }
@@ -221,7 +222,8 @@ namespace IdentityServer.Core
             foreach(var emp in allEmployees)
             {
                 if (employee.Position.AccessLevel == emp.Position.AccessLevel
-                    && emp.Id != employee.Id)
+                    && emp.Id != employee.Id
+                    && emp.Position.RoleName != Constants.OfficeManagerRole)
                     availableEmployees.Add(emp);
             }
             return availableEmployees;

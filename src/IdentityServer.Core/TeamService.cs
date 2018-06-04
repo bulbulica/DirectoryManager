@@ -122,7 +122,7 @@ namespace IdentityServer.Core
         {
             var exTeamLeader = GetTeamLeader(team);
 
-            if (team.Employees.Contains(employee))
+            if (team.Employees.Where(e=> e.Id == employee.Id).SingleOrDefault() != null)
             {
                 if (exTeamLeader != null)
                 {
