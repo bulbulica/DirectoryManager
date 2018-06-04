@@ -107,7 +107,7 @@ namespace IdentityServer.Core
         {
             foreach (var employee in department.Employees)
             {
-                if (employee.Position == PersistenceContext.EmployeeRepository.GetDepartmentManagerPosition())
+                if (employee.Position.RoleName.Equals(PersistenceContext.EmployeeRepository.GetDepartmentManagerPosition().RoleName))
                     return employee;
             }
             return null;
@@ -161,22 +161,22 @@ namespace IdentityServer.Core
         public void UpdateDepartmentManager(Department department, Employee employee)
         {
             var exDepartmentManager = GetDepartmentManager(department);
+            var currentEmployee = department.Employees.Where(e => employee.Username.Equals(employee.Username)).FirstOrDefault();
 
-            if (department.Employees.Contains(employee))
+            if (currentEmployee != null)
             {
                 if (exDepartmentManager != null)
                 {
                     exDepartmentManager.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
                 }
-                employee.Position = PersistenceContext.EmployeeRepository.GetDepartmentManagerPosition();
+                currentEmployee.Position = PersistenceContext.EmployeeRepository.GetDepartmentManagerPosition();
             }
             else
             {
                 if (exDepartmentManager != null)
                 {
                     exDepartmentManager.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
-                }
-                department.Employees.Add(employee);
+                }                
                 employee.Department = department;
                 employee.Position = PersistenceContext.EmployeeRepository.GetDepartmentManagerPosition();
             }

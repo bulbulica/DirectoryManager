@@ -728,15 +728,17 @@ namespace IdentityServer
                         if (result)
                         {
                             var employee = new Employee
-                            {
+                            {                                
                                 Name = model.Name,
                                 Username = model.Username,
                                 Active = true,
-                                Position = position,
+                                PositionId = position.Id,
                                 Department = department,
                             };
+                            
+                            _employeeService.AddEmployee(employee);
 
-                            if (employee.Position == _departmentService.GetDepartmentManagerPosition() && department != null)
+                            if (position.RoleName.Equals(Constants.DepartmentManagerRole) && department != null)
                             {
                                 var exDepartmentManager = _departmentService.GetDepartmentManager(department);
 
@@ -744,9 +746,9 @@ namespace IdentityServer
                                 {
                                     await _auth.UpdateRoleAsync(exDepartmentManager.Username, Constants.DeveloperRole);
                                 }
-                                _departmentService.UpdateDepartmentManager(employee.Department, employee);
+                                _departmentService.UpdateDepartmentManager(department, employee);
                             }
-                            _employeeService.AddEmployee(employee);
+
                         }
                         else
                         {

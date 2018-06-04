@@ -12,8 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace IdentityServer.Controllers.API
 {
 
-    [Produces("application/json")]
-    [Authorize]
+    [Produces("application/json")]    
     [Route("/[controller]")]
     public class APIController: Controller
     {
@@ -27,18 +26,18 @@ namespace IdentityServer.Controllers.API
         }
 
         [HttpGet("GetEmployeeInfo/{username}")]
-        public Employee GetEmployeeInfo (string username)
+        public IActionResult GetEmployeeInfo (string username)
         {
             var employee = _employeeService.GetEmployeeByName(username);
             if(employee == null)
             {
                 return null;
             }
-            return employee;
+            return Ok(employee);
         }
 
         [HttpGet("GetEmployeesToEvaluate/{username}")]
-        public ICollection<Employee> GetEmployeesToEvaluate(string username)
+        public IActionResult GetEmployeesToEvaluate(string username)
         {
             var employee = _employeeService.GetEmployeeByName(username);
             if (employee == null)
@@ -47,11 +46,11 @@ namespace IdentityServer.Controllers.API
             }
             List<Employee> employees = _employeeService.GetAllEmployeesWithLowerAccessLevel(employee).ToList();
 
-            return employees;
+            return Ok(employees);
         }
 
         [HttpGet("GetAllEqualRankEmployees/{username}")]
-        public ICollection<Employee> GetAllEqualRankEmployees(string username)
+        public IActionResult GetAllEqualRankEmployees(string username)
         {
             var employee = _employeeService.GetEmployeeByName(username);
             if (employee == null)
@@ -60,7 +59,7 @@ namespace IdentityServer.Controllers.API
             }
             List<Employee> employees = _employeeService.GetAllEmployeesWithSameAccessLevel(employee).ToList();
 
-            return employees;
+            return Ok(employees);
         }
     }
 }

@@ -40,7 +40,9 @@ namespace IdentityServerWithAspNetIdentity
             //Add Business Layer 
             services.AddScoped<IBusinessLayer, BusinessLogic>(s => new BusinessLogic(dataService));
 
-            services.AddMvc();
+            services.AddMvc()
+                    .AddJsonOptions(
+                                    options => options.SerializerSettings.ReferenceLoopHandling= Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.AddAuthentication("Bearer")
                 .AddIdentityServerAuthentication(options =>
