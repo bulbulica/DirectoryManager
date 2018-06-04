@@ -173,6 +173,13 @@ namespace IdentityServer
                 if (user.Position.AccessLevel < employee.Position.AccessLevel
                     && employee.Position.AccessLevel != Constants.OfficeManagerAccessLevel)
                 {
+                    if (user.Position.AccessLevel == Constants.TeamLeaderAccessLevel
+                        || user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel
+                        || user.Position.AccessLevel == Constants.GeneralManagerAccessLevel)
+                    {
+                        return NotFound();
+                    }
+
                     var model = new SingleEmployee
                     {
                         Employee = employee
@@ -207,16 +214,12 @@ namespace IdentityServer
             {
                 return RedirectToAction("EmployeeInfo", idEmployee);
             }
-            if (employee == null
-                || employee.Team != null)
+
+            if (employee == null 
+                || employee.Department == null)
             {
                 return NotFound();
             }
-
-            if(user.Team.Id != employee.Team.Id) {
-                return NotFound();
-            }
-
 
             if (user.Position.AccessLevel < employee.Position.AccessLevel
                 || user.Id == employee.Id)
@@ -255,12 +258,7 @@ namespace IdentityServer
                 return RedirectToAction("EmployeeInfo", idEmployee);
             }
 
-            if (employee == null)
-            {
-                return NotFound();
-            }
-
-            if (employee.Department != null)
+            if (employee == null || employee.Department == null)
             {
                 return NotFound();
             }
@@ -477,7 +475,12 @@ namespace IdentityServer
             var employee = _employeeService.GetEmployee(idEmployee);
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
 
-            if (employee == null)
+            if (employee == null || employee.Team == null)
+            {
+                return NotFound();
+            }
+
+            if (user.Department.Id != employee.Department.Id)
             {
                 return NotFound();
             }
