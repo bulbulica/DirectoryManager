@@ -182,19 +182,34 @@ namespace IdentityServer.Core
 
         public IEnumerable<Employee> GetAllEmployeesWithLowerAccessLevel(Employee employee)
         {
-            if(employee.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
+            List<Employee> employees = new List<Employee>();
+            if (employee.Position.AccessLevel == Constants.DepartmentManagerAccessLevel)
             {
-                return employee.Department.Employees;
+                employees = employee.Department.Employees.ToList();
             }
-            if(employee.Position.AccessLevel == Constants.TeamLeaderAccessLevel)
+            else if (employee.Position.AccessLevel == Constants.TeamLeaderAccessLevel)
             {
-                return employee.Team.Employees;
+                employees = employee.Team.Employees.ToList();
             }
-            if(employee.Position.AccessLevel <= Constants.GeneralManagerAccessLevel)
+            else if (employee.Position.AccessLevel <= Constants.GeneralManagerAccessLevel)
             {
-                return GetAllEmployees();
+                employees = GetAllEmployees();
             }
-            return new List<Employee>();
+
+            List<Employee> employeesToBeReturned = new List<Employee>();
+            if(employees == null)
+            {
+                return employees;
+            }
+
+            foreach (var emp in employees)
+            {
+                if(emp.Id != employee.Id)
+                {
+                    employeesToBeReturned.Add(emp);
+                }
+            }
+            return employeesToBeReturned;
         }
 
         public IEnumerable<Employee> GetAllEmployeesWithSameAccessLevel(Employee employee)
@@ -205,7 +220,8 @@ namespace IdentityServer.Core
 
             foreach(var emp in allEmployees)
             {
-                if (employee.Position.AccessLevel == emp.Position.AccessLevel)
+                if (employee.Position.AccessLevel == emp.Position.AccessLevel
+                    && emp.Id != employee.Id)
                     availableEmployees.Add(emp);
             }
             return availableEmployees;
