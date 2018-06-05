@@ -60,15 +60,20 @@ namespace IdentityServer.Core
                 {
                     departmentManager.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
                 }
-
-                foreach (var team in department.Teams)
+                if (department.Teams.Count != 0)
                 {
-                    team.Department = null;
+                    foreach (var team in department.Teams)
+                    {
+                        team.Department = null;
+                    }
                 }
 
-                foreach (var employee in department.Employees)
+                if (department.Employees.Count != 0)
                 {
-                    employee.Department = null;
+                    foreach (var employee in department.Employees)
+                    {
+                        employee.Department = null;
+                    }
                 }
 
                 PersistenceContext.EmployeeRepository.DeleteDepartment(department);
