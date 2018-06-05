@@ -68,60 +68,62 @@ namespace IdentityServer.Persistence.EF
         {
             InitializeDbContext(serviceProvider);
             _context?.Database.Migrate();
-
-            var qaPosition = new Position
+            if (_context.Positions.Count() == 0)
             {
-                RoleName = "QA",
-                AccessLevel = 4,
-                Description = "Quality assurance"
-            };
+                var qaPosition = new Position
+                {
+                    RoleName = "QA",
+                    AccessLevel = 4,
+                    Description = "Quality assurance"
+                };
 
-            var devPosition = new Position
-            {
-                RoleName = "Developer",
-                AccessLevel = 4,
-                Description = "Software dev"
-            };
+                var devPosition = new Position
+                {
+                    RoleName = "Developer",
+                    AccessLevel = 4,
+                    Description = "Software dev"
+                };
 
-            var teamLeaderPosition = new Position
-            {
-                RoleName = "TeamLeader",
-                AccessLevel = 3,
-                Description = "Team Leader"
-            };
+                var teamLeaderPosition = new Position
+                {
+                    RoleName = "TeamLeader",
+                    AccessLevel = 3,
+                    Description = "Team Leader"
+                };
 
-            var departmentManagerPosition = new Position
-            {
-                RoleName = "DepartmentManager",
-                AccessLevel = 2,
-                Description = "Department Manager"
-            };
+                var departmentManagerPosition = new Position
+                {
+                    RoleName = "DepartmentManager",
+                    AccessLevel = 2,
+                    Description = "Department Manager"
+                };
 
-            var generalManagerPosition = new Position
-            {
-                RoleName = "GeneralManager",
-                AccessLevel = 1,
-                Description = "General Manager"
-            };
+                var generalManagerPosition = new Position
+                {
+                    RoleName = "GeneralManager",
+                    AccessLevel = 1,
+                    Description = "General Manager"
+                };
 
-            var officeManagerPosition = new Position
-            {
-                RoleName = "OfficeManager",
-                AccessLevel = 255,
-                Description = "Office Manager"
-            };
+                var officeManagerPosition = new Position
+                {
+                    RoleName = "OfficeManager",
+                    AccessLevel = 255,
+                    Description = "Office Manager"
+                };
 
-            EmployeeRepository.AddPositions(
-            new List<Position>{
+                EmployeeRepository.AddPositions(
+                new List<Position>{
                 officeManagerPosition,
                 generalManagerPosition,
                 departmentManagerPosition,
                 teamLeaderPosition,
                 devPosition,
                 qaPosition
-            });
+                });
 
-            Complete();
+                Complete();
+            }
         }
     }
 }
