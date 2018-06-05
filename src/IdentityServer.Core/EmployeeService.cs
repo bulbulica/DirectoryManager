@@ -141,12 +141,15 @@ namespace IdentityServer.Core
 
             var allPositions = GetAllPositions().ToList();
             List<Position> positionsToBeReturned = new List<Position>();
-            foreach(var position in allPositions)
+            if (allPositions.Count != 0)
             {
-                if (position.AccessLevel > accessLevel 
-                    && position.AccessLevel != Constants.OfficeManagerAccessLevel)
+                foreach (var position in allPositions)
+                {
+                    if (position.AccessLevel > accessLevel
+                        && position.AccessLevel != Constants.OfficeManagerAccessLevel)
 
-                    positionsToBeReturned.Add(position);
+                        positionsToBeReturned.Add(position);
+                }
             }
             return positionsToBeReturned;
         }
@@ -219,12 +222,15 @@ namespace IdentityServer.Core
 
             List<Employee> availableEmployees = new List<Employee>();
 
-            foreach(var emp in allEmployees)
+            if (allEmployees.Count != 0)
             {
-                if (employee.Position.AccessLevel == emp.Position.AccessLevel
-                    && emp.Id != employee.Id
-                    && emp.Position.RoleName != Constants.OfficeManagerRole)
-                    availableEmployees.Add(emp);
+                foreach (var emp in allEmployees)
+                {
+                    if (employee.Position.AccessLevel == emp.Position.AccessLevel
+                        && emp.Id != employee.Id
+                        && emp.Position.RoleName != Constants.OfficeManagerRole)
+                        availableEmployees.Add(emp);
+                }
             }
             return availableEmployees;
         }
@@ -234,6 +240,10 @@ namespace IdentityServer.Core
             var allPositions = GetAllPositions();
 
             List<Position> availablePositions = new List<Position>();
+            if(allPositions.Count() == 0)
+            {
+                return availablePositions;
+            }
 
             foreach (var position in allPositions)
             {

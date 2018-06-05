@@ -49,9 +49,11 @@ namespace IdentityServer.Core
                 {
                     teamLeader.Position = PersistenceContext.EmployeeRepository.GetDeveloperPosition();
                 }
+                if(team.Employees.Count !=0) { 
                 foreach (var employee in team.Employees)
                 {
                     employee.Team = null;
+                }
                 }
 
                 PersistenceContext.EmployeeRepository.DeleteTeam(team);
@@ -90,10 +92,13 @@ namespace IdentityServer.Core
                 return null;
             }
 
-            foreach (var employee in team.Employees)
+            if (team.Employees.Count != 0)
             {
-                if (employee.Position == teamLeadPosition)
-                    return employee;
+                foreach (var employee in team.Employees)
+                {
+                    if (employee.Position == teamLeadPosition)
+                        return employee;
+                }
             }
             return null;
         }

@@ -43,9 +43,12 @@ namespace IdentityServer.Core
             }
             department.Teams.Add(team);
             team.Department = department;
-            foreach (var employee in team.Employees)
+            if (team.Employees.Count != 0)
             {
-                employee.Department = department;
+                foreach (var employee in team.Employees)
+                {
+                    employee.Department = department;
+                }
             }
             PersistenceContext.Complete();
         }
@@ -110,10 +113,13 @@ namespace IdentityServer.Core
 
         public Employee GetDepartmentManager(Department department)
         {
-            foreach (var employee in department.Employees)
+            if (department.Employees.Count != 0)
             {
-                if (employee.Position.RoleName.Equals(PersistenceContext.EmployeeRepository.GetDepartmentManagerPosition().RoleName))
-                    return employee;
+                foreach (var employee in department.Employees)
+                {
+                    if (employee.Position.RoleName.Equals(PersistenceContext.EmployeeRepository.GetDepartmentManagerPosition().RoleName))
+                        return employee;
+                }
             }
             return null;
         }
@@ -145,10 +151,13 @@ namespace IdentityServer.Core
             var department = team.Department;
             if (department != null)
             {
-                foreach (var employee in team.Employees)
+                if (team.Employees.Count != 0)
                 {
-                    employee.Department = null;
-                    department.Employees.Remove(employee);
+                    foreach (var employee in team.Employees)
+                    {
+                        employee.Department = null;
+                        department.Employees.Remove(employee);
+                    }
                 }
                 department.Teams.Remove(team);
                 team.Department = null;
