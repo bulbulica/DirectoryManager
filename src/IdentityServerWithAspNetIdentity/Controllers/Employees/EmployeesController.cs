@@ -64,7 +64,8 @@ namespace IdentityServer
         {
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
 
-            if (user.Position.AccessLevel != Constants.DepartmentManagerAccessLevel)
+            if (user.Position.AccessLevel != Constants.DepartmentManagerAccessLevel
+                || user.Department == null)
             {
                 return NotFound();
             }
@@ -91,7 +92,8 @@ namespace IdentityServer
             List<Employee> availableEmployees = new List<Employee>();
             foreach (var employee in employees)
             {
-                if (employee.Position.AccessLevel != Constants.OfficeManagerAccessLevel)
+                if (employee.Position.AccessLevel != Constants.OfficeManagerAccessLevel
+                    && employee.Id != user.Id)
                     availableEmployees.Add(employee);
             }
 
@@ -112,10 +114,19 @@ namespace IdentityServer
             }
 
             List<Employee> employees = _employeeService.GetAllEmployees();
+            List<Employee> availableEmployees = new List<Employee>();
 
-            var model = new AllEmployees
+            foreach (var employee in employees)
             {
-                Employees = employees
+                if(employee.Id != user.Id)
+                {
+                    availableEmployees.Add(employee);
+                }
+            }
+
+                var model = new AllEmployees
+            {
+                Employees = availableEmployees
             };
             return View(model);
         }
@@ -154,6 +165,11 @@ namespace IdentityServer
             var employee = _employeeService.GetEmployee(idEmployee);
             var user = _employeeService.GetEmployeeByName(User.Identity.Name);
 
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
             if (user.Position.AccessLevel == Constants.OfficeManagerAccessLevel)
             {
                 var model = new SingleEmployee
@@ -165,13 +181,7 @@ namespace IdentityServer
             }
             else
             {
-                if (employee == null)
-                {
-                    return NotFound();
-                }
-
-                if (user.Position.AccessLevel < employee.Position.AccessLevel
-                    && employee.Position.AccessLevel != Constants.OfficeManagerAccessLevel)
+                if (user.Position.AccessLevel < employee.Position.AccessLevel)
                 {
                     if (user.Position.AccessLevel == Constants.TeamLeaderAccessLevel
                         || user.Position.AccessLevel == Constants.DepartmentManagerAccessLevel
@@ -215,23 +225,21 @@ namespace IdentityServer
                 return RedirectToAction("EmployeeInfo", idEmployee);
             }
 
-            if (employee == null 
-                || employee.Department == null)
+            if (employee == null)
+            {
+                return NotFound();
+            }
+            if(employee.Team == null)
+            {
+                return NotFound();
+            }
+            if(employee.Team.Id != user.Team.Id)
             {
                 return NotFound();
             }
 
             if (user.Position.AccessLevel < employee.Position.AccessLevel
-                || user.Id == employee.Id)
-            {
-                var model = new SingleEmployee
-                {
-                    Employee = employee
-                };
-
-                return View(model);
-            }
-            else if (user.Username == employee.Username)
+                || user.Username == employee.Username)
             {
                 var model = new SingleEmployee
                 {
@@ -269,17 +277,7 @@ namespace IdentityServer
             }
 
             if (user.Position.AccessLevel < employee.Position.AccessLevel
-                || user.Id == employee.Id)
-            {
-                var model = new SingleEmployee
-                {
-                    Employee = employee
-                };
-
-                return View(model);
-            }
-
-            else if (user.Username == employee.Username)
+                || user.Username == employee.Username)
             {
                 var model = new SingleEmployee
                 {
@@ -307,22 +305,12 @@ namespace IdentityServer
             }
 
             if (user.Position.AccessLevel < employee.Position.AccessLevel
-                || user.Id == employee.Id)
+                || user.Username == employee.Username)
             {
                 var model = new SingleEmployee
                 {
                     Employee = employee
                 };
-
-                return View(model);
-            }
-            else if (user.Username == employee.Username)
-            {
-                var model = new SingleEmployee
-                {
-                    Employee = employee
-                };
-
                 return View(model);
             }
             else
